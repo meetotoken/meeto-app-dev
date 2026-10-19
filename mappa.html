@@ -1,14 +1,21 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="h-full w-full overflow-hidden">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>$MEETO — Mappa Culturale</title>
+  
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
   <script>
     tailwind.config = {
       theme: {
@@ -22,74 +29,127 @@
       }
     }
   </script>
+  
   <style>
-    body { background-color: #0B0E14; color: #E2E8F0; font-family: 'Inter', sans-serif; }
-    #map { height: calc(100vh - 120px); width: 100%; z-index: 1; }
-    .glass-panel { background: rgba(11, 14, 20, 0.85); backdrop-filter: blur(10px); border: 1px solid rgba(212, 175, 55, 0.3); }
-    /* Personalizzazione mappa scura */
-    .leaflet-tile-pane { filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3); }
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background-color: #0B0E14;
+      color: #E2E8F0;
+      font-family: 'Inter', sans-serif;
+    }
+    #map {
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+      touch-action: pan-x pan-y;
+    }
+    .glass-panel {
+      background: rgba(11, 14, 20, 0.90);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .leaflet-tile-pane { 
+      filter: brightness(0.65) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.3); 
+    }
+    .leaflet-popup-content-wrapper {
+      background: #0B0E14 !important;
+      color: #FFF !important;
+      border: 1px solid #D4AF37 !important;
+      border-radius: 12px !important;
+      padding: 4px !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8) !important;
+    }
+    .leaflet-popup-tip {
+      background: #0B0E14 !important;
+      border: 1px solid #D4AF37 !important;
+    }
+    .leaflet-container a.leaflet-popup-close-button {
+      color: #D4AF37 !important;
+      padding: 8px !important;
+    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="h-[100dvh] w-screen flex flex-col justify-between overflow-hidden relative">
 
   <!-- HEADER -->
-  <header class="w-full border-b border-brandBorder/30 bg-black/80 backdrop-blur-md px-4 py-3 flex items-center justify-between z-50">
-    <a href="index.html" class="flex items-center space-x-2">
+  <header class="w-full border-b border-brandBorder/30 bg-black/90 backdrop-blur-md px-4 py-3 flex items-center justify-between z-50 shrink-0">
+    <a href="index.html" class="flex items-center space-x-2 active:opacity-70 transition">
       <span class="text-xl">🏛️</span>
-      <span class="font-bold text-lg text-amber-400">$MEETO Map</span>
+      <span class="font-bold text-base text-amber-400 tracking-wide">$MEETO Map</span>
     </a>
-    <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-400 text-black hover:bg-amber-300 transition flex items-center gap-1">
-      🎯 Trova la mia Posizione
+    <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full text-xs font-bold bg-amber-400 text-black hover:bg-amber-300 active:scale-95 transition flex items-center gap-1 shadow-lg shadow-amber-400/20">
+      🎯 Mia Posizione
     </button>
   </header>
 
   <!-- MAPPA INTERATTIVA -->
-  <main class="relative flex-1">
+  <main class="relative flex-1 w-full h-full overflow-hidden">
     <div id="map"></div>
     
-    <!-- CARD INFORMATIVA IN SOVRAPPOSIZIONE -->
-    <div class="absolute bottom-4 left-4 right-4 z-20 glass-panel p-4 rounded-xl max-w-md mx-auto">
-      <div class="flex justify-between items-start">
-        <div>
-          <span class="text-[10px] text-amber-400 font-mono uppercase tracking-wider">Mappa #VisitToEarn</span>
-          <h3 class="font-bold text-sm text-white">Seleziona un Punto d'Interesse</h3>
-          <p class="text-xs text-gray-400">Avvicinati a un monumento per sbloccare il check-in GPS.</p>
+    <!-- CARD INFORMATIVA FISSA -->
+    <div class="absolute bottom-16 left-3 right-3 z-20 glass-panel p-3.5 rounded-2xl max-w-md mx-auto shadow-2xl">
+      <div class="flex justify-between items-center gap-3">
+        <div class="flex-1">
+          <div class="flex items-center gap-1.5 mb-0.5">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            <span class="text-[9px] text-amber-400 font-mono uppercase tracking-widest font-semibold">Visit-to-Earn GPS</span>
+          </div>
+          <h3 id="site-title" class="font-bold text-sm text-white truncate">Seleziona un monumento</h3>
+          <p id="site-desc" class="text-[11px] text-gray-400 truncate">Clicca su un pin per la scheda e il check-in</p>
         </div>
-        <span class="text-2xl">📍</span>
+        <button id="checkin-btn" onclick="triggerCheckIn()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-600 text-black active:scale-95 transition shrink-0">
+          📍 Check-In
+        </button>
       </div>
     </div>
   </main>
 
   <!-- BOTTOM BAR NAVIGAZIONE -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-black/95 border-t border-brandBorder/30 backdrop-blur-lg px-6 py-2 flex justify-between items-center text-center z-50">
-    <a href="index.html" class="flex flex-col items-center text-gray-400 hover:text-amber-400">
-      <span class="text-lg">🏠</span>
+  <nav class="w-full bg-black/95 border-t border-brandBorder/30 backdrop-blur-lg px-6 py-2.5 flex justify-between items-center text-center z-50 shrink-0">
+    <a href="index.html" class="flex flex-col items-center text-gray-400 active:text-amber-400">
+      <span class="text-xl">🏠</span>
       <span class="text-[10px] mt-0.5">Home</span>
     </a>
     <a href="mappa.html" class="flex flex-col items-center text-amber-400">
-      <span class="text-lg">🗺️</span>
-      <span class="text-[10px] mt-0.5">Mappa</span>
+      <span class="text-xl">🗺️</span>
+      <span class="text-[10px] mt-0.5 font-semibold">Mappa</span>
     </a>
-    <a href="index.html" class="flex flex-col items-center text-gray-400 hover:text-amber-400">
-      <span class="text-lg">👥</span>
+    <a href="index.html" onclick="alert('Sezione Social in arrivo!'); return false;" class="flex flex-col items-center text-gray-400 active:text-amber-400">
+      <span class="text-xl">👥</span>
       <span class="text-[10px] mt-0.5">Social</span>
     </a>
-    <a href="index.html" class="flex flex-col items-center text-gray-400 hover:text-amber-400">
-      <span class="text-lg">🪙</span>
+    <a href="index.html" onclick="alert('Sezione Token in arrivo!'); return false;" class="flex flex-col items-center text-gray-400 active:text-amber-400">
+      <span class="text-xl">🪙</span>
       <span class="text-[10px] mt-0.5">Token</span>
     </a>
   </nav>
 
   <script>
-    // Inizializzazione Mappa centrata sull'Italia
-    const map = L.map('map').setView([41.9028, 12.4964], 6);
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+    }
+
+    let selectedSite = "Colosseo";
+
+    const map = L.map('map', {
+      zoomControl: false
+    }).setView([41.9028, 12.4964], 6);
+
+    L.control.zoom({ position: 'topright' }).addTo(map);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© OpenStreetMap'
     }).addTo(map);
 
-    // Monumenti d'Esempio per il Testbed Italiano
     const sites = [
       { name: "Colosseo", lat: 41.8902, lng: 12.4922, city: "Roma", reward: "+50 $MEETO" },
       { name: "Duomo di Milano", lat: 45.4641, lng: 9.1919, city: "Milano", reward: "+50 $MEETO" },
@@ -100,31 +160,53 @@
 
     sites.forEach(site => {
       const marker = L.marker([site.lat, site.lng]).addTo(map);
+      
+      marker.on('click', () => {
+        selectedSite = site.name;
+        document.getElementById('site-title').innerText = `🏛️ ${site.name}`;
+        document.getElementById('site-desc').innerText = `${site.city} • Ricompensa: ${site.reward}`;
+        
+        if (window.Telegram?.WebApp?.HapticFeedback) {
+          window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+        }
+      });
+
       marker.bindPopup(`
-        <div style="color: black; font-family: sans-serif;">
-          <h4 style="font-weight: bold; margin-bottom: 2px;">🏛️ ${site.name}</h4>
-          <p style="font-size: 11px; color: #555; margin-bottom: 6px;">${site.city}</p>
-          <button onclick="alert('Verifica GPS in corso per ${site.name}...')" style="background: #D4AF37; color: black; border: none; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; cursor: pointer;">
-            📍 Check-In (${site.reward})
-          </button>
+        <div style="text-align: center; padding: 4px;">
+          <h4 style="font-weight: bold; font-size: 13px; color: #D4AF37;">🏛️ ${site.name}</h4>
+          <p style="font-size: 11px; color: #AAA; margin-top: 2px;">${site.city}</p>
         </div>
       `);
     });
 
-    // Rilevamento GPS Posizione Utente
+    function triggerCheckIn() {
+      if (window.Telegram?.WebApp?.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+      }
+      alert(`📍 Verifica GPS avviata per: ${selectedSite}\n\nAssicurati di essere entro 200 metri per ricevere +50 $MEETO!`);
+    }
+
     function getUserLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
           const userLat = position.coords.latitude;
           const userLng = position.coords.longitude;
-          map.setView([userLat, userLng], 14);
-          L.circle([userLat, userLng], { radius: 200, color: '#D4AF37', fillColor: '#D4AF37', fillOpacity: 0.3 }).addTo(map);
-          alert("Posizione rilevata con successo!");
+          map.setView([userLat, userLng], 15);
+          
+          L.circle([userLat, userLng], { 
+            radius: 150, 
+            color: '#D4AF37', 
+            fillColor: '#D4AF37', 
+            fillOpacity: 0.25 
+          }).addTo(map);
+          
+          document.getElementById('site-title').innerText = "📍 Tua Posizione";
+          document.getElementById('site-desc').innerText = "Rilevamento GPS completato";
         }, () => {
-          alert("Impossibile accedere alla posizione GPS. Verifica i permessi del tuo browser.");
+          alert("Attiva i permessi GPS sul tuo smartphone.");
         });
       } else {
-        alert("La geolocalizzazione non è supportata dal tuo browser.");
+        alert("Geolocalizzazione non supportata.");
       }
     }
   </script>
