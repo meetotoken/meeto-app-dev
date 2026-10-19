@@ -1,19 +1,15 @@
 <!DOCTYPE html>
-<html lang="it" class="h-full w-full overflow-hidden">
+<html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>$MEETO — Mappa Culturale</title>
+  <title>$MEETO — Culture-Tech Protocol</title>
   
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Leaflet CSS & JS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   
   <script>
@@ -23,201 +19,168 @@
           colors: {
             brandDark: '#0B0E14',
             brandGold: '#D4AF37',
+            brandGoldHover: '#F3E5AB',
+            brandCard: 'rgba(255, 255, 255, 0.03)',
             brandBorder: 'rgba(212, 175, 55, 0.2)',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
           }
         }
       }
     }
   </script>
-  
   <style>
-    * {
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-    html, body {
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
+    * { -webkit-tap-highlight-color: transparent; }
+    body {
       background-color: #0B0E14;
       color: #E2E8F0;
       font-family: 'Inter', sans-serif;
     }
-    #map {
-      height: 100%;
-      width: 100%;
-      z-index: 1;
-      touch-action: pan-x pan-y;
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.2);
     }
-    .glass-panel {
-      background: rgba(11, 14, 20, 0.90);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(212, 175, 55, 0.3);
-    }
-    /* Personalizzazione mappa scura per smartphone */
-    .leaflet-tile-pane { 
-      filter: brightness(0.65) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.3); 
-    }
-    /* Stile Popup Leaflet Dark/Gold */
-    .leaflet-popup-content-wrapper {
-      background: #0B0E14 !important;
-      color: #FFF !important;
-      border: 1px solid #D4AF37 !important;
-      border-radius: 12px !important;
-      padding: 4px !important;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8) !important;
-    }
-    .leaflet-popup-tip {
-      background: #0B0E14 !important;
-      border: 1px solid #D4AF37 !important;
-    }
-    .leaflet-container a.leaflet-popup-close-button {
-      color: #D4AF37 !important;
-      padding: 8px !important;
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFF5C0 0%, #D4AF37 50%, #AA7C11 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
   </style>
 </head>
-<body class="h-[100dvh] w-screen flex flex-col justify-between overflow-hidden relative">
+<body class="min-h-screen flex flex-col justify-between pb-24">
 
-  <!-- HEADER COMPATTO PER MOBILE -->
-  <header class="w-full border-b border-brandBorder/30 bg-black/90 backdrop-blur-md px-4 py-3 flex items-center justify-between z-50 shrink-0">
-    <a href="index.html" class="flex items-center space-x-2 active:opacity-70 transition">
+  <!-- TOP BAR / HEADER -->
+  <header class="w-full border-b border-brandBorder/30 bg-black/80 backdrop-blur-md sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center space-x-2">
       <span class="text-xl">🏛️</span>
-      <span class="font-bold text-base text-amber-400 tracking-wide">$MEETO Map</span>
-    </a>
-    <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full text-xs font-bold bg-amber-400 text-black hover:bg-amber-300 active:scale-95 transition flex items-center gap-1 shadow-lg shadow-amber-400/20">
-      🎯 Mia Posizione
+      <span class="font-bold text-lg tracking-wider gold-gradient-text">$MEETO</span>
+    </div>
+    <button onclick="alert('Funzionalità Wallet in arrivo!')" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brandGold text-black active:scale-95 transition shadow-lg shadow-brandGold/10">
+      Connetti Wallet
     </button>
   </header>
 
-  <!-- MAPPA INTERATTIVA A SCHERMO INTERO -->
-  <main class="relative flex-1 w-full h-full overflow-hidden">
-    <div id="map"></div>
-    
-    <!-- CARD INFORMATIVA PER MOBILE -->
-    <div class="absolute bottom-16 left-3 right-3 z-20 glass-panel p-3.5 rounded-2xl max-w-md mx-auto shadow-2xl">
-      <div class="flex justify-between items-center gap-3">
-        <div class="flex-1">
-          <div class="flex items-center gap-1.5 mb-0.5">
-            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-            <span class="text-[9px] text-amber-400 font-mono uppercase tracking-widest font-semibold">Visit-to-Earn GPS</span>
-          </div>
-          <h3 id="site-title" class="font-bold text-sm text-white truncate">Seleziona un monumento</h3>
-          <p id="site-desc" class="text-[11px] text-gray-400 truncate">Clicca su un pin sulla mappa per fare il check-in</p>
+  <!-- CONTENUTO PRINCIPALE -->
+  <main class="max-w-4xl mx-auto w-full px-4 py-6 space-y-6">
+
+    <!-- HERO SECTION -->
+    <section class="glass-card rounded-2xl p-5 text-center relative overflow-hidden">
+      <div class="absolute -top-10 -right-10 w-32 h-32 bg-brandGold/10 rounded-full blur-3xl"></div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold mb-2 gold-gradient-text">
+        Esplora la Storia. Guadagna $MEETO.
+      </h1>
+      <p class="text-xs text-gray-400 mb-5 max-w-lg mx-auto">
+        Il protocollo Culture-Tech su Solana che trasforma le tue visite nei luoghi d'interesse culturale in ricompense reali.
+      </p>
+      
+      <!-- CHECK-IN QUICK CARD -->
+      <div class="bg-black/50 border border-brandBorder/50 rounded-xl p-4 text-left flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <span class="text-[10px] uppercase tracking-widest text-brandGold font-semibold">Sito Più Vicino</span>
+          <h3 class="font-bold text-sm text-white">🏛️ Colosseo & Parco Archeologico</h3>
+          <p class="text-xs text-gray-400">Roma, Italia • Distanza: <span class="text-emerald-400">In zona</span></p>
         </div>
-        <button id="checkin-btn" onclick="triggerCheckIn()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-600 text-black active:scale-95 transition shrink-0">
-          📍 Check-In
-        </button>
+        <a href="mappa.html" class="w-full sm:w-auto text-center px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-brandGold to-yellow-600 text-black active:scale-95 transition shadow-md">
+          📍 Fai Check-In GPS (+50 XP)
+        </a>
       </div>
-    </div>
+    </section>
+
+    <!-- METRICHE -->
+    <section class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+      <div class="glass-card rounded-xl p-3">
+        <span class="text-[10px] text-gray-400 uppercase">Visite Verificate</span>
+        <div class="text-base font-bold text-white mt-1">1,240+</div>
+      </div>
+      <div class="glass-card rounded-xl p-3">
+        <span class="text-[10px] text-gray-400 uppercase">Prezzo $MEETO</span>
+        <div class="text-base font-bold text-brandGold mt-1">$0.0024</div>
+      </div>
+      <div class="glass-card rounded-xl p-3">
+        <span class="text-[10px] text-gray-400 uppercase">Heritage Fund</span>
+        <div class="text-base font-bold text-white mt-1">25% Allocated</div>
+      </div>
+      <div class="glass-card rounded-xl p-3">
+        <span class="text-[10px] text-gray-400 uppercase">Rete</span>
+        <div class="text-base font-bold text-purple-400 mt-1">Solana</div>
+      </div>
+    </section>
+
+    <!-- SEZIONI APP -->
+    <section class="space-y-4">
+      <h2 class="text-base font-bold text-white flex items-center gap-2">
+        <span>🗺️</span> Mappa & Prossimi Incontri
+      </h2>
+      
+      <div class="grid md:grid-cols-2 gap-4">
+        <!-- CARD MAPPA -->
+        <div class="glass-card rounded-xl p-4 flex flex-col justify-between">
+          <div>
+            <h3 class="font-semibold text-sm text-brandGold mb-1">Mappa Culturale Interattiva</h3>
+            <p class="text-xs text-gray-400 mb-4">Trova monumenti e musei verificati vicino a te per sbloccare i tuoi badge.</p>
+          </div>
+          <a href="mappa.html" class="block w-full text-center py-2.5 rounded-lg border border-brandBorder text-xs text-brandGold font-semibold hover:bg-brandGold/10 active:scale-95 transition">
+            Apri Mappa Completa
+          </a>
+        </div>
+
+        <!-- CARD SOCIAL MEETUP -->
+        <div class="glass-card rounded-xl p-4 flex flex-col justify-between">
+          <div>
+            <h3 class="font-semibold text-sm text-brandGold mb-1">Cultural Meetups</h3>
+            <p class="text-xs text-gray-400 mb-4">Partecipa a tour di gruppo o organizza uscite con la community di esploratori.</p>
+          </div>
+          <button onclick="alert('Sezione Social Meetup in arrivo!')" class="w-full py-2.5 rounded-lg border border-brandBorder text-xs text-brandGold font-semibold hover:bg-brandGold/10 active:scale-95 transition">
+            Sfoglia Eventi di Gruppo
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRASPARENZA & BUSINESS PLAN -->
+    <section class="glass-card rounded-xl p-4 border border-brandBorder/40">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="font-bold text-sm text-white">📄 Business Plan & Documentazione</h3>
+        <span class="text-[10px] bg-brandGold/20 text-brandGold px-2 py-0.5 rounded-full font-mono">v2.5 Official</span>
+      </div>
+      <p class="text-xs text-gray-400 mb-4">
+        Consulta la strategia istituzionale, il modello finanziario e il rispetto delle norme No-DM per la sicurezza.
+      </p>
+      <a href="https://drive.google.com/open?id=1cC232vsSLOV_K9H40pZho8kS0L_qHtYQKFGmDkmJOIg" target="_blank" class="block w-full text-center py-2.5 rounded-lg bg-brandGold/10 text-brandGold font-semibold text-xs border border-brandBorder active:scale-95 transition">
+        Sfoglia Documento PDF
+      </a>
+    </section>
+
   </main>
 
-  <!-- BOTTOM BAR FISSA MOBILE -->
-  <nav class="w-full bg-black/95 border-t border-brandBorder/30 backdrop-blur-lg px-6 py-2.5 flex justify-between items-center text-center z-50 shrink-0">
-    <a href="index.html" class="flex flex-col items-center text-gray-400 active:text-amber-400">
+  <!-- BOTTOM BAR FISSA PER NAVIGAZIONE -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-black/95 border-t border-brandBorder/30 backdrop-blur-lg px-6 py-2.5 flex justify-between items-center text-center z-50">
+    <a href="index.html" class="flex flex-col items-center text-brandGold">
       <span class="text-xl">🏠</span>
-      <span class="text-[10px] mt-0.5">Home</span>
+      <span class="text-[10px] mt-0.5 font-semibold">Home</span>
     </a>
-    <a href="mappa.html" class="flex flex-col items-center text-amber-400">
+    <a href="mappa.html" class="flex flex-col items-center text-gray-400 hover:text-brandGold transition">
       <span class="text-xl">🗺️</span>
-      <span class="text-[10px] mt-0.5 font-semibold">Mappa</span>
+      <span class="text-[10px] mt-0.5">Mappa</span>
     </a>
-    <a href="index.html" class="flex flex-col items-center text-gray-400 active:text-amber-400">
+    <a href="index.html" onclick="alert('Sezione Social in arrivo!'); return false;" class="flex flex-col items-center text-gray-400 hover:text-brandGold transition">
       <span class="text-xl">👥</span>
       <span class="text-[10px] mt-0.5">Social</span>
     </a>
-    <a href="index.html" class="flex flex-col items-center text-gray-400 active:text-amber-400">
+    <a href="index.html" onclick="alert('Sezione Token in arrivo!'); return false;" class="flex flex-col items-center text-gray-400 hover:text-brandGold transition">
       <span class="text-xl">🪙</span>
       <span class="text-[10px] mt-0.5">Token</span>
     </a>
   </nav>
 
   <script>
-    // Inizializzazione Telegram MiniApp
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
     }
-
-    let selectedSite = "Colosseo";
-
-    // Inizializzazione Mappa centrata sull'Italia
-    const map = L.map('map', {
-      zoomControl: false // Disabilitato zoom nativo per non ingombrare schermi piccoli
-    }).setView([41.9028, 12.4964], 6);
-
-    // Ripristino zoom in basso a destra
-    L.control.zoom({ position: 'topright' }).addTo(map);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap'
-    }).addTo(map);
-
-    // Lista Monumenti Testbed Italia
-    const sites = [
-      { name: "Colosseo", lat: 41.8902, lng: 12.4922, city: "Roma", reward: "+50 $MEETO" },
-      { name: "Duomo di Milano", lat: 45.4641, lng: 9.1919, city: "Milano", reward: "+50 $MEETO" },
-      { name: "Galleria degli Uffizi", lat: 43.7678, lng: 11.2553, city: "Firenze", reward: "+50 $MEETO" },
-      { name: "Scavi di Pompei", lat: 40.7489, lng: 14.4849, city: "Napoli", reward: "+50 $MEETO" },
-      { name: "Teatro Massimo", lat: 38.1203, lng: 13.3572, city: "Palermo", reward: "+50 $MEETO" }
-    ];
-
-    sites.forEach(site => {
-      const marker = L.marker([site.lat, site.lng]).addTo(map);
-      
-      marker.on('click', () => {
-        selectedSite = site.name;
-        document.getElementById('site-title').innerText = `🏛️ ${site.name}`;
-        document.getElementById('site-desc').innerText = `${site.city} • Ricompensa: ${site.reward}`;
-        
-        // Haptic feedback su Telegram se disponibile
-        if (window.Telegram?.WebApp?.HapticFeedback) {
-          window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-        }
-      });
-
-      marker.bindPopup(`
-        <div style="text-align: center; padding: 4px;">
-          <h4 style="font-weight: bold; font-size: 13px; color: #D4AF37;">🏛️ ${site.name}</h4>
-          <p style="font-size: 11px; color: #AAA; margin-top: 2px;">${site.city}</p>
-        </div>
-      `);
-    });
-
-    function triggerCheckIn() {
-      if (window.Telegram?.WebApp?.HapticFeedback) {
-        window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-      }
-      alert(`📍 Verifica GPS avviata per: ${selectedSite}\n\nAssicurati di essere entro 200 metri dal monumento per ricevere +50 $MEETO!`);
-    }
-
-    // Rilevamento Posizione GPS
-    function getUserLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-          const userLat = position.coords.latitude;
-          const userLng = position.coords.longitude;
-          map.setView([userLat, userLng], 15);
-          
-          L.circle([userLat, userLng], { 
-            radius: 150, 
-            color: '#D4AF37', 
-            fillColor: '#D4AF37', 
-            fillOpacity: 0.25 
-          }).addTo(map);
-          
-          document.getElementById('site-title').innerText = "📍 Tua Posizione";
-          document.getElementById('site-desc').innerText = "Rilevamento GPS completato";
-        }, () => {
-          alert("Attiva i permessi GPS sul tuo smartphone per trovare i monumenti vicino a te.");
-        });
-      } else {
-        alert("Geolocalizzazione non supportata.");
-      }
-    }
   </script>
-
 </body>
 </html>
