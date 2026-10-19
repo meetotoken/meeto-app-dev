@@ -9,38 +9,40 @@ if (tg) {
 // Stato Wallet Solana
 let walletAddress = null;
 
-// Gestione Connessione Wallet Phantom / Provider Injected
 document.addEventListener('DOMContentLoaded', () => {
   const connectBtn = document.getElementById('btn-connect-wallet');
 
   if (connectBtn) {
+    // Controllo preventivo se Phantom è già connesso in background
+    if (window.solana && window.solana.isConnected) {
+      window.solana.connect({ onlyIfTrusted: true }).then(resp => {
+        walletAddress = resp.publicKey.toString();
+        updateButtonState(connectBtn, walletAddress);
+      }).catch(() => {});
+    }
+
     connectBtn.addEventListener('click', async () => {
       try {
         const isPhantomInstalled = window.solana && window.solana.isPhantom;
 
         if (isPhantomInstalled) {
-          // Connessione diretta se il provider è presente
+          // Connessione diretta immediata
           const resp = await window.solana.connect();
           walletAddress = resp.publicKey.toString();
           
-          const shortAddress = `${walletAddress.substring(0, 4)}...${walletAddress.substring(walletAddress.length - 4)}`;
-          connectBtn.innerText = shortAddress;
-          connectBtn.className = "px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+          updateButtonState(connectBtn, walletAddress);
 
           if (tg && tg.HapticFeedback) {
             tg.HapticFeedback.notificationOccurred('success');
           }
         } else {
-          // Genera il link universale per Phantom
-          const currentUrl = encodeURIComponent(window.location.href);
-          const phantomUniversalLink = `https://phantom.com/ul/browse/${currentUrl}`;
+          // Reindirizzamento al browser di Phantom se non installato come estensione
+          const targetUrl = "https://phantom.app/ul/browse/" + encodeURIComponent(window.location.href);
 
-          // Se siamo in Telegram, usa tg.openLink per aprire l'app esterna correttamente
           if (tg && typeof tg.openLink === 'function') {
-            tg.openLink(phantomUniversalLink);
+            tg.openLink(targetUrl);
           } else {
-            // Fallback per browser standard
-            window.location.href = phantomUniversalLink;
+            window.location.href = targetUrl;
           }
         }
       } catch (err) {
@@ -52,3 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// Funzione di supporto per aggiornare la grafica del bottone
+function updateButtonState(btn, address) {
+  const shortAddress = `${address.substring(0, 4)}...${address.substring(address.length - 4)}`;
+  btn.innerText = shortAddress;
+  btn.className = "px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+}
