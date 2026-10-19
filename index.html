@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>$MEETO — Culture-Tech Protocol</title>
+  <!-- Tailwind CSS via CDN per sviluppo rapido -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Google Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0B0E14',
+            brandGold: '#D4AF37',
+            brandGoldHover: '#F3E5AB',
+            brandCard: 'rgba(255, 255, 255, 0.03)',
+            brandBorder: 'rgba(212, 175, 55, 0.2)',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0B0E14;
+      color: #E2E8F0;
+      font-family: 'Inter', sans-serif;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFF5C0 0%, #D4AF37 50%, #AA7C11 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-20 md:pb-0">
+
+  <!-- TOP BAR / HEADER -->
+  <header class="w-full border-b border-brandBorder/30 bg-brandDark/80 backdrop-blur-md sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center space-x-2">
+      <span class="text-2xl">🏛️</span>
+      <span class="font-bold text-xl tracking-wider gold-gradient-text">$MEETO</span>
+    </div>
+    <button class="px-4 py-1.5 rounded-full text-xs font-semibold bg-brandGold text-black hover:bg-brandGoldHover transition shadow-lg shadow-brandGold/10">
+      Connetti Wallet
+    </button>
+  </header>
+
+  <!-- CONTENUTO PRINCIPALE -->
+  <main class="max-w-4xl mx-auto w-full px-4 py-6 space-y-8">
+
+    <!-- HERO SECTION -->
+    <section class="glass-card rounded-2xl p-6 text-center relative overflow-hidden">
+      <div class="absolute -top-10 -right-10 w-32 h-32 bg-brandGold/10 rounded-full blur-3xl"></div>
+      <h1 class="text-3xl font-extrabold mb-2 gold-gradient-text">
+        Esplora la Storia. Guadagna $MEETO.
+      </h1>
+      <p class="text-xs text-gray-400 mb-6 max-w-lg mx-auto">
+        Il protocollo Culture-Tech su Solana che trasforma le tue visite nei luoghi d'interesse culturale in ricompense reali.
+      </p>
+      
+      <!-- CHECK-IN QUICK CARD -->
+      <div class="bg-black/40 border border-brandBorder/50 rounded-xl p-4 text-left flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <span class="text-[10px] uppercase tracking-widest text-brandGold font-semibold">Sito Più Vicino</span>
+          <h3 class="font-bold text-sm text-white">🏛️ Colosseo & Parco Archeologico</h3>
+          <p class="text-xs text-gray-400">Roma, Italia • Distanza: <span class="text-emerald-400">In zona</span></p>
+        </div>
+        <button onclick="alert('Rilevamento posizione GPS in corso...')" class="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-brandGold to-yellow-600 text-black hover:opacity-90 transition">
+          📍 Fai Check-In GPS (+50 XP)
+        </button>
+      </div>
+    </section>
+
+    <!-- METRICHE E TRASPARENZA -->
+    <section class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+      <div class="glass-card rounded-xl p-3">
+        <span class="text-[10px] text-gray-400 uppercase">Visite Verificate</span>
+        <div class="text-base font-bold text-white mt-1">1,240+</div>
+      </div>
+      <div class="glass-card rounded-xl p-3">
+        <span class="text-[10px] text-gray-400 uppercase">Prezzo $MEETO</span>
+        <div class="text-base font-bold text-brandGold mt-1">$0.0024</div>
+      </div>
+      <div class="glass-card rounded-xl p-3">
+        <span class="text-[10px] text-gray-400 uppercase">Heritage Fund</span>
+        <div class="text-base font-bold text-white mt-1">25% Allocated</div>
+      </div>
+      <div class="glass-card rounded-xl p-3">
+        <span class="text-[10px] text-gray-400 uppercase">Rete</span>
+        <div class="text-base font-bold text-purple-400 mt-1">Solana</div>
+      </div>
+    </section>
+
+    <!-- ANTEPRIMA SEZIONI APP -->
+    <section class="space-y-4">
+      <h2 class="text-lg font-bold text-white flex items-center gap-2">
+        <span>🗺️</span> Mappa & Prossimi Incontri
+      </h2>
+      
+      <div class="grid md:grid-cols-2 gap-4">
+        <!-- CARD MAPPA -->
+        <div class="glass-card rounded-xl p-4 flex flex-col justify-between">
+          <div>
+            <h3 class="font-semibold text-sm text-brandGold mb-1">Mappa Culturale Interattiva</h3>
+            <p class="text-xs text-gray-400 mb-4">Trova monumenti e musei verificati vicino a te per sbloccare i tuoi badge.</p>
+          </div>
+          <button class="w-full py-2 rounded-lg border border-brandBorder text-xs text-brandGold font-medium hover:bg-brandGold/10 transition">
+            Apri Mappa Completa
+          </button>
+        </div>
+
+        <!-- CARD SOCIAL MEETUP -->
+        <div class="glass-card rounded-xl p-4 flex flex-col justify-between">
+          <div>
+            <h3 class="font-semibold text-sm text-brandGold mb-1">Cultural Meetups</h3>
+            <p class="text-xs text-gray-400 mb-4">Partecipa a tour di gruppo o organizza uscite con la community di esploratori.</p>
+          </div>
+          <button class="w-full py-2 rounded-lg border border-brandBorder text-xs text-brandGold font-medium hover:bg-brandGold/10 transition">
+            Sfoglia Eventi di Gruppo
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEZIONE TRASPARENZA & BUSINESS PLAN -->
+    <section class="glass-card rounded-xl p-5 border border-brandBorder/40">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-bold text-sm text-white">📄 Business Plan & Documentazione</h3>
+        <span class="text-[10px] bg-brandGold/20 text-brandGold px-2 py-0.5 rounded-full font-mono">v2.5 Official</span>
+      </div>
+      <p class="text-xs text-gray-400 mb-4">
+        Consulta la strategia istituzionale, il modello finanziario e il rispetto delle norme No-DM per la sicurezza.
+      </p>
+      <div class="flex gap-3">
+        <a href="https://drive.google.com/open?id=1cC232vsSLOV_K9H40pZho8kS0L_qHtYQKFGmDkmJOIg" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-brandGold/10 text-brandGold font-medium text-xs border border-brandBorder hover:bg-brandGold/20 transition">
+          Sfoglia Documento PDF
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM BAR PER MOBILE (NAVIGAZIONE TELEGRAM) -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-black/90 border-t border-brandBorder/30 backdrop-blur-lg px-6 py-2 flex justify-between items-center text-center z-50">
+    <button class="flex flex-col items-center text-brandGold">
+      <span class="text-lg">🏠</span>
+      <span class="text-[10px] mt-0.5">Home</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-400 hover:text-brandGold transition">
+      <span class="text-lg">🗺️</span>
+      <span class="text-[10px] mt-0.5">Mappa</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-400 hover:text-brandGold transition">
+      <span class="text-lg">👥</span>
+      <span class="text-[10px] mt-0.5">Social</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-400 hover:text-brandGold transition">
+      <span class="text-lg">🪙</span>
+      <span class="text-[10px] mt-0.5">Token</span>
+    </button>
+  </nav>
+
+</body>
+</html>
