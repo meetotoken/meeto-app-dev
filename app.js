@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const isPhantomInstalled = window.solana && window.solana.isPhantom;
 
         if (isPhantomInstalled) {
-          // Connessione diretta se il provider è presente (es. dentro Phantom Browser)
+          // Connessione diretta se il provider è presente
           const resp = await window.solana.connect();
           walletAddress = resp.publicKey.toString();
           
@@ -31,16 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
             tg.HapticFeedback.notificationOccurred('success');
           }
         } else {
-          // URL di destinazione per Phantom In-App Browser
+          // Genera il link universale per Phantom
           const currentUrl = encodeURIComponent(window.location.href);
-          const phantomDeepLink = `https://phantom.app/ul/browse/${currentUrl}`;
+          const phantomUniversalLink = `https://phantom.com/ul/browse/${currentUrl}`;
 
-          // Se siamo dentro la WebApp di Telegram, usiamo tg.openLink() per evitare ERR_UNKNOWN_URL_SCHEME
-          if (tg && tg.openLink) {
-            tg.openLink(phantomDeepLink);
+          // Se siamo in Telegram, usa tg.openLink per aprire l'app esterna correttamente
+          if (tg && typeof tg.openLink === 'function') {
+            tg.openLink(phantomUniversalLink);
           } else {
-            // Se siamo in un browser standard (Chrome, Safari, ecc.)
-            window.location.href = phantomDeepLink;
+            // Fallback per browser standard
+            window.location.href = phantomUniversalLink;
           }
         }
       } catch (err) {
