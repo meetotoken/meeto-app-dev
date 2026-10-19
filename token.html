@@ -10,7 +10,7 @@
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Chart.js per grafico dinamico leggero -->
+  <!-- Chart.js per grafico dinamico -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   
@@ -223,7 +223,7 @@
       <span class="text-xl">🗺️</span>
       <span class="text-[10px] mt-0.5">Mappa</span>
     </a>
-    <a href="index.html" onclick="alert('Sezione Social in arrivo!'); return false;" class="flex flex-col items-center text-gray-400 active:text-brandGold">
+    <a href="social.html" class="flex flex-col items-center text-gray-400 active:text-brandGold">
       <span class="text-xl">👥</span>
       <span class="text-[10px] mt-0.5">Social</span>
     </a>
@@ -239,7 +239,6 @@
       window.Telegram.WebApp.expand();
     }
 
-    // Inizializzazione Grafico Chart.js
     const ctx = document.getElementById('priceChart').getContext('2d');
     const gradient = ctx.createLinearGradient(0, 0, 0, 160);
     gradient.addColorStop(0, 'rgba(212, 175, 55, 0.4)');
@@ -272,14 +271,12 @@
       }
     });
 
-    // Calcolatore Swap
     function calculateSwap() {
       const sol = document.getElementById('solInput').value;
-      const rate = 62500; // 1 SOL = 62,500 MEETO
+      const rate = 62500;
       document.getElementById('meetoOutput').value = (sol * rate).toLocaleString();
     }
 
-    // Calcolatore Staking
     function updateCalculator(val) {
       document.getElementById('visitCount').innerText = `${val} Musei`;
       const earned = val * 50;
