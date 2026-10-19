@@ -1,40 +1,45 @@
 // Inizializzazione Telegram WebApp SDK
 const tg = window.Telegram.WebApp;
 
-// Segnala a Telegram che l'app è pronta e la espande a schermo intero
-tg.ready();
-tg.expand();
-
-// Recupera informazioni dall'utente Telegram
-const user = tg.initDataUnsafe?.user;
-if (user) {
-  document.getElementById('user-welcome').innerText = `Benvenuto, ${user.first_name}!`;
-  document.getElementById('telegram-id').innerText = `ID: @${user.username || user.id}`;
+if (tg) {
+  tg.ready();
+  tg.expand();
 }
 
 // Stato Wallet Solana
 let walletAddress = null;
 
-// Gestione Connessione Wallet (Esempio per Phantom / Injected Providers)
-document.getElementById('btn-connect-wallet').addEventListener('click', async () => {
-  try {
-    const isPhantomInstalled = window.solana && window.solana.isPhantom;
+const connectBtn = document.getElementById('btn-connect-wallet');
 
-    if (isPhantomInstalled) {
-      const resp = await window.solana.connect();
-      walletAddress = resp.publicKey.toString();
-      
-      document.getElementById('wallet-address').innerText = `Wallet: ${walletAddress.substring(0, 4)}...${walletAddress.substring(walletAddress.length - 4)}`;
-      document.getElementById('btn-checkin').disabled = false;
-      
-      // Feedback Aptico Nativo Telegram (Vibrazione)
-      if (tg.HapticFeedback) {
-        tg.HapticFeedback.notificationOccurred('success');
+if (connectBtn) {
+  connectBtn.addEventListener('click', async () => {
+    try {
+      const isPhantomInstalled = window.solana && window.solana.isPhantom;
+
+      if (isPhantomInstalled) {
+        // Connessione diretta se il provider è presente (es. dentro Phantom Browser)
+        const resp = await window.solana.connect();
+        walletAddress = resp.publicKey.toString();
+        
+        const shortAddress = `${walletAddress.substring(0, 4)}...${walletAddress.substring(walletAddress.length - 4)}`;
+        connectBtn.innerText = shortAddress;
+        connectBtn.className = "px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+
+        if (tg && tg.HapticFeedback) {
+          tg.HapticFeedback.notificationOccurred('success');
+        }
+      } else {
+        // Se si trova in Chrome o dentro Telegram senza provider, reindirizza al Deep Link Phantom
+        const appUrl = encodeURIComponent(window.location.href);
+        const phantomDeepLink = `https://phantom.app/ul/browse/${appUrl}?ref=${encodeURIComponent(window.location.origin)}`;
+        
+        window.location.href = phantomDeepLink;
       }
-    } else {
-      alert(" Wallet Phantom non rilevato! Apri la WebApp dal browser di Phantom o installa l'estensione.");
+    } catch (err) {
+      console.error("Errore di connessione wallet:", err);
+      if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.notificationOccurred('error');
+      }
     }
-  } catch (err) {
-    console.error("Errore di connessione wallet:", err);
-  }
-});
+  });
+}
