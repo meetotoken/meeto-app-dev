@@ -31,11 +31,17 @@ document.addEventListener('DOMContentLoaded', () => {
             tg.HapticFeedback.notificationOccurred('success');
           }
         } else {
-          // Reindirizzamento automatico a Phantom App tramite Deep Link
+          // URL di destinazione per Phantom In-App Browser
           const currentUrl = encodeURIComponent(window.location.href);
           const phantomDeepLink = `https://phantom.app/ul/browse/${currentUrl}`;
-          
-          window.location.href = phantomDeepLink;
+
+          // Se siamo dentro la WebApp di Telegram, usiamo tg.openLink() per evitare ERR_UNKNOWN_URL_SCHEME
+          if (tg && tg.openLink) {
+            tg.openLink(phantomDeepLink);
+          } else {
+            // Se siamo in un browser standard (Chrome, Safari, ecc.)
+            window.location.href = phantomDeepLink;
+          }
         }
       } catch (err) {
         console.error("Errore di connessione wallet:", err);
