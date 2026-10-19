@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="it" class="h-full w-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>$MEETO — Tokenomics & Swap</title>
+  
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandDark: '#0B0E14',
+            brandGold: '#D4AF37',
+            brandGoldHover: '#F3E5AB',
+            brandBorder: 'rgba(212, 175, 55, 0.2)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { -webkit-tap-highlight-color: transparent; }
+    body {
+      background-color: #0B0E14;
+      color: #E2E8F0;
+      font-family: 'Inter', sans-serif;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFF5C0 0%, #D4AF37 50%, #AA7C11 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-24">
+
+  <!-- HEADER -->
+  <header class="w-full border-b border-brandBorder/30 bg-black/80 backdrop-blur-md sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
+    <a href="index.html" class="flex items-center space-x-2">
+      <span class="text-xl">🪙</span>
+      <span class="font-bold text-lg tracking-wider gold-gradient-text">$MEETO Token</span>
+    </a>
+    <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+      Solana Mainnet
+    </span>
+  </header>
+
+  <!-- CONTENUTO PRINCIPALE -->
+  <main class="max-w-4xl mx-auto w-full px-4 py-6 space-y-6">
+
+    <!-- PREZZO E METRICHE LIVE -->
+    <section class="glass-card rounded-2xl p-5 border border-brandBorder/40">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <span class="text-[10px] text-gray-400 uppercase tracking-widest font-mono">Prezzo Attuale</span>
+          <div class="text-3xl font-extrabold gold-gradient-text">$0.00245</div>
+          <span class="text-xs text-emerald-400 font-semibold">▲ +12.4% (24h)</span>
+        </div>
+        <button onclick="alert('Indirizzo Token Solana copiato negli appunti!')" class="px-3 py-1.5 rounded-lg text-[11px] font-mono bg-black/60 border border-brandBorder text-brandGold hover:bg-brandGold/10 transition">
+          📋 Copia CA
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 pt-3 border-t border-brandBorder/20 text-xs">
+        <div>
+          <span class="text-gray-400">Market Cap:</span>
+          <p class="font-bold text-white">$2,450,000</p>
+        </div>
+        <div>
+          <span class="text-gray-400">Liquidità Bloccata:</span>
+          <p class="font-bold text-emerald-400">100% (Locked)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WIDGET SWAP (ACQUISTO DIRETTO) -->
+    <section class="glass-card rounded-2xl p-5">
+      <h2 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+        <span>⚡</span> Swap Rapido ($MEETO)
+      </h2>
+      
+      <div class="space-y-3">
+        <!-- PAGO -->
+        <div class="bg-black/50 border border-brandBorder/40 rounded-xl p-3 flex justify-between items-center">
+          <div>
+            <span class="text-[10px] text-gray-400 uppercase">Tu Paghi</span>
+            <input type="number" value="1.0" class="bg-transparent text-lg font-bold text-white w-24 outline-none block" />
+          </div>
+          <span class="px-3 py-1 bg-purple-900/40 text-purple-300 rounded-lg text-xs font-bold border border-purple-500/30">
+            SOL
+          </span>
+        </div>
+
+        <div class="text-center text-brandGold text-sm">↓</div>
+
+        <!-- RICEVO -->
+        <div class="bg-black/50 border border-brandBorder/40 rounded-xl p-3 flex justify-between items-center">
+          <div>
+            <span class="text-[10px] text-gray-400 uppercase">Tu Ricevi (Stima)</span>
+            <input type="number" value="62500" readonly class="bg-transparent text-lg font-bold text-brandGold w-32 outline-none block" />
+          </div>
+          <span class="px-3 py-1 bg-brandGold/20 text-brandGold rounded-lg text-xs font-bold border border-brandBorder">
+            $MEETO
+          </span>
+        </div>
+
+        <button onclick="alert('Connetti il tuo Wallet Solana per completare lo Swap!')" class="w-full py-3 rounded-xl font-bold text-xs bg-gradient-to-r from-brandGold to-yellow-600 text-black active:scale-95 transition shadow-lg shadow-brandGold/10 mt-2">
+          Connetti Wallet per Acquistare
+        </button>
+      </div>
+    </section>
+
+    <!-- DISTRIBUZIONE TOKENOMICS -->
+    <section class="glass-card rounded-2xl p-5 space-y-4">
+      <h2 class="text-base font-bold text-white flex items-center gap-2">
+        <span>📊</span> Distribuzione Ufficiale (Tokenomics)
+      </h2>
+
+      <!-- BARRA VISIVA -->
+      <div class="w-full h-4 bg-black/60 rounded-full overflow-hidden flex border border-brandBorder/30">
+        <div class="h-full bg-amber-400" style="width: 45%" title="Community & Rewards 45%"></div>
+        <div class="h-full bg-emerald-500" style="width: 25%" title="Heritage Fund 25%"></div>
+        <div class="h-full bg-blue-500" style="width: 20%" title="Core Development 20%"></div>
+        <div class="h-full bg-purple-500" style="width: 10%" title="Liquidity 10%"></div>
+      </div>
+
+      <!-- LEGENDA DETTAGLIATA -->
+      <div class="grid grid-cols-2 gap-3 text-xs pt-2">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-amber-400 shrink-0"></span>
+          <div>
+            <p class="font-semibold text-white">45% Community</p>
+            <p class="text-[10px] text-gray-400">Visit-to-Earn Rewards</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-emerald-500 shrink-0"></span>
+          <div>
+            <p class="font-semibold text-white">25% Heritage Fund</p>
+            <p class="text-[10px] text-gray-400">Restauro & Musei</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-blue-500 shrink-0"></span>
+          <div>
+            <p class="font-semibold text-white">20% Core Dev</p>
+            <p class="text-[10px] text-gray-400">Sviluppo Protocollo</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-purple-500 shrink-0"></span>
+          <div>
+            <p class="font-semibold text-white">10% Liquidità</p>
+            <p class="text-[10px] text-gray-400">DEX & Operatività</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM BAR NAVIGAZIONE -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-black/95 border-t border-brandBorder/30 backdrop-blur-lg px-6 py-2.5 flex justify-between items-center text-center z-50">
+    <a href="index.html" class="flex flex-col items-center text-gray-400 active:text-brandGold">
+      <span class="text-xl">🏠</span>
+      <span class="text-[10px] mt-0.5">Home</span>
+    </a>
+    <a href="mappa.html" class="flex flex-col items-center text-gray-400 active:text-brandGold">
+      <span class="text-xl">🗺️</span>
+      <span class="text-[10px] mt-0.5">Mappa</span>
+    </a>
+    <a href="index.html" onclick="alert('Sezione Social in arrivo!'); return false;" class="flex flex-col items-center text-gray-400 active:text-brandGold">
+      <span class="text-xl">👥</span>
+      <span class="text-[10px] mt-0.5">Social</span>
+    </a>
+    <a href="token.html" class="flex flex-col items-center text-brandGold">
+      <span class="text-xl">🪙</span>
+      <span class="text-[10px] mt-0.5 font-semibold">Token</span>
+    </a>
+  </nav>
+
+  <script>
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+    }
+  </script>
+</body>
+</html>
