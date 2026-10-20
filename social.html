@@ -54,21 +54,32 @@
       <span class="text-xl">👥</span>
       <span class="font-bold text-lg tracking-wider gold-gradient-text">$MEETO Social</span>
     </a>
-    <a href="https://t.me/MeetoOfficial" target="_blank" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-brandGold text-black active:scale-95 transition shadow-lg shadow-brandGold/10 flex items-center gap-1">
+    <button onclick="apriRichiestaCreatore()" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-brandGold text-black active:scale-95 transition shadow-lg shadow-brandGold/10">
       + Crea Evento
-    </a>
+    </button>
   </header>
 
   <!-- CONTENUTO PRINCIPALE -->
   <main class="max-w-4xl mx-auto w-full px-4 py-6 space-y-6">
 
-    <!-- PROSSIMI MEETUP CULTURALI -->
+    <!-- ACCESSO COMMUNITY GENERALE -->
+    <div class="glass-card rounded-2xl p-4 border border-brandBorder/40 flex items-center justify-between bg-gradient-to-r from-brandGold/10 to-transparent">
+      <div class="space-y-0.5">
+        <h3 class="font-bold text-sm text-white flex items-center gap-1.5">💬 Community Ufficiale</h3>
+        <p class="text-[11px] text-gray-400">Unisciti al gruppo per chattare con gli esploratori.</p>
+      </div>
+      <a href="https://t.me/MeetoCommunity" target="_blank" class="px-3 py-2 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 shrink-0">
+        Entra in Chat
+      </a>
+    </div>
+
+    <!-- PROSSIMI MEETUP CULTURALI (ORGANIZZATI DA CREATORI/GUIDE) -->
     <section class="space-y-3">
       <div class="flex justify-between items-center">
         <h2 class="text-base font-bold text-white flex items-center gap-2">
-          <span>📅</span> Prossimi Meetup
+          <span>📅</span> Eventi & Meetup Culturali
         </h2>
-        <span class="text-xs text-brandGold font-semibold">Community</span>
+        <span class="text-xs text-brandGold font-semibold">Creator & Guide Verificate</span>
       </div>
 
       <!-- CARD EVENTO 1 -->
@@ -77,18 +88,18 @@
           <div>
             <span class="text-[10px] font-mono text-brandGold uppercase tracking-wider font-semibold">Sabato • Ore 15:30</span>
             <h3 class="font-bold text-sm text-white mt-0.5">🏛️ Tour Archeologico al Colosseo</h3>
-            <p class="text-xs text-gray-400">Roma • Guida: <span class="text-white font-medium">@Marco_Web3</span></p>
+            <p class="text-xs text-gray-400">Roma • Guida Creator: <span class="text-white font-medium">@Marco_Web3</span></p>
           </div>
           <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
             8/12 Posti
           </span>
         </div>
         <p class="text-xs text-gray-300 bg-black/40 p-2.5 rounded-xl border border-brandBorder/20">
-          Incontro all'ingresso principale per visita guidata e check-in di gruppo GPS (+100 Bonus XP).
+          Incontro all'ingresso principale per visita guidata ufficiale e check-in di gruppo GPS (+100 Bonus XP).
         </p>
-        <a href="https://t.me/MeetoCommunity" target="_blank" class="block w-full text-center py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-brandGold to-yellow-600 text-black active:scale-95 transition shadow-md">
-          Unisciti al Gruppo
-        </a>
+        <button onclick="prenotaEvento('Tour Colosseo')" class="w-full py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-brandGold to-yellow-600 text-black active:scale-95 transition shadow-md">
+          Partecipa all'Evento
+        </button>
       </div>
 
       <!-- CARD EVENTO 2 -->
@@ -97,15 +108,15 @@
           <div>
             <span class="text-[10px] font-mono text-brandGold uppercase tracking-wider font-semibold">Domenica • Ore 11:00</span>
             <h3 class="font-bold text-sm text-white mt-0.5">🎨 Passeggiata Fotografica Uffizi</h3>
-            <p class="text-xs text-gray-400">Firenze • Guida: <span class="text-white font-medium">@Elena_Art</span></p>
+            <p class="text-xs text-gray-400">Firenze • Guida Creator: <span class="text-white font-medium">@Elena_Art</span></p>
           </div>
           <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
             5/10 Posti
           </span>
         </div>
-        <a href="https://t.me/MeetoCommunity" target="_blank" class="block w-full text-center py-2 rounded-xl text-xs font-bold border border-brandBorder text-brandGold hover:bg-brandGold/10 active:scale-95 transition">
-          Unisciti al Gruppo
-        </a>
+        <button onclick="prenotaEvento('Passeggiata Uffizi')" class="w-full py-2 rounded-xl text-xs font-bold border border-brandBorder text-brandGold hover:bg-brandGold/10 active:scale-95 transition">
+          Partecipa all'Evento
+        </button>
       </div>
     </section>
 
@@ -179,11 +190,21 @@
     </a>
   </nav>
 
-  <!-- SCRIPT DI INIZIALIZZAZIONE -->
+  <!-- SCRIPT LOGICA -->
   <script>
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
+    }
+
+    function apriRichiestaCreatore() {
+      const msg = encodeURIComponent("🏛️ Ciao! Vorrei candidarmi come Creator/Guida per organizzare un Meetup culturale ufficiale su $MEETO.");
+      window.open(`https://t.me/MeetoOfficialBot?text=${msg}`, '_blank');
+    }
+
+    function prenotaEvento(nomeEvento) {
+      const msg = encodeURIComponent(`🎟️ Ciao! Vorrei registrarmi e confermare la partecipazione all'evento: "${nomeEvento}".`);
+      window.open(`https://t.me/MeetoOfficialBot?text=${msg}`, '_blank');
     }
   </script>
 </body>
