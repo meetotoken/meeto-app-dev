@@ -54,9 +54,9 @@
       <span class="text-xl">👥</span>
       <span class="font-bold text-lg tracking-wider gold-gradient-text">$MEETO Social</span>
     </a>
-    <button onclick="alert('Funzionalità Crea Meetup in arrivo!')" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-brandGold text-black active:scale-95 transition shadow-lg shadow-brandGold/10">
+    <a href="https://t.me/MeetoOfficial" target="_blank" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-brandGold text-black active:scale-95 transition shadow-lg shadow-brandGold/10 flex items-center gap-1">
       + Crea Evento
-    </button>
+    </a>
   </header>
 
   <!-- CONTENUTO PRINCIPALE -->
@@ -68,14 +68,14 @@
         <h2 class="text-base font-bold text-white flex items-center gap-2">
           <span>📅</span> Prossimi Meetup
         </h2>
-        <span class="text-xs text-brandGold font-semibold">Vedi Tutti</span>
+        <span class="text-xs text-brandGold font-semibold">Community</span>
       </div>
 
       <!-- CARD EVENTO 1 -->
       <div class="glass-card rounded-2xl p-4 space-y-3 border border-brandBorder/40">
         <div class="flex justify-between items-start">
           <div>
-            <span class="text-[10px] font-mono text-brandGold uppercase tracking-wider font-semibold">Sabato 24 Ottobre • Ore 15:30</span>
+            <span class="text-[10px] font-mono text-brandGold uppercase tracking-wider font-semibold">Sabato • Ore 15:30</span>
             <h3 class="font-bold text-sm text-white mt-0.5">🏛️ Tour Archeologico al Colosseo</h3>
             <p class="text-xs text-gray-400">Roma • Guida: <span class="text-white font-medium">@Marco_Web3</span></p>
           </div>
@@ -86,26 +86,26 @@
         <p class="text-xs text-gray-300 bg-black/40 p-2.5 rounded-xl border border-brandBorder/20">
           Incontro all'ingresso principale per visita guidata e check-in di gruppo GPS (+100 Bonus XP).
         </p>
-        <button onclick="alert('Iscrizione al Meetup confermata!')" class="w-full py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-brandGold to-yellow-600 text-black active:scale-95 transition shadow-md">
+        <a href="https://t.me/MeetoCommunity" target="_blank" class="block w-full text-center py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-brandGold to-yellow-600 text-black active:scale-95 transition shadow-md">
           Unisciti al Gruppo
-        </button>
+        </a>
       </div>
 
       <!-- CARD EVENTO 2 -->
       <div class="glass-card rounded-2xl p-4 space-y-3 border border-brandBorder/40">
         <div class="flex justify-between items-start">
           <div>
-            <span class="text-[10px] font-mono text-brandGold uppercase tracking-wider font-semibold">Domenica 25 Ottobre • Ore 11:00</span>
-            <h3 class="font-bold text-sm text-white mt-0.5">🎨 Passeggiata Fotograficaagli Uffizi</h3>
+            <span class="text-[10px] font-mono text-brandGold uppercase tracking-wider font-semibold">Domenica • Ore 11:00</span>
+            <h3 class="font-bold text-sm text-white mt-0.5">🎨 Passeggiata Fotografica Uffizi</h3>
             <p class="text-xs text-gray-400">Firenze • Guida: <span class="text-white font-medium">@Elena_Art</span></p>
           </div>
           <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
             5/10 Posti
           </span>
         </div>
-        <button onclick="alert('Iscrizione al Meetup confermata!')" class="w-full py-2 rounded-xl text-xs font-bold border border-brandBorder text-brandGold hover:bg-brandGold/10 active:scale-95 transition">
+        <a href="https://t.me/MeetoCommunity" target="_blank" class="block w-full text-center py-2 rounded-xl text-xs font-bold border border-brandBorder text-brandGold hover:bg-brandGold/10 active:scale-95 transition">
           Unisciti al Gruppo
-        </button>
+        </a>
       </div>
     </section>
 
@@ -179,6 +179,7 @@
     </a>
   </nav>
 
+  <!-- SCRIPT DI INIZIALIZZAZIONE -->
   <script>
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
