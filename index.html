@@ -5,13 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>$MEETO — Culture-Tech Protocol</title>
   
-  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  
-  <!-- Solana Web3.js -->
   <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
-
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   
@@ -26,36 +21,20 @@
             brandCard: 'rgba(255, 255, 255, 0.03)',
             brandBorder: 'rgba(212, 175, 55, 0.2)',
           },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          }
+          fontFamily: { sans: ['Inter', 'sans-serif'] }
         }
       }
     }
   </script>
   <style>
     * { -webkit-tap-highlight-color: transparent; }
-    body {
-      background-color: #0B0E14;
-      color: #E2E8F0;
-      font-family: 'Inter', sans-serif;
-    }
-    .glass-card {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(212, 175, 55, 0.2);
-    }
-    .gold-gradient-text {
-      background: linear-gradient(135deg, #FFF5C0 0%, #D4AF37 50%, #AA7C11 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+    body { background-color: #0B0E14; color: #E2E8F0; font-family: 'Inter', sans-serif; }
+    .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.2); }
+    .gold-gradient-text { background: linear-gradient(135deg, #FFF5C0 0%, #D4AF37 50%, #AA7C11 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-24">
 
-  <!-- TOP BAR / HEADER -->
   <header class="w-full border-b border-brandBorder/30 bg-black/80 backdrop-blur-md sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
     <div class="flex items-center space-x-2">
       <span class="text-xl">🏛️</span>
@@ -66,10 +45,7 @@
     </button>
   </header>
 
-  <!-- CONTENUTO PRINCIPALE -->
   <main class="max-w-4xl mx-auto w-full px-4 py-6 space-y-6">
-
-    <!-- HERO SECTION -->
     <section class="glass-card rounded-2xl p-5 text-center relative overflow-hidden">
       <div class="absolute -top-10 -right-10 w-32 h-32 bg-brandGold/10 rounded-full blur-3xl"></div>
       <h1 class="text-2xl sm:text-3xl font-extrabold mb-2 gold-gradient-text">
@@ -79,12 +55,11 @@
         Il protocollo Culture-Tech su Solana che trasforma le tue visite nei luoghi d'interesse culturale in ricompense reali.
       </p>
       
-      <!-- CHECK-IN QUICK CARD DINAMICA CON WIKIPEDIA -->
       <div class="bg-black/50 border border-brandBorder/50 rounded-xl p-4 text-left flex flex-col space-y-3">
         <div class="flex items-center justify-between">
           <div>
             <span class="text-[10px] uppercase tracking-widest text-brandGold font-semibold">Sito Attivo</span>
-            <h3 id="active-site-name" class="font-bold text-sm text-white">🏛️ Caricamento in corso...</h3>
+            <h3 id="active-site-name" class="font-bold text-sm text-white">🏛️ Caricamento...</h3>
             <p id="active-site-city" class="text-xs text-gray-400">Seleziona dalla mappa</p>
           </div>
           <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-brandGold/20 text-brandGold border border-brandBorder">
@@ -92,118 +67,54 @@
           </span>
         </div>
 
-        <!-- DESCRIZIONE STORICA DINAMICA -->
         <p id="active-site-desc" class="text-xs text-gray-300 line-clamp-2 leading-relaxed">
-          Seleziona un monumento o una città dalla mappa interattiva per visualizzare i dettagli storici.
+          Seleziona un monumento dalla mappa interattiva.
         </p>
 
         <div class="flex items-center gap-2 pt-1">
-          <!-- LINK WIKIPEDIA DINAMICO -->
           <a id="active-site-wiki" href="https://it.wikipedia.org" target="_blank" class="flex-1 text-center py-2.5 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 active:scale-95 transition flex items-center justify-center gap-1">
             📖 Wikipedia
           </a>
-          
-          <!-- TASTO CHECK-IN GPS -->
           <button id="btn-checkin" class="flex-1 text-center py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-brandGold to-yellow-600 text-black active:scale-95 transition shadow-md">
             📍 Check-In GPS
           </button>
         </div>
 
-        <!-- MESSAGGIO DI STATO GPS -->
         <div id="checkin-status" class="text-xs text-gray-400 text-center font-medium">
           Clicca per verificare la tua posizione sul posto
         </div>
       </div>
     </section>
 
-    <!-- METRICHE -->
     <section class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-      <div class="glass-card rounded-xl p-3">
-        <span class="text-[10px] text-gray-400 uppercase">Visite Verificate</span>
-        <div class="text-base font-bold text-white mt-1">1,240+</div>
-      </div>
-      <div class="glass-card rounded-xl p-3">
-        <span class="text-[10px] text-gray-400 uppercase">Prezzo $MEETO</span>
-        <div class="text-base font-bold text-brandGold mt-1">$0.0024</div>
-      </div>
-      <div class="glass-card rounded-xl p-3">
-        <span class="text-[10px] text-gray-400 uppercase">Heritage Fund</span>
-        <div class="text-base font-bold text-white mt-1">25% Allocated</div>
-      </div>
-      <div class="glass-card rounded-xl p-3">
-        <span class="text-[10px] text-gray-400 uppercase">Rete</span>
-        <div class="text-base font-bold text-purple-400 mt-1">Solana</div>
-      </div>
+      <div class="glass-card rounded-xl p-3"><span class="text-[10px] text-gray-400 uppercase">Visite Verificate</span><div class="text-base font-bold text-white mt-1">1,240+</div></div>
+      <div class="glass-card rounded-xl p-3"><span class="text-[10px] text-gray-400 uppercase">Prezzo $MEETO</span><div class="text-base font-bold text-brandGold mt-1">$0.0024</div></div>
+      <div class="glass-card rounded-xl p-3"><span class="text-[10px] text-gray-400 uppercase">Heritage Fund</span><div class="text-base font-bold text-white mt-1">25% Allocated</div></div>
+      <div class="glass-card rounded-xl p-3"><span class="text-[10px] text-gray-400 uppercase">Rete</span><div class="text-base font-bold text-purple-400 mt-1">Solana</div></div>
     </section>
 
-    <!-- SEZIONI APP -->
     <section class="space-y-4">
-      <h2 class="text-base font-bold text-white flex items-center gap-2">
-        <span>🗺️</span> Mappa & Prossimi Incontri
-      </h2>
-      
+      <h2 class="text-base font-bold text-white flex items-center gap-2"><span>🗺️</span> Mappa & Prossimi Incontri</h2>
       <div class="grid md:grid-cols-2 gap-4">
-        <!-- CARD MAPPA -->
         <div class="glass-card rounded-xl p-4 flex flex-col justify-between">
-          <div>
-            <h3 class="font-semibold text-sm text-brandGold mb-1">Mappa Culturale Interattiva</h3>
-            <p class="text-xs text-gray-400 mb-4">Trova monumenti e musei verificati vicino a te per sbloccare i tuoi badge.</p>
-          </div>
-          <a href="mappa.html" class="block w-full text-center py-2.5 rounded-lg border border-brandBorder text-xs text-brandGold font-semibold hover:bg-brandGold/10 active:scale-95 transition">
-            Apri Mappa Completa
-          </a>
+          <div><h3 class="font-semibold text-sm text-brandGold mb-1">Mappa Culturale Interattiva</h3><p class="text-xs text-gray-400 mb-4">Trova monumenti e musei verificati vicino a te.</p></div>
+          <a href="mappa.html" class="block w-full text-center py-2.5 rounded-lg border border-brandBorder text-xs text-brandGold font-semibold hover:bg-brandGold/10 active:scale-95 transition">Apri Mappa Completa</a>
         </div>
-
-        <!-- CARD SOCIAL MEETUP -->
         <div class="glass-card rounded-xl p-4 flex flex-col justify-between">
-          <div>
-            <h3 class="font-semibold text-sm text-brandGold mb-1">Cultural Meetups</h3>
-            <p class="text-xs text-gray-400 mb-4">Partecipa a tour di gruppo o organizza uscite con la community di esploratori.</p>
-          </div>
-          <a href="social.html" class="block w-full text-center py-2.5 rounded-lg border border-brandBorder text-xs text-brandGold font-semibold hover:bg-brandGold/10 active:scale-95 transition">
-            Sfoglia Eventi di Gruppo
-          </a>
+          <div><h3 class="font-semibold text-sm text-brandGold mb-1">Cultural Meetups</h3><p class="text-xs text-gray-400 mb-4">Partecipa a tour di gruppo o organizza uscite.</p></div>
+          <a href="social.html" class="block w-full text-center py-2.5 rounded-lg border border-brandBorder text-xs text-brandGold font-semibold hover:bg-brandGold/10 active:scale-95 transition">Sfoglia Eventi di Gruppo</a>
         </div>
       </div>
     </section>
-
-    <!-- TRASPARENZA & BUSINESS PLAN -->
-    <section class="glass-card rounded-xl p-4 border border-brandBorder/40">
-      <div class="flex items-center justify-between mb-2">
-        <h3 class="font-bold text-sm text-white">📄 Business Plan & Documentazione</h3>
-        <span class="text-[10px] bg-brandGold/20 text-brandGold px-2 py-0.5 rounded-full font-mono">v2.5 Official</span>
-      </div>
-      <p class="text-xs text-gray-400 mb-4">
-        Consulta la strategia istituzionale, il modello finanziario e il rispetto delle norme No-DM per la sicurezza.
-      </p>
-      <a href="https://drive.google.com/open?id=1cC232vsSLOV_K9H40pZho8kS0L_qHtYQKFGmDkmJOIg" target="_blank" class="block w-full text-center py-2.5 rounded-lg bg-brandGold/10 text-brandGold font-semibold text-xs border border-brandBorder active:scale-95 transition">
-        Sfoglia Documento PDF
-      </a>
-    </section>
-
   </main>
 
-  <!-- BOTTOM BAR FISSA PER NAVIGAZIONE -->
   <nav class="fixed bottom-0 left-0 right-0 bg-black/95 border-t border-brandBorder/30 backdrop-blur-lg px-6 py-2.5 flex justify-between items-center text-center z-50">
-    <a href="index.html" class="flex flex-col items-center text-brandGold">
-      <span class="text-xl">🏠</span>
-      <span class="text-[10px] mt-0.5 font-semibold">Home</span>
-    </a>
-    <a href="mappa.html" class="flex flex-col items-center text-gray-400 hover:text-brandGold transition">
-      <span class="text-xl">🗺️</span>
-      <span class="text-[10px] mt-0.5">Mappa</span>
-    </a>
-    <a href="social.html" class="flex flex-col items-center text-gray-400 hover:text-brandGold transition">
-      <span class="text-xl">👥</span>
-      <span class="text-[10px] mt-0.5">Social</span>
-    </a>
-    <a href="token.html" class="flex flex-col items-center text-gray-400 hover:text-brandGold transition">
-      <span class="text-xl">🪙</span>
-      <span class="text-[10px] mt-0.5">Token</span>
-    </a>
+    <a href="index.html" class="flex flex-col items-center text-brandGold"><span class="text-xl">🏠</span><span class="text-[10px] mt-0.5 font-semibold">Home</span></a>
+    <a href="mappa.html" class="flex flex-col items-center text-gray-400 hover:text-brandGold transition"><span class="text-xl">🗺️</span><span class="text-[10px] mt-0.5">Mappa</span></a>
+    <a href="social.html" class="flex flex-col items-center text-gray-400 hover:text-brandGold transition"><span class="text-xl">👥</span><span class="text-[10px] mt-0.5">Social</span></a>
+    <a href="token.html" class="flex flex-col items-center text-gray-400 hover:text-brandGold transition"><span class="text-xl">🪙</span><span class="text-[10px] mt-0.5">Token</span></a>
   </nav>
 
-  <!-- Script di logica Solana & Wallet & Check-in GPS -->
   <script src="app.js"></script>
 </body>
 </html>
