@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html lang="it" class="h-full w-full overflow-hidden">
+<html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>$MEETO — Mappa del Patrimonio Culturale</title>
   
+  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -15,7 +20,11 @@
     tailwind.config = {
       theme: {
         extend: {
-          colors: { brandDark: '#0B0E14', brandGold: '#D4AF37', brandBorder: 'rgba(212, 175, 55, 0.2)' }
+          colors: {
+            brandDark: '#0B0E14',
+            brandGold: '#D4AF37',
+            brandBorder: 'rgba(212, 175, 55, 0.2)',
+          }
         }
       }
     }
@@ -23,16 +32,43 @@
   
   <style>
     * { -webkit-tap-highlight-color: transparent; user-select: none; }
-    html, body { height: 100%; width: 100%; overflow: hidden; background-color: #0B0E14; color: #E2E8F0; font-family: 'Inter', sans-serif; }
-    #map { height: 100%; width: 100%; z-index: 1; touch-action: pan-x pan-y; }
-    .glass-panel { background: rgba(11, 14, 20, 0.94); backdrop-filter: blur(16px); border: 1px solid rgba(212, 175, 55, 0.3); }
-    .leaflet-tile-pane { filter: brightness(0.65) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.3); }
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #0B0E14;
+      color: #E2E8F0;
+      font-family: 'Inter', sans-serif;
+    }
+    /* Forza un'altezza fissa e sicura per il container della mappa su mobile */
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    .glass-panel {
+      background: rgba(11, 14, 20, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .leaflet-tile-pane { 
+      filter: brightness(0.65) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.3); 
+    }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="h-[100dvh] w-screen flex flex-col justify-between overflow-hidden relative">
+<body class="h-screen w-screen flex flex-col justify-between overflow-hidden relative">
 
+  <!-- HEADER & BARRA CITTA' -->
   <header class="w-full border-b border-brandBorder/30 bg-black/90 backdrop-blur-md px-4 py-2.5 flex flex-col gap-2 z-50 shrink-0">
     <div class="flex items-center justify-between">
       <a href="index.html" class="flex items-center space-x-2 active:opacity-70 transition">
@@ -40,11 +76,12 @@
         <span class="font-bold text-base text-amber-400 tracking-wide">$MEETO Heritage</span>
       </a>
       <div class="flex items-center gap-2">
-        <button onclick="toggleSuggestModal(true)" class="px-2.5 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30 active:scale-95 transition">➕ Segnala</button>
-        <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full text-xs font-bold bg-amber-400 text-black active:scale-95 transition shadow-lg">🎯 Posizione</button>
+        <button onclick="toggleSuggestModal(true)" class="px-2.5 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30">➕ Segnala</button>
+        <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full text-xs font-bold bg-amber-400 text-black shadow-lg">🎯 Posizione</button>
       </div>
     </div>
 
+    <!-- SELETTORE RAPIDO -->
     <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
       <button onclick="jumpToSite('colosseo')" class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 whitespace-nowrap font-medium">🏛️ Roma</button>
       <button onclick="jumpToSite('duomo_catania')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">🌋 Catania</button>
@@ -59,9 +96,11 @@
     </div>
   </header>
 
+  <!-- CONTENITORE MAPPA -->
   <main class="relative flex-1 w-full h-full overflow-hidden">
-    <div id="map" class="w-full h-full"></div>
+    <div id="map"></div>
     
+    <!-- CARD IN BASSO -->
     <div id="heritage-card" class="absolute bottom-16 left-3 right-3 z-20 glass-panel p-4 rounded-2xl max-w-md mx-auto shadow-2xl">
       <div class="flex justify-between items-start gap-2 mb-2">
         <div>
@@ -77,18 +116,19 @@
       </p>
 
       <div class="flex items-center gap-2">
-        <a id="wiki-link" href="https://it.wikipedia.org/wiki/Colosseo" target="_blank" class="flex-1 text-center py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition flex items-center justify-center gap-1">
+        <a id="wiki-link" href="https://it.wikipedia.org/wiki/Colosseo" target="_blank" class="flex-1 text-center py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center gap-1">
           📖 Wikipedia
         </a>
-        <button onclick="confirmSiteSelection()" class="flex-1 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-600 text-black transition shadow-lg">
+        <button onclick="confirmSiteSelection()" class="flex-1 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-600 text-black shadow-lg">
           📍 Attiva per Check-In
         </button>
       </div>
     </div>
   </main>
 
+  <!-- MODALE SEGNALAZIONE -->
   <div id="suggest-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4">
-    <div class="glass-panel w-full max-w-sm rounded-2xl p-5 border border-amber-500/30 space-y-4 relative">
+    <div class="glass-panel w-full max-w-sm rounded-2xl p-5 border border-amber-500/30 space-y-4">
       <div class="flex justify-between items-center">
         <h3 class="font-bold text-base text-amber-400">➕ Segnala Luogo Culturale</h3>
         <button onclick="toggleSuggestModal(false)" class="text-gray-400 hover:text-white text-lg font-bold">✕</button>
@@ -101,6 +141,7 @@
     </div>
   </div>
 
+  <!-- NAVIGAZIONE IN BASSO -->
   <nav class="w-full bg-black/95 border-t border-brandBorder/30 backdrop-blur-lg px-6 py-2.5 flex justify-between items-center text-center z-50 shrink-0">
     <a href="index.html" class="flex flex-col items-center text-gray-400"><span class="text-xl">🏠</span><span class="text-[10px] mt-0.5">Home</span></a>
     <a href="mappa.html" class="flex flex-col items-center text-amber-400"><span class="text-xl">🗺️</span><span class="text-[10px] mt-0.5 font-semibold">Mappa</span></a>
@@ -108,36 +149,57 @@
     <a href="token.html" class="flex flex-col items-center text-gray-400"><span class="text-xl">🪙</span><span class="text-[10px] mt-0.5">Token</span></a>
   </nav>
 
-  <script src="app.js"></script>
+  <!-- LOGICA MAPPA E DATI AUTONOMI PER SMARTPHONE -->
   <script>
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
     }
 
+    // Registro integrato direttamente per evitare errori di caricamento su mobile
+    const MONUMENTS = {
+      colosseo: { name: "Colosseo & Parco Archeologico", city: "Roma (Lazio)", lat: 41.89021, lng: 12.49223, desc: "Anfiteatro Flavio dell'antica Roma, tra le Sette Meraviglie del Mondo Moderno.", wiki: "https://it.wikipedia.org/wiki/Colosseo" },
+      pantheon: { name: "Pantheon", city: "Roma (Lazio)", lat: 41.8986, lng: 12.4769, desc: "Tempio romano dedicato a tutte le divinità, celebre per la sua enorme cupola.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)" },
+      duomo_catania: { name: "Duomo di Catania & Piazza del Duomo", city: "Catania (Sicilia)", lat: 37.5027, lng: 15.0873, desc: "Cattedrale barocca di Sant'Agata e Fontana dell'Elefante in pietra lavica.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Sant'Agata" },
+      parco_neapolis: { name: "Parco Archeologico della Neapolis", city: "Siracusa (Sicilia)", lat: 37.0755, lng: 15.2866, desc: "Teatro Greco, Anfiteatro Romano e Orecchio di Dionisio.", wiki: "https://it.wikipedia.org/wiki/Parco_archeologico_della_Neapolis" },
+      teatro_greco_taormina: { name: "Teatro Antico di Taormina", city: "Taormina (Sicilia)", lat: 37.8514, lng: 15.2845, desc: "Famoso teatro greco-romano con vista mozzafiato sull'Etna e sul mare.", wiki: "https://it.wikipedia.org/wiki/Teatro_antico_di_Taormina" },
+      valle_dei_templi: { name: "Valle dei Templi", city: "Agrigento (Sicilia)", lat: 37.2917, lng: 13.5857, desc: "Parco archeologico della Magna Grecia celebre per il Tempio della Concordia.", wiki: "https://it.wikipedia.org/wiki/Valle_dei_templj" },
+      piazza_duomo_firenze: { name: "Piazza del Duomo & Battistero", city: "Firenze (Toscana)", lat: 43.7731, lng: 11.2560, desc: "Cuore rinascimentale di Firenze con la Cattedrale e la Cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)" },
+      duomo_milano: { name: "Duomo di Milano", city: "Milano (Lombardia)", lat: 45.4641, lng: 9.1919, desc: "Cattedrale gotica imponente, simbolo di Milano, rivestita in marmo di Candoglia.", wiki: "https://it.wikipedia.org/wiki/Duomo_di_Milano" },
+      piazza_san_marco: { name: "Piazza San Marco", city: "Venezia (Veneto)", lat: 45.4342, lng: 12.3385, desc: "L'unica piazza di Venezia, dominata dalla Basilica e dal Campanile.", wiki: "https://it.wikipedia.org/wiki/Piazza_San_Marco" },
+      piazza_plebiscito: { name: "Piazza del Plebiscito", city: "Napoli (Campania)", lat: 40.8359, lng: 14.2488, desc: "Una delle più grandi piazze d'Italia, dominata dal Palazzo Reale.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Plebiscito_(Napoli)" },
+      sassi_matera: { name: "Sassi di Matera", city: "Matera (Basilicata)", lat: 40.6664, lng: 16.6108, desc: "Architettura rupestre scavata nella calcarenite, patrimonio UNESCO.", wiki: "https://it.wikipedia.org/wiki/Sassi_di_Matera" }
+    };
+
     let activeSiteKey = "colosseo";
-    const map = L.map('map', { zoomControl: false }).setView([41.89021, 12.49223], 6);
-    L.control.zoom({ position: 'topright' }).addTo(map);
+    let map, markersMap = {};
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+    window.addEventListener('load', () => {
+      // Inizializzazione sicura della mappa su mobile
+      map = L.map('map', { zoomControl: false }).setView([41.89021, 12.49223], 6);
+      L.control.zoom({ position: 'topright' }).addTo(map);
 
-    const markersMap = {};
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+      }).addTo(map);
 
-    window.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => { map.invalidateSize(); }, 250);
-
-      if (typeof MONUMENTS !== 'undefined') {
-        Object.keys(MONUMENTS).forEach(key => {
-          const site = MONUMENTS[key];
-          if (site.lat && site.lng) {
-            const marker = L.marker([site.lat, site.lng]).addTo(map);
-            marker.bindPopup(`<b>🏛️ ${site.name}</b><br>${site.city}`);
-            markersMap[key] = { marker, site };
-            
-            marker.on('click', () => { selectSiteUI(key, site); });
-          }
+      // Creazione PIN
+      Object.keys(MONUMENTS).forEach(key => {
+        const site = MONUMENTS[key];
+        const marker = L.marker([site.lat, site.lng]).addTo(map);
+        marker.bindPopup(`<b>🏛️ ${site.name}</b><br>${site.city}`);
+        markersMap[key] = { marker, site };
+        
+        marker.on('click', () => {
+          selectSiteUI(key, site);
         });
-      }
+      });
+
+      // Forza il ridimensionamento immediato per renderizzare i tile su mobile
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 300);
     });
 
     function selectSiteUI(key, site) {
@@ -149,11 +211,13 @@
     }
 
     function jumpToSite(siteKey) {
-      if (typeof MONUMENTS !== 'undefined' && MONUMENTS[siteKey]) {
+      if (MONUMENTS[siteKey]) {
         const site = MONUMENTS[siteKey];
         map.setView([site.lat, site.lng], 14);
         selectSiteUI(siteKey, site);
-        if (markersMap[siteKey]) markersMap[siteKey].marker.openPopup();
+        if (markersMap[siteKey]) {
+          markersMap[siteKey].marker.openPopup();
+        }
       }
       setTimeout(() => { map.invalidateSize(); }, 100);
     }
@@ -165,9 +229,9 @@
 
     function submitNewSite(event) {
       event.preventDefault();
-      alert("Proposta inviata con successo al team $MEETO!");
+      alert("Proposta inviata con successo!");
       toggleSuggestModal(false);
-      document.getElementById('suggest-form').reset();
+      event.target.reset();
     }
 
     function confirmSiteSelection() {
