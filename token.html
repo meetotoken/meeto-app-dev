@@ -69,10 +69,10 @@
       <div class="flex justify-between items-start mb-3">
         <div>
           <span class="text-[10px] text-gray-400 uppercase tracking-widest font-mono">Prezzo Attuale $MEETO</span>
-          <div class="text-3xl font-extrabold gold-gradient-text">$0.00245</div>
-          <span class="text-xs text-emerald-400 font-semibold">▲ +12.4% (24h)</span>
+          <div id="meeto-token-price" class="text-3xl font-extrabold gold-gradient-text">Caricamento...</div>
+          <span id="meeto-price-change" class="text-xs font-semibold text-gray-400">--</span>
         </div>
-        <button onclick="alert('Indirizzo Token Solana copiato!')" class="px-3 py-1.5 rounded-lg text-[11px] font-mono bg-black/60 border border-brandBorder text-brandGold hover:bg-brandGold/10 active:scale-95 transition">
+        <button onclick="copyContractAddress()" class="px-3 py-1.5 rounded-lg text-[11px] font-mono bg-black/60 border border-brandBorder text-brandGold hover:bg-brandGold/10 active:scale-95 transition">
           📋 Copia CA
         </button>
       </div>
@@ -95,7 +95,7 @@
       <div class="grid grid-cols-2 gap-3 pt-4 mt-2 border-t border-brandBorder/20 text-xs">
         <div>
           <span class="text-gray-400">Market Cap:</span>
-          <p class="font-bold text-white">$2,450,000</p>
+          <p id="meeto-mcap" class="font-bold text-white">Caricamento...</p>
         </div>
         <div>
           <span class="text-gray-400">Liquidità Bloccata:</span>
@@ -155,11 +155,11 @@
           <span class="text-gray-300">Visite culturali/mese stimate:</span>
           <span id="visitCount" class="font-bold text-brandGold">4 Musei</span>
         </div>
-        <input type="range" min="1" max="20" value="4" class="w-full accent-amber-400" oninput="updateCalculator(this.value)">
+        <input type="range" id="visitRange" min="1" max="20" value="4" class="w-full accent-amber-400" oninput="updateCalculator(this.value)">
         
         <div class="pt-2 flex justify-between items-center border-t border-brandBorder/20 text-xs">
           <span class="text-gray-400">Guadagno mensile stimato:</span>
-          <span id="earnedTokens" class="font-bold text-emerald-400">+200 $MEETO (~ $0.49)</span>
+          <span id="earnedTokens" class="font-bold text-emerald-400">+200 $MEETO (~ $0.00)</span>
         </div>
       </div>
     </section>
@@ -234,17 +234,21 @@
   </nav>
 
   <script>
+    const TOKEN_ADDRESS = "4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump";
+    let currentTokenPriceNum = 0.00245;
+
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
     }
 
+    // Inizializzazione Grafico
     const ctx = document.getElementById('priceChart').getContext('2d');
     const gradient = ctx.createLinearGradient(0, 0, 0, 160);
     gradient.addColorStop(0, 'rgba(212, 175, 55, 0.4)');
     gradient.addColorStop(1, 'rgba(212, 175, 55, 0.0)');
 
-    new Chart(ctx, {
+    const priceChart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'],
@@ -271,6 +275,71 @@
       }
     });
 
+    // Funzione per copiare il CA
+    function copyContractAddress() {
+      navigator.clipboard.writeText(TOKEN_ADDRESS).then(() => {
+        alert('Indirizzo Token Solana copiato negli appunti!');
+      }).catch(err => {
+        alert('CA: ' + TOKEN_ADDRESS);
+      });
+    }
+
+    // Fetch Dati On-Chain da DexScreener
+    async function fetchTokenDetails() {
+      const priceEl = document.getElementById("meeto-token-price");
+      const mcapEl = document.getElementById("meeto-mcap");
+      const changeEl = document.getElementById("meeto-price-change");
+
+      try {
+        const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${TOKEN_ADDRESS}`);
+        const data = await response.json();
+
+        if (data.pairs && data.pairs.length > 0) {
+          const pair = data.pairs[0];
+          currentTokenPriceNum = parseFloat(pair.priceUsd);
+          
+          // Format Prezzo
+          if (priceEl) {
+            priceEl.innerText = currentTokenPriceNum < 0.0001 
+              ? "$" + currentTokenPriceNum.toFixed(8) 
+              : "$" + currentTokenPriceNum.toFixed(4);
+          }
+
+          // Format Market Cap
+          const mcap = pair.marketCap || pair.fdv;
+          if (mcapEl) {
+            mcapEl.innerText = mcap ? "$" + Number(mcap).toLocaleString('en-US') : "N/D";
+          }
+
+          // Variazione 24h
+          if (changeEl && pair.priceChange && pair.priceChange.h24 !== undefined) {
+            const change = pair.priceChange.h24;
+            const isPositive = change >= 0;
+            changeEl.innerText = `${isPositive ? '▲ +' : '▼ '}${change}% (24h)`;
+            changeEl.className = `text-xs font-semibold ${isPositive ? 'text-emerald-400' : 'text-red-400'}`;
+          }
+
+          // Aggiorna il valore finale del grafico dinamico
+          if (priceChart && priceChart.data.datasets[0].data) {
+            priceChart.data.datasets[0].data[6] = currentTokenPriceNum;
+            priceChart.update();
+          }
+
+          // Ricalcola il simulatore
+          const rangeVal = document.getElementById('visitRange') ? document.getElementById('visitRange').value : 4;
+          updateCalculator(rangeVal);
+
+        } else {
+          if (priceEl) priceEl.innerText = "N/D";
+          if (mcapEl) mcapEl.innerText = "N/D";
+          if (changeEl) changeEl.innerText = "N/D";
+        }
+      } catch (err) {
+        console.error("Errore fetch token.html:", err);
+        if (priceEl) priceEl.innerText = "N/D";
+      }
+    }
+
     function calculateSwap() {
       const sol = document.getElementById('solInput').value;
       const rate = 62500;
@@ -280,9 +349,13 @@
     function updateCalculator(val) {
       document.getElementById('visitCount').innerText = `${val} Musei`;
       const earned = val * 50;
-      const usdValue = (earned * 0.00245).toFixed(2);
+      const usdValue = (earned * currentTokenPriceNum).toFixed(2);
       document.getElementById('earnedTokens').innerText = `+${earned} $MEETO (~ $${usdValue})`;
     }
+
+    // Avvio e aggiornamento periodico
+    fetchTokenDetails();
+    setInterval(fetchTokenDetails, 30000);
   </script>
 </body>
 </html>
