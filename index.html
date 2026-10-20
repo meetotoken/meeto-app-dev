@@ -79,23 +79,35 @@
         Il protocollo Culture-Tech su Solana che trasforma le tue visite nei luoghi d'interesse culturale in ricompense reali.
       </p>
       
-      <!-- CHECK-IN QUICK CARD DINAMICA -->
+      <!-- CHECK-IN QUICK CARD DINAMICA CON WIKIPEDIA -->
       <div class="bg-black/50 border border-brandBorder/50 rounded-xl p-4 text-left flex flex-col space-y-3">
         <div class="flex items-center justify-between">
           <div>
             <span class="text-[10px] uppercase tracking-widest text-brandGold font-semibold">Sito Attivo</span>
             <h3 id="active-site-name" class="font-bold text-sm text-white">🏛️ Colosseo & Parco Archeologico</h3>
-            <p id="active-site-city" class="text-xs text-gray-400">Roma, Italia</p>
+            <p id="active-site-city" class="text-xs text-gray-400">Roma (Lazio)</p>
           </div>
           <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-brandGold/20 text-brandGold border border-brandBorder">
-            +100 $MEETO XP
+            +100 XP
           </span>
         </div>
 
-        <!-- TASTO CHECK-IN GPS -->
-        <button id="btn-checkin" class="w-full text-center px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-brandGold to-yellow-600 text-black active:scale-95 transition shadow-md">
-          📍 Fai Check-In GPS (+100 XP)
-        </button>
+        <!-- DESCRIZIONE STORICA DINAMICA -->
+        <p id="active-site-desc" class="text-xs text-gray-300 line-clamp-2 leading-relaxed">
+          L'Anfiteatro Flavio, conosciuto come Colosseo, è il più grande anfiteatro dell'antica Roma.
+        </p>
+
+        <div class="flex items-center gap-2 pt-1">
+          <!-- LINK WIKIPEDIA DINAMICO -->
+          <a id="active-site-wiki" href="https://it.wikipedia.org/wiki/Colosseo" target="_blank" class="flex-1 text-center py-2.5 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 active:scale-95 transition flex items-center justify-center gap-1">
+            📖 Wikipedia
+          </a>
+          
+          <!-- TASTO CHECK-IN GPS -->
+          <button id="btn-checkin" class="flex-1 text-center py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-brandGold to-yellow-600 text-black active:scale-95 transition shadow-md">
+            📍 Check-In GPS
+          </button>
+        </div>
 
         <!-- MESSAGGIO DI STATO GPS -->
         <div id="checkin-status" class="text-xs text-gray-400 text-center font-medium">
