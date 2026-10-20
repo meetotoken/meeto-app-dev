@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="h-full w-full overflow-hidden">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
@@ -42,16 +42,6 @@
       color: #E2E8F0;
       font-family: 'Inter', sans-serif;
     }
-    #map {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
     .glass-panel {
       background: rgba(11, 14, 20, 0.94);
       backdrop-filter: blur(16px);
@@ -65,55 +55,60 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="h-screen w-screen flex flex-col justify-between overflow-hidden relative">
+<body class="h-[100dvh] w-screen flex flex-col justify-between overflow-hidden">
 
   <!-- HEADER & BARRA CITTA' & ZOOM ITALIA -->
-  <header class="w-full border-b border-brandBorder/30 bg-black/90 backdrop-blur-md px-4 py-2.5 flex flex-col gap-2 z-50 shrink-0">
+  <header class="w-full border-b border-brandBorder/30 bg-black/95 backdrop-blur-md px-3 py-2 flex flex-col gap-1.5 z-50 shrink-0">
     <div class="flex items-center justify-between">
-      <a href="index.html" class="flex items-center space-x-2 active:opacity-70 transition">
-        <span class="text-xl">🏛️</span>
-        <span class="font-bold text-base text-amber-400 tracking-wide">$MEETO Heritage</span>
+      <a href="index.html" class="flex items-center space-x-1.5 active:opacity-70 transition">
+        <span class="text-lg">🏛️</span>
+        <span class="font-bold text-sm text-amber-400 tracking-wide">$MEETO Heritage</span>
       </a>
-      <div class="flex items-center gap-1.5">
-        <button onclick="resetItalyView()" class="px-2.5 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30">🇮🇹 Italia</button>
-        <button onclick="toggleSuggestModal(true)" class="px-2.5 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30">➕ Segnala</button>
-        <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full text-xs font-bold bg-amber-400 text-black shadow-lg">🎯 GPS</button>
+      <div class="flex items-center gap-1">
+        <button onclick="resetItalyView()" class="px-2 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30">🇮🇹 Italia</button>
+        <button onclick="toggleSuggestModal(true)" class="px-2 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30">➕ Segnala</button>
+        <button onclick="getUserLocation()" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-400 text-black shadow-md">🎯 GPS</button>
       </div>
     </div>
 
-    <!-- SELETTORE RAPIDO CITTÀ -->
-    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
-      <button onclick="jumpToSite('colosseo')" class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 whitespace-nowrap font-medium">🏛️ Roma</button>
-      <button onclick="jumpToSite('duomo_milano')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Duomo Milano</button>
-      <button onclick="jumpToSite('piazza_duomo_firenze')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">🎨 Firenze</button>
-      <button onclick="jumpToSite('piazza_san_marco')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">🛶 Venezia</button>
-      <button onclick="jumpToSite('duomo_catania')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">🌋 Catania</button>
-      <button onclick="jumpToSite('parco_neapolis')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">🏛️ Siracusa</button>
-      <button onclick="jumpToSite('teatro_greco_taormina')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">✨ Taormina</button>
-      <button onclick="jumpToSite('valle_dei_templi')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">🏺 Agrigento</button>
-      <button onclick="jumpToSite('cattedrale_palermo')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Palermo</button>
-      <button onclick="jumpToSite('piazza_plebiscito')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">🌋 Napoli</button>
-      <button onclick="jumpToSite('sassi_matera')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Matera</button>
+    <!-- SELETTORE RAPIDO CAPOLUOGHI & CITTA' D'ARTE (SCORREVOLE) -->
+    <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar text-xs">
+      <button onclick="jumpToSite('colosseo')" class="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 whitespace-nowrap font-medium">🏛️ Roma</button>
+      <button onclick="jumpToSite('duomo_milano')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Milano</button>
+      <button onclick="jumpToSite('mole_torino')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Torino</button>
+      <button onclick="jumpToSite('piazza_san_marco')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Venezia</button>
+      <button onclick="jumpToSite('arena_verona')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Verona</button>
+      <button onclick="jumpToSite('piazza_duomo_firenze')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Firenze</button>
+      <button onclick="jumpToSite('piazza_maggiore')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Bologna</button>
+      <button onclick="jumpToSite('piazza_de_ferrari')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Genova</button>
+      <button onclick="jumpToSite('piazza_plebiscito')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Napoli</button>
+      <button onclick="jumpToSite('basilica_san_nicola')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Bari</button>
+      <button onclick="jumpToSite('sassi_matera')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Matera</button>
+      <button onclick="jumpToSite('cattedrale_palermo')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Palermo</button>
+      <button onclick="jumpToSite('valle_dei_templi')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Agrigento</button>
+      <button onclick="jumpToSite('duomo_catania')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Catania</button>
+      <button onclick="jumpToSite('parco_neapolis')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Siracusa</button>
+      <button onclick="jumpToSite('teatro_greco_taormina')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Taormina</button>
     </div>
   </header>
 
-  <!-- CONTENITORE MAPPA -->
-  <main class="relative flex-1 w-full h-full overflow-hidden">
-    <div id="map"></div>
+  <!-- CONTENITORE MAPPA & CARD (FLEX-1 PER LASCIARE SPAZIO ALLA BOTTOM BAR) -->
+  <main class="relative flex-1 w-full overflow-hidden">
+    <div id="map" class="w-full h-full"></div>
     
-    <!-- CARD IN BASSO -->
-    <div id="heritage-card" class="absolute bottom-16 left-3 right-3 z-20 glass-panel p-4 rounded-2xl max-w-md mx-auto shadow-2xl">
-      <div class="flex justify-between items-start gap-2 mb-2">
+    <!-- CARD IN BASSO SOPRA LA MAPPA -->
+    <div id="heritage-card" class="absolute bottom-3 left-3 right-3 z-20 glass-panel p-3.5 rounded-2xl max-w-md mx-auto shadow-2xl">
+      <div class="flex justify-between items-start gap-2 mb-1.5">
         <div>
           <span class="text-[9px] text-amber-400 font-mono uppercase tracking-widest font-semibold">Patrimonio Culturale Verificato</span>
-          <h3 id="site-title" class="font-bold text-base text-white">🏛️ Colosseo & Parco Archeologico</h3>
-          <p id="site-city" class="text-xs text-gray-400">Roma (Lazio)</p>
+          <h3 id="site-title" class="font-bold text-sm text-white">🏛️ Colosseo & Parco Archeologico</h3>
+          <p id="site-city" class="text-[11px] text-gray-400">Roma (Lazio)</p>
         </div>
-        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0">+100 XP</span>
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0">+100 XP</span>
       </div>
 
-      <p id="site-desc" class="text-xs text-gray-300 line-clamp-2 mb-3 leading-relaxed">
-        L'Anfiteatro Flavio, conosciuto come Colosseo, è il più grande anfiteatro dell'antica Roma.
+      <p id="site-desc" class="text-[11px] text-gray-300 line-clamp-2 mb-2.5 leading-relaxed">
+        Anfiteatro Flavio dell'antica Roma, tra le Sette Meraviglie del Mondo Moderno.
       </p>
 
       <div class="flex items-center gap-2">
@@ -142,54 +137,76 @@
     </div>
   </div>
 
-  <!-- NAVIGAZIONE IN BASSO -->
-  <nav class="w-full bg-black/95 border-t border-brandBorder/30 backdrop-blur-lg px-6 py-2.5 flex justify-between items-center text-center z-50 shrink-0">
-    <a href="index.html" class="flex flex-col items-center text-gray-400"><span class="text-xl">🏠</span><span class="text-[10px] mt-0.5">Home</span></a>
-    <a href="mappa.html" class="flex flex-col items-center text-amber-400"><span class="text-xl">🗺️</span><span class="text-[10px] mt-0.5 font-semibold">Mappa</span></a>
-    <a href="social.html" class="flex flex-col items-center text-gray-400"><span class="text-xl">👥</span><span class="text-[10px] mt-0.5">Social</span></a>
-    <a href="token.html" class="flex flex-col items-center text-gray-400"><span class="text-xl">🪙</span><span class="text-[10px] mt-0.5">Token</span></a>
+  <!-- BOTTOM BAR NAVIGAZIONE (FISSA IN BASSO, VISIBILE AL 100%) -->
+  <nav class="w-full bg-black/95 border-t border-brandBorder/30 backdrop-blur-lg px-6 py-2 flex justify-between items-center text-center z-50 shrink-0">
+    <a href="index.html" class="flex flex-col items-center text-gray-400"><span class="text-lg">🏠</span><span class="text-[10px] mt-0.5">Home</span></a>
+    <a href="mappa.html" class="flex flex-col items-center text-amber-400"><span class="text-lg">🗺️</span><span class="text-[10px] mt-0.5 font-semibold">Mappa</span></a>
+    <a href="social.html" class="flex flex-col items-center text-gray-400"><span class="text-lg">👥</span><span class="text-[10px] mt-0.5">Social</span></a>
+    <a href="token.html" class="flex flex-col items-center text-gray-400"><span class="text-lg">🪙</span><span class="text-[10px] mt-0.5">Token</span></a>
   </nav>
 
-  <!-- LOGICA COMPLETA CON TUTTI I PIN D'ITALIA -->
+  <!-- LOGICA COMPLETA CON TUTTI I CAPOLUOGHI D'ITALIA E PIN MULTIPLI -->
   <script>
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
     }
 
-    // REGISTRO NAZIONALE COMPLETO DI TUTTI I SITI
+    // REGISTRO NAZIONALE COMPLETO DI TUTTI I CAPOLUOGHI E SITUAZIONI MULTIPLE
     const MONUMENTS = {
+      // LAZIO & ROMA
       colosseo: { name: "Colosseo & Parco Archeologico", city: "Roma (Lazio)", lat: 41.89021, lng: 12.49223, desc: "Anfiteatro Flavio dell'antica Roma, tra le Sette Meraviglie del Mondo Moderno.", wiki: "https://it.wikipedia.org/wiki/Colosseo" },
       pantheon: { name: "Pantheon", city: "Roma (Lazio)", lat: 41.8986, lng: 12.4769, desc: "Tempio romano dedicato a tutte le divinità, celebre per la sua enorme cupola.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)" },
       fori_imperiali: { name: "Fori Imperiali", city: "Roma (Lazio)", lat: 41.8925, lng: 12.4862, desc: "Piazza e complesso monumentale del centro politico dell'antica Roma.", wiki: "https://it.wikipedia.org/wiki/Fori_Imperiali" },
 
+      // LOMBARDIA & MILANO
       duomo_milano: { name: "Duomo di Milano", city: "Milano (Lombardia)", lat: 45.4641, lng: 9.1919, desc: "Cattedrale gotica imponente, simbolo di Milano, rivestita in marmo di Candoglia.", wiki: "https://it.wikipedia.org/wiki/Duomo_di_Milano" },
-      mole_torino: { name: "Mole Antonelliana", city: "Torino (Piemonte)", lat: 45.0689, lng: 7.6930, desc: "Monumento simbolo di Torino, sede del Museo Nazionale del Cinema.", wiki: "https://it.wikipedia.org/wiki/Mole_Antonelliana" },
-      piazza_san_marco: { name: "Piazza San Marco", city: "Venezia (Veneto)", lat: 45.4342, lng: 12.3385, desc: "L'unica piazza di Venezia, dominata dalla Basilica e dal Campanile.", wiki: "https://it.wikipedia.org/wiki/Piazza_San_Marco" },
-      arena_verona: { name: "Arena di Verona", city: "Verona (Veneto)", lat: 45.4384, lng: 10.9916, desc: "Anfiteatro romano celebre in tutto il mondo per la sua acustica e la lirica.", wiki: "https://it.wikipedia.org/wiki/Arena_di_Verona" },
+      castello_sforzesco: { name: "Castello Sforzesco", city: "Milano (Lombardia)", lat: 45.4705, lng: 9.1790, desc: "Storico castello e fortezza simbolo della signoria sforzesca milanese.", wiki: "https://it.wikipedia.org/wiki/Castello_Sforzesco" },
 
+      // PIEMONTE & TORINO
+      mole_torino: { name: "Mole Antonelliana", city: "Torino (Piemonte)", lat: 45.0689, lng: 7.6930, desc: "Monumento simbolo di Torino, progettato da Alessandro Antonelli, sede del Museo del Cinema.", wiki: "https://it.wikipedia.org/wiki/Mole_Antonelliana" },
+      palazzo_reale_torino: { name: "Palazzo Reale di Torino", city: "Torino (Piemonte)", lat: 45.0728, lng: 7.6855, desc: "Residenza sabauda patrimonio UNESCO nel cuore barocco di Torino.", wiki: "https://it.wikipedia.org/wiki/Palazzo_Reale_di_Torino" },
+
+      // VENETO & VENEZIA / VERONA
+      piazza_san_marco: { name: "Piazza San Marco & Basilica", city: "Venezia (Veneto)", lat: 45.4342, lng: 12.3385, desc: "L'unica piazza di Venezia, dominata dalla Basilica di San Marco e dal Campanile.", wiki: "https://it.wikipedia.org/wiki/Piazza_San_Marco" },
+      arena_verona: { name: "Arena di Verona", city: "Verona (Veneto)", lat: 45.4384, lng: 10.9916, desc: "Anfiteatro romano celebre in tutto il mondo per la lirica e gli eventi.", wiki: "https://it.wikipedia.org/wiki/Arena_di_Verona" },
+
+      // TOSCANA & FIRENZE / PISA
       piazza_duomo_firenze: { name: "Piazza del Duomo & Battistero", city: "Firenze (Toscana)", lat: 43.7731, lng: 11.2560, desc: "Cuore rinascimentale di Firenze con la Cattedrale e la Cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)" },
-      piazza_maggiore: { name: "Piazza Maggiore", city: "Bologna (Emilia-Romagna)", lat: 44.4938, lng: 11.3426, desc: "Il cuore della città medievale di Bologna.", wiki: "https://it.wikipedia.org/wiki/Piazza_Maggiore" },
-      piazza_de_ferrari: { name: "Piazza De Ferrari", city: "Genova (Liguria)", lat: 44.4072, lng: 8.9340, desc: "La piazza principale di Genova con la monumentale fontana in bronzo.", wiki: "https://it.wikipedia.org/wiki/Piazza_De_Ferrari" },
+      uffizi_firenze: { name: "Galleria degli Uffizi", city: "Firenze (Toscana)", lat: 43.7678, lng: 11.2553, desc: "Uno dei musei d'arte più famosi al mondo, scrigno di capolavori rinascimentali.", wiki: "https://it.wikipedia.org/wiki/Galleria_degli_Uffizi" },
+      piazza_miracoli_pisa: { name: "Piazza dei Miracoli & Torre Pendente", city: "Pisa (Toscana)", lat: 43.7230, lng: 10.3966, desc: "Celebre complesso monumentale con la Cattedrale e la famosa Torre campanaria.", wiki: "https://it.wikipedia.org/wiki/Piazza_dei_Miracoli" },
 
-      piazza_plebiscito: { name: "Piazza del Plebiscito", city: "Napoli (Campania)", lat: 40.8359, lng: 14.2488, desc: "Una delle più grandi piazze d'Italia, dominata dal Palazzo Reale.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Plebiscito_(Napoli)" },
-      basilica_san_nicola: { name: "Basilica di San Nicola", city: "Bari (Puglia)", lat: 41.1306, lng: 16.8703, desc: "Capolavoro dell'architettura romanica pugliese.", wiki: "https://it.wikipedia.org/wiki/Basilica_di_San_Nicola" },
-      sassi_matera: { name: "Sassi di Matera", city: "Matera (Basilicata)", lat: 40.6664, lng: 16.6108, desc: "Architettura rupestre scavata nella calcarenite, patrimonio UNESCO.", wiki: "https://it.wikipedia.org/wiki/Sassi_matera" },
+      // EMILIA-ROMAGNA & BOLOGNA
+      piazza_maggiore: { name: "Piazza Maggiore & San Petronio", city: "Bologna (Emilia-Romagna)", lat: 44.4938, lng: 11.3426, desc: "Il cuore della città medievale di Bologna circondato dai palazzi storici.", wiki: "https://it.wikipedia.org/wiki/Piazza_Maggiore" },
 
-      duomo_catania: { name: "Duomo di Catania & Piazza del Duomo", city: "Catania (Sicilia)", lat: 37.5027, lng: 15.0873, desc: "Cattedrale barocca di Sant'Agata e Fontana dell'Elefante in pietra lavica.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Sant'Agata" },
-      teatro_romano_catania: { name: "Teatro Romano e Odeon", city: "Catania (Sicilia)", lat: 37.5015, lng: 15.0838, desc: "Splendido complesso monumentale di età romana nel cuore barocco.", wiki: "https://it.wikipedia.org/wiki/Teatro_romano_di_Catania" },
+      // LIGURIA & GENOVA
+      piazza_de_ferrari: { name: "Piazza De Ferrari & Palazzo Ducale", city: "Genova (Liguria)", lat: 44.4072, lng: 8.9340, desc: "Piazza principale di Genova con la fontana in bronzo e il Palazzo Ducale.", wiki: "https://it.wikipedia.org/wiki/Piazza_De_Ferrari" },
+
+      // CAMPANIA & NAPOLI
+      piazza_plebiscito: { name: "Piazza del Plebiscito & Palazzo Reale", city: "Napoli (Campania)", lat: 40.8359, lng: 14.2488, desc: "Una delle più grandi piazze d'Italia, dominata dal Palazzo Reale.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Plebiscito_(Napoli)" },
+      pompei_scavi: { name: "Parco Archeologico di Pompei", city: "Pompei (Campania)", lat: 40.7506, lng: 14.4856, desc: "Straordinaria testimonianza dell'antica Roma sepolta dall'eruzione del Vesuvio.", wiki: "https://it.wikipedia.org/wiki/Scavi_archeologici_di_Pompei" },
+
+      // PUGLIA & BARI / LECCE
+      basilica_san_nicola: { name: "Basilica di San Nicola", city: "Bari (Puglia)", lat: 41.1306, lng: 16.8703, desc: "Capolavoro dell'architettura romanica pugliese nel cuore di Bari Vecchia.", wiki: "https://it.wikipedia.org/wiki/Basilica_di_San_Nicola" },
+
+      // BASILICATA & MATERA
+      sassi_matera: { name: "Sassi di Matera", city: "Matera (Basilicata)", lat: 40.6664, lng: 16.6108, desc: "Architettura rupestre scavata nella calcarenite, abitata fin dalla preistoria e patrimonio UNESCO.", wiki: "https://it.wikipedia.org/wiki/Sassi_di_Matera" },
+
+      // SICILIA & CAPOLUOGHI / SITI ARCHEOLOGICI
+      cattedrale_palermo: { name: "Cattedrale di Palermo", city: "Palermo (Sicilia)", lat: 38.1145, lng: 13.3561, desc: "Capolavoro arabo-normanno patrimonio UNESCO nel cuore della Sicilia.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Palermo" },
+      valle_dei_templi: { name: "Valle dei Templi", city: "Agrigento (Sicilia)", lat: 37.2917, lng: 13.5857, desc: "Parco archeologico della Magna Grecia celebre per il Tempio della Concordia.", wiki: "https://it.wikipedia.org/wiki/Valle_dei_templj" },
+      duomo_catania: { name: "Duomo di Catania & Liotru", city: "Catania (Sicilia)", lat: 37.5027, lng: 15.0873, desc: "Cattedrale barocca di Sant'Agata e Fontana dell'Elefante in pietra lavica.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Sant'Agata" },
+      teatro_romano_catania: { name: "Teatro Romano e Odeon", city: "Catania (Sicilia)", lat: 37.5015, lng: 15.0838, desc: "Splendido complesso monumentale di età romana incastonato nel barocco.", wiki: "https://it.wikipedia.org/wiki/Teatro_romano_di_Catania" },
       parco_neapolis: { name: "Parco Archeologico della Neapolis", city: "Siracusa (Sicilia)", lat: 37.0755, lng: 15.2866, desc: "Teatro Greco, Anfiteatro Romano e Orecchio di Dionisio.", wiki: "https://it.wikipedia.org/wiki/Parco_archeologico_della_Neapolis" },
       ortigia_siracusa: { name: "Isola di Ortigia & Duomo", city: "Siracusa (Sicilia)", lat: 37.0594, lng: 15.2925, desc: "Cuore storico di Siracusa edificato sull'antico tempio di Atena.", wiki: "https://it.wikipedia.org/wiki/Ortigia" },
-      teatro_greco_taormina: { name: "Teatro Antico di Taormina", city: "Taormina (Sicilia)", lat: 37.8514, lng: 15.2845, desc: "Famoso teatro greco-romano con vista mozzafiato sull'Etna e sul mare.", wiki: "https://it.wikipedia.org/wiki/Teatro_antico_di_Taormina" },
-      valle_dei_templi: { name: "Valle dei Templi", city: "Agrigento (Sicilia)", lat: 37.2917, lng: 13.5857, desc: "Parco archeologico della Magna Grecia celebre per il Tempio della Concordia.", wiki: "https://it.wikipedia.org/wiki/Valle_dei_templj" },
-      cattedrale_palermo: { name: "Cattedrale di Palermo", city: "Palermo (Sicilia)", lat: 38.1145, lng: 13.3561, desc: "Capolavoro arabo-normanno patrimonio UNESCO.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Palermo" }
+      teatro_greco_taormina: { name: "Teatro Antico di Taormina", city: "Taormina (Sicilia)", lat: 37.8514, lng: 15.2845, desc: "Famoso teatro greco-romano con vista mozzafiato sull'Etna e sul mare.", wiki: "https://it.wikipedia.org/wiki/Teatro_antico_di_Taormina" }
     };
 
     let activeSiteKey = "colosseo";
     let map, markersMap = {};
 
     window.addEventListener('load', () => {
-      // Inizializza la mappa centrata sull'Italia (zoom 6 per vedere da Milano alla Sicilia)
+      // Inizializzazione mappa con layout flessibile
       map = L.map('map', { zoomControl: false }).setView([41.5, 12.5], 6);
       L.control.zoom({ position: 'topright' }).addTo(map);
 
@@ -198,7 +215,7 @@
         attribution: '© OpenStreetMap'
       }).addTo(map);
 
-      // Crea tutti i PIN sulla mappa
+      // Creazione di tutti i PIN sulla mappa
       Object.keys(MONUMENTS).forEach(key => {
         const site = MONUMENTS[key];
         const marker = L.marker([site.lat, site.lng]).addTo(map);
@@ -230,7 +247,7 @@
     function jumpToSite(siteKey) {
       if (MONUMENTS[siteKey]) {
         const site = MONUMENTS[siteKey];
-        map.setView([site.lat, site.lng], 13); // Zoom più vicino sul singolo monumento
+        map.setView([site.lat, site.lng], 13);
         selectSiteUI(siteKey, site);
         if (markersMap[siteKey]) {
           markersMap[siteKey].marker.openPopup();
@@ -240,7 +257,7 @@
     }
 
     function resetItalyView() {
-      map.setView([41.5, 12.5], 6); // Riporta la visuale sull'intera penisola
+      map.setView([41.5, 12.5], 6);
       setTimeout(() => { map.invalidateSize(); }, 100);
     }
 
@@ -251,7 +268,7 @@
 
     function submitNewSite(event) {
       event.preventDefault();
-      alert("Proposta inviata con successo!");
+      alert("Proposta inviata con successo al team $MEETO!");
       toggleSuggestModal(false);
       event.target.reset();
     }
@@ -266,7 +283,7 @@
         navigator.geolocation.getCurrentPosition(position => {
           map.setView([position.coords.latitude, position.coords.longitude], 13);
           setTimeout(() => { map.invalidateSize(); }, 100);
-        }, () => { alert("Attiva il GPS."); });
+        }, () => { alert("Attiva il GPS sul tuo smartphone."); });
       }
     }
   </script>
