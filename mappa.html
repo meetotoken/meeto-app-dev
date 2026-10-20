@@ -76,30 +76,31 @@
           ➕ Segnala Sito
         </button>
         <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full text-xs font-bold bg-amber-400 text-black hover:bg-amber-300 active:scale-95 transition flex items-center gap-1 shadow-lg shadow-amber-400/20">
-          🎯 Mia Posizione
+          🎯 Posizione
         </button>
       </div>
     </div>
 
-    <!-- SELETTORE RAPIDO CITTÀ PRINCIPALI -->
+    <!-- SELETTORE RAPIDO CITTÀ & MONUMENTI -->
     <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
-      <button onclick="jumpToCity(41.8902, 12.4922, 13, 'colosseo')" class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 whitespace-nowrap active:scale-95 transition font-medium">🏛️ Roma</button>
-      <button onclick="jumpToCity(37.5027, 15.0873, 14, 'duomo_catania')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🌋 Catania</button>
-      <button onclick="jumpToCity(37.0755, 15.2866, 14, 'parco_neapolis')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🏛️ Siracusa</button>
-      <button onclick="jumpToCity(37.8514, 15.2845, 14, 'teatro_greco_taormina')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">✨ Taormina</button>
-      <button onclick="jumpToCity(37.2917, 13.5857, 14, 'valle_dei_templi')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🏺 Agrigento</button>
-      <button onclick="jumpToCity(43.7731, 11.2560, 14, 'piazza_duomo_firenze')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🎨 Firenze</button>
-      <button onclick="jumpToCity(45.4641, 9.1919, 14, 'duomo_milano')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Milano</button>
-      <button onclick="jumpToCity(45.4342, 12.3385, 14, 'piazza_san_marco')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🛶 Venezia</button>
-      <button onclick="jumpToCity(40.8359, 14.2488, 13, 'piazza_plebiscito')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🌋 Napoli</button>
-      <button onclick="jumpToCity(38.1145, 13.3561, 14, 'cattedrale_palermo')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Palermo</button>
-      <button onclick="jumpToCity(45.4384, 10.9916, 14, 'arena_verona')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Verona</button>
+      <button onclick="jumpToSite('colosseo')" class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 whitespace-nowrap active:scale-95 transition font-medium">🏛️ Roma</button>
+      <button onclick="jumpToSite('duomo_catania')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🌋 Catania</button>
+      <button onclick="jumpToSite('parco_neapolis')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🏛️ Siracusa</button>
+      <button onclick="jumpToSite('teatro_greco_taormina')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">✨ Taormina</button>
+      <button onclick="jumpToSite('valle_dei_templi')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🏺 Agrigento</button>
+      <button onclick="jumpToSite('piazza_duomo_firenze')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🎨 Firenze</button>
+      <button onclick="jumpToSite('duomo_milano')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Milano</button>
+      <button onclick="jumpToSite('piazza_san_marco')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🛶 Venezia</button>
+      <button onclick="jumpToSite('piazza_plebiscito')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🌋 Napoli</button>
+      <button onclick="jumpToSite('cattedrale_palermo')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Palermo</button>
+      <button onclick="jumpToSite('arena_verona')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Verona</button>
+      <button onclick="jumpToSite('sassi_matera')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Matera</button>
     </div>
   </header>
 
   <!-- MAPPA INTERATTIVA -->
   <main class="relative flex-1 w-full h-full overflow-hidden">
-    <div id="map"></div>
+    <div id="map" class="w-full h-full"></div>
     
     <!-- CARD SCHEDA CULTURALE & SELEZIONE -->
     <div id="heritage-card" class="absolute bottom-16 left-3 right-3 z-20 glass-panel p-4 rounded-2xl max-w-md mx-auto shadow-2xl transition-all">
@@ -186,7 +187,7 @@
     </a>
   </nav>
 
-  <!-- CARICAMENTO REGISTRO PRINCIPALE E LOGICA MAPPA -->
+  <!-- CARICAMENTO APP.JS E INIZIALIZZAZIONE MAPPA CON PIN VISIBILI -->
   <script src="app.js"></script>
   <script>
     if (window.Telegram && window.Telegram.WebApp) {
@@ -196,6 +197,7 @@
 
     let activeSiteKey = "colosseo";
 
+    // Inizializzazione mappa
     const map = L.map('map', { zoomControl: false }).setView([41.89021, 12.49223], 6);
     L.control.zoom({ position: 'topright' }).addTo(map);
 
@@ -206,18 +208,28 @@
 
     const markersMap = {};
 
-    // LEGGE AUTOMATICAMENTE DA APP.JS
-    if (typeof MONUMENTS !== 'undefined') {
-      Object.keys(MONUMENTS).forEach(key => {
-        const site = MONUMENTS[key];
-        const marker = L.marker([site.lat, site.lng]).addTo(map);
-        markersMap[key] = { marker, site };
-        
-        marker.on('click', () => {
-          selectSiteUI(key, site);
+    // Creazione automatica dei PIN interattivi per ogni monumento in app.js
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => { map.invalidateSize(); }, 200);
+
+      if (typeof MONUMENTS !== 'undefined') {
+        Object.keys(MONUMENTS).forEach(key => {
+          const site = MONUMENTS[key];
+          if (site.lat && site.lng) {
+            // Crea un marker e aggiunge un popup con il nome del monumento
+            const marker = L.marker([site.lat, site.lng]).addTo(map);
+            marker.bindPopup(`<b>🏛️ ${site.name}</b><br>${site.city}`);
+            
+            markersMap[key] = { marker, site };
+            
+            // Al click sul PIN si aggiorna la scheda in basso
+            marker.on('click', () => {
+              selectSiteUI(key, site);
+            });
+          }
         });
-      });
-    }
+      }
+    });
 
     function selectSiteUI(key, site) {
       activeSiteKey = key;
@@ -231,15 +243,21 @@
       }
     }
 
-    function jumpToCity(lat, lng, zoom, targetSiteKey) {
-      map.setView([lat, lng], zoom);
-      
-      if (targetSiteKey && markersMap[targetSiteKey]) {
-        selectSiteUI(targetSiteKey, markersMap[targetSiteKey].site);
+    function jumpToSite(siteKey) {
+      if (typeof MONUMENTS !== 'undefined' && MONUMENTS[siteKey]) {
+        const site = MONUMENTS[siteKey];
+        map.setView([site.lat, site.lng], 14);
+        selectSiteUI(siteKey, site);
+
+        if (markersMap[siteKey]) {
+          markersMap[siteKey].marker.openPopup();
+        }
       }
 
+      setTimeout(() => { map.invalidateSize(); }, 100);
+
       if (window.Telegram?.WebApp?.HapticFeedback) {
-        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+        window.Telegram.WebApp.HapticFeedback.mediumImpactOccurred ? window.Telegram.WebApp.HapticFeedback.mediumImpactOccurred() : window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
       }
     }
 
@@ -286,6 +304,8 @@
             fillColor: '#D4AF37', 
             fillOpacity: 0.25 
           }).addTo(map);
+
+          setTimeout(() => { map.invalidateSize(); }, 100);
         }, () => {
           alert("Attiva i permessi GPS sul tuo smartphone.");
         });
