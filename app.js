@@ -9,7 +9,7 @@ if (tg) {
 // Stato Wallet Solana
 let walletAddress = null;
 
-// --- REGISTRO PATRIMONIO CULTURALE (20 CAPOLUOGHI & SITI UNICI) ---
+// --- REGISTRO PATRIMONIO CULTURALE (CAPOLUOGHI + GRANDI CITTÀ & SICILIA) ---
 const MONUMENTS = {
   colosseo: {
     name: "Colosseo & Parco Archeologico",
@@ -28,6 +28,60 @@ const MONUMENTS = {
     radiusMeters: 150,
     desc: "Tempio romano dedicato a tutte le divinità, celebre per la sua enorme cupola ad oculo aperto.",
     wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)"
+  },
+  duomo_catania: {
+    name: "Duomo di Catania & Piazza del Duomo",
+    city: "Catania (Sicilia)",
+    lat: 37.5027,
+    lng: 15.0873,
+    radiusMeters: 150,
+    desc: "Dedicato a Sant'Agata, celebre per la Fontana dell'Elefante in pietra lavica simbolo della città etnea.",
+    wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Sant'Agata"
+  },
+  teatro_romano_catania: {
+    name: "Teatro Romano e Odeon",
+    city: "Catania (Sicilia)",
+    lat: 37.5015,
+    lng: 15.0838,
+    radiusMeters: 150,
+    desc: "Splendido complesso monumentale di età romana incastonato nel cuore barocco di Catania.",
+    wiki: "https://it.wikipedia.org/wiki/Teatro_romano_di_Catania"
+  },
+  parco_neapolis: {
+    name: "Parco Archeologico della Neapolis",
+    city: "Siracusa (Sicilia)",
+    lat: 37.0755,
+    lng: 15.2866,
+    radiusMeters: 200,
+    desc: "Straordinario parco che ospita il Teatro Greco, l'Anfiteatro Romano e l'Orecchio di Dionisio.",
+    wiki: "https://it.wikipedia.org/wiki/Parco_archeologico_della_Neapolis"
+  },
+  ortigia_siracusa: {
+    name: "Isola di Ortigia & Duomo",
+    city: "Siracusa (Sicilia)",
+    lat: 37.0594,
+    lng: 15.2925,
+    radiusMeters: 200,
+    desc: "Il cuore storico di Siracusa, ricco di testimonianze greche, normanne e barocche affacciate sul mare.",
+    wiki: "https://it.wikipedia.org/wiki/Ortigia"
+  },
+  teatro_greco_taormina: {
+    name: "Teatro Antico di Taormina",
+    city: "Taormina (Sicilia)",
+    lat: 37.8514,
+    lng: 15.2845,
+    radiusMeters: 200,
+    desc: "Famoso teatro greco-romano con una vista mozzafiato sulla costa ionica e sull'Etna.",
+    wiki: "https://it.wikipedia.org/wiki/Teatro_antico_di_Taormina"
+  },
+  valle_dei_templi: {
+    name: "Valle dei Templi",
+    city: "Agrigento (Sicilia)",
+    lat: 37.2917,
+    lng: 13.5857,
+    radiusMeters: 300,
+    desc: "Parco archeologico tra i più grandi e meglio conservati della Magna Grecia, celebre per il Tempio della Concordia.",
+    wiki: "https://it.wikipedia.org/wiki/Valle_dei_templj"
   },
   duomo_milano: {
     name: "Duomo di Milano",
@@ -92,6 +146,15 @@ const MONUMENTS = {
     desc: "Il cuore della città medievale di Bologna, circondata dalla Basilica di San Petronio e dai palazzi storici.",
     wiki: "https://it.wikipedia.org/wiki/Piazza_Maggiore"
   },
+  arena_verona: {
+    name: "Arena di Verona",
+    city: "Verona (Veneto)",
+    lat: 45.4384,
+    lng: 10.9916,
+    radiusMeters: 150,
+    desc: "Anfiteatro romano celebre in tutto il mondo per la sua acustica e le grandi stagioni liriche.",
+    wiki: "https://it.wikipedia.org/wiki/Arena_di_Verona"
+  },
   piazza_de_ferrari: {
     name: "Piazza De Ferrari",
     city: "Genova (Liguria)",
@@ -110,95 +173,14 @@ const MONUMENTS = {
     desc: "Capolavoro dell'architettura romanica pugliese, custodisce le reliquie di San Nicola.",
     wiki: "https://it.wikipedia.org/wiki/Basilica_di_San_Nicola"
   },
-  museo_riace: {
-    name: "Museo Archeologico Nazionale",
-    city: "Reggio Calabria (Calabria)",
-    lat: 38.1148,
-    lng: 15.6511,
-    radiusMeters: 150,
-    desc: "Sede dei celebri Bronzi di Riace, capolavori della scultura greca del V secolo a.C.",
-    wiki: "https://it.wikipedia.org/wiki/Museo_nazionale_della_Magna_Grecia"
-  },
-  bastione_saint_remy: {
-    name: "Bastione di Saint Remy",
-    city: "Cagliari (Sardegna)",
-    lat: 39.2163,
-    lng: 9.1171,
-    radiusMeters: 150,
-    desc: "Imponente fortificazione neoclassica che domina il quartiere storico di Castello.",
-    wiki: "https://it.wikipedia.org/wiki/Bastione_di_Saint_Remy"
-  },
-  piazza_unita: {
-    name: "Piazza Unità d'Italia",
-    city: "Trieste (Friuli-V.G.)",
-    lat: 45.6501,
-    lng: 13.7678,
-    radiusMeters: 200,
-    desc: "La più grande piazza sul mare d'Europa, incorniciata da palazzi storici in stile neoclassico.",
-    wiki: "https://it.wikipedia.org/wiki/Piazza_Unità_d'Italia"
-  },
-  piazza_duomo_trento: {
-    name: "Piazza Duomo",
-    city: "Trento (Trentino-A.A.)",
-    lat: 46.0678,
-    lng: 11.1215,
-    radiusMeters: 150,
-    desc: "Caratteristica piazza rinascimentale dominata dalla Fontana del Nettuno e dalla Cattedrale di San Vigilio.",
-    wiki: "https://it.wikipedia.org/wiki/Piazza_Duomo_(Trento)"
-  },
-  piazza_iv_novembre: {
-    name: "Piazza IV Novembre",
-    city: "Perugia (Umbria)",
-    lat: 43.1107,
-    lng: 12.3890,
-    radiusMeters: 150,
-    desc: "Piazza medievale al cui centro si erge la Fontana Maggiore, capolavoro di Nicola e Giovanni Pisano.",
-    wiki: "https://it.wikipedia.org/wiki/Piazza_IV_Novembre"
-  },
-  piazza_plebiscito_ancona: {
-    name: "Piazza del Plebiscito",
-    city: "Ancona (Marche)",
-    lat: 43.6183,
-    lng: 13.5152,
-    radiusMeters: 150,
-    desc: "Detta anche Piazza del Papa, una delle piazze storiche più suggestive del capoluogo marchigiano.",
-    wiki: "https://it.wikipedia.org/wiki/Piazza_del_Plebiscito_(Ancona)"
-  },
-  piazza_duomo_laquila: {
-    name: "Piazza del Duomo",
-    city: "L'Aquila (Abruzzo)",
-    lat: 42.3498,
-    lng: 13.3995,
-    radiusMeters: 150,
-    desc: "Cuore sociale e commerciale dell'Aquila, dominata dalla Cattedrale dei Santi Massimo e Giorgio.",
-    wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(L'Aquila)"
-  },
-  castello_monforte: {
-    name: "Castello Monforte",
-    city: "Campobasso (Molise)",
-    lat: 41.5604,
-    lng: 14.6592,
-    radiusMeters: 150,
-    desc: "Fortezza medievale situata sulla collina che sovrasta l'intera città di Campobasso.",
-    wiki: "https://it.wikipedia.org/wiki/Castello_Monforte"
-  },
   sassi_matera: {
     name: "Sassi di Matera",
-    city: "Matera / Potenza (Basilicata)",
+    city: "Matera (Basilicata)",
     lat: 40.6664,
     lng: 16.6108,
     radiusMeters: 200,
     desc: "Architettura rupestre scavata nella calcarenite, abitata fin dalla preistoria e patrimonio UNESCO.",
     wiki: "https://it.wikipedia.org/wiki/Sassi_di_Matera"
-  },
-  teatro_romano_aosta: {
-    name: "Teatro Romano",
-    city: "Aosta (Valle d'Aosta)",
-    lat: 45.7383,
-    lng: 7.3228,
-    radiusMeters: 150,
-    desc: "Imponente testimonianza dell'epoca romana con la facciata alta 22 metri ancora conservata.",
-    wiki: "https://it.wikipedia.org/wiki/Teatro_romano_di_Aosta"
   }
 };
 
