@@ -77,8 +77,8 @@
   <main class="relative flex-1 w-full h-full overflow-hidden">
     <div id="map"></div>
     
-    <!-- CASELLA SELEZIONATORE IN BASSO -->
-    <div id="heritage-card" class="absolute bottom-16 left-3 right-3 z-20 glass-panel p-4 rounded-2xl max-w-md mx-auto shadow-2xl">
+    <!-- CASELLA SELEZIONATORE IN BASSO (POSIZIONATA SOPRA LA NAV BAR) -->
+    <div id="heritage-card" class="absolute bottom-20 left-3 right-3 z-20 glass-panel p-4 rounded-2xl max-w-md mx-auto shadow-2xl">
       <div class="flex justify-between items-start gap-2 mb-2">
         <div>
           <span class="text-[9px] text-amber-400 font-mono uppercase tracking-widest font-semibold">Sito Selezionato</span>
@@ -96,14 +96,14 @@
         <a id="wiki-link" href="https://it.wikipedia.org/wiki/Colosseo" target="_blank" class="flex-1 text-center py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center gap-1">
           📖 Wikipedia
         </a>
-        <button onclick="confirmSiteSelection()" class="flex-1 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-600 text-black shadow-lg">
+        <button onclick="confirmSiteSelection()" class="flex-1 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-600 text-black shadow-lg active:scale-95 transition">
           📍 Attiva per Check-In
         </button>
       </div>
     </div>
   </main>
 
-  <!-- NAVIGAZIONE IN BASSO -->
+  <!-- BARRA DI NAVIGAZIONE IN BASSO FISSA -->
   <nav class="w-full bg-black/95 border-t border-yellow-600/30 backdrop-blur-lg px-6 py-2.5 flex justify-between items-center text-center z-50 shrink-0">
     <a href="index.html" class="flex flex-col items-center text-gray-400"><span class="text-xl">🏠</span><span class="text-[10px] mt-0.5">Home</span></a>
     <a href="mappa.html" class="flex flex-col items-center text-amber-400"><span class="text-xl">🗺️</span><span class="text-[10px] mt-0.5 font-semibold">Mappa</span></a>
@@ -183,6 +183,7 @@
       setTimeout(() => { map.invalidateSize(); }, 100);
     }
 
+    // SALVA IL MONUMENTO E REINDIRIZZA ALLA HOME
     function confirmSiteSelection() {
       localStorage.setItem('selected_site', activeSiteKey);
       window.location.href = `index.html?site=${activeSiteKey}`;
