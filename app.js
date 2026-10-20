@@ -9,7 +9,7 @@ if (tg) {
 // Stato Wallet Solana
 let walletAddress = null;
 
-// --- REGISTRO PATRIMONIO CULTURALE (20 CAPOLUOGHI & SITI UNICO) ---
+// --- REGISTRO PATRIMONIO CULTURALE (20 CAPOLUOGHI & SITI UNICI) ---
 const MONUMENTS = {
   colosseo: {
     name: "Colosseo & Parco Archeologico",
