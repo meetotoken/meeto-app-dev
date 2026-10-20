@@ -58,13 +58,8 @@
     .leaflet-tile-pane { 
       filter: brightness(0.65) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.3); 
     }
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="h-[100dvh] w-screen flex flex-col justify-between overflow-hidden relative">
@@ -86,20 +81,19 @@
       </div>
     </div>
 
-    <!-- SELETTORE RAPIDO CITTÀ PRINCIPALI & SICILIA -->
+    <!-- SELETTORE RAPIDO CITTÀ PRINCIPALI -->
     <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
-      <button onclick="jumpToCity(41.8902, 12.4922, 13)" class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 whitespace-nowrap active:scale-95 transition font-medium">🏛️ Roma</button>
-      <button onclick="jumpToCity(37.5079, 15.0830, 14)" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🌋 Catania</button>
-      <button onclick="jumpToCity(37.0755, 15.2866, 14)" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🏛️ Siracusa</button>
-      <button onclick="jumpToCity(37.8514, 15.2845, 14)" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">✨ Taormina</button>
-      <button onclick="jumpToCity(37.2917, 13.5857, 14)" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🏺 Agrigento</button>
-      <button onclick="jumpToCity(45.4641, 9.1919, 14)" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Milano</button>
-      <button onclick="jumpToCity(43.7678, 11.2553, 14)" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🎨 Firenze</button>
-      <button onclick="jumpToCity(45.4342, 12.3385, 14)" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🛶 Venezia</button>
-      <button onclick="jumpToCity(40.8518, 14.2681, 13)" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🌋 Napoli</button>
-      <button onclick="jumpToCity(38.1157, 13.3615, 14)" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Palermo</button>
-      <button onclick="jumpToCity(45.4384, 10.9916, 14)" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Verona</button>
-      <button onclick="jumpToCity(43.7155, 10.3966, 15)" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Pisa</button>
+      <button onclick="jumpToCity(41.8902, 12.4922, 13, 'colosseo')" class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 whitespace-nowrap active:scale-95 transition font-medium">🏛️ Roma</button>
+      <button onclick="jumpToCity(37.5027, 15.0873, 14, 'duomo_catania')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🌋 Catania</button>
+      <button onclick="jumpToCity(37.0755, 15.2866, 14, 'parco_neapolis')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🏛️ Siracusa</button>
+      <button onclick="jumpToCity(37.8514, 15.2845, 14, 'teatro_greco_taormina')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">✨ Taormina</button>
+      <button onclick="jumpToCity(37.2917, 13.5857, 14, 'valle_dei_templi')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🏺 Agrigento</button>
+      <button onclick="jumpToCity(43.7731, 11.2560, 14, 'piazza_duomo_firenze')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🎨 Firenze</button>
+      <button onclick="jumpToCity(45.4641, 9.1919, 14, 'duomo_milano')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Milano</button>
+      <button onclick="jumpToCity(45.4342, 12.3385, 14, 'piazza_san_marco')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🛶 Venezia</button>
+      <button onclick="jumpToCity(40.8359, 14.2488, 13, 'piazza_plebiscito')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">🌋 Napoli</button>
+      <button onclick="jumpToCity(38.1145, 13.3561, 14, 'cattedrale_palermo')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Palermo</button>
+      <button onclick="jumpToCity(45.4384, 10.9916, 14, 'arena_verona')" class="px-3 py-1 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap active:scale-95 transition font-medium">Verona</button>
     </div>
   </header>
 
@@ -120,17 +114,14 @@
         </span>
       </div>
 
-      <!-- DESCRIZIONE SINTETICA & WIKIPEDIA -->
       <p id="site-desc" class="text-xs text-gray-300 line-clamp-2 mb-3 leading-relaxed">
         L'Anfiteatro Flavio, conosciuto come Colosseo, è il più grande anfiteatro dell'antica Roma.
       </p>
 
       <div class="flex items-center gap-2">
-        <!-- LINK WIKIPEDIA -->
         <a id="wiki-link" href="https://it.wikipedia.org/wiki/Colosseo" target="_blank" class="flex-1 text-center py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 active:scale-95 transition flex items-center justify-center gap-1">
           📖 Wikipedia
         </a>
-        <!-- PULSANTE SELEZIONE HOME -->
         <button id="select-btn" onclick="confirmSiteSelection()" class="flex-1 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-600 text-black active:scale-95 transition shadow-lg shadow-amber-500/10">
           📍 Attiva per Check-In
         </button>
@@ -138,7 +129,7 @@
     </div>
   </main>
 
-  <!-- MODALE POP-UP SEGNALAZIONE NUOVO LUOGO / CITTA' -->
+  <!-- MODALE POP-UP SEGNALAZIONE -->
   <div id="suggest-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4">
     <div class="glass-panel w-full max-w-sm rounded-2xl p-5 border border-amber-500/30 space-y-4 relative">
       <div class="flex justify-between items-center">
@@ -195,19 +186,15 @@
     </a>
   </nav>
 
+  <!-- CARICAMENTO REGISTRO PRINCIPALE E LOGICA MAPPA -->
+  <script src="app.js"></script>
   <script>
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
     }
 
-    let activeSite = {
-      key: "colosseo",
-      name: "Colosseo & Parco Archeologico",
-      city: "Roma (Lazio)",
-      desc: "L'Anfiteatro Flavio, simbolo di Roma nel mondo, costruito tra il 70 e l'80 d.C.",
-      wiki: "https://it.wikipedia.org/wiki/Colosseo"
-    };
+    let activeSiteKey = "colosseo";
 
     const map = L.map('map', { zoomControl: false }).setView([41.89021, 12.49223], 6);
     L.control.zoom({ position: 'topright' }).addTo(map);
@@ -217,47 +204,40 @@
       attribution: '© OpenStreetMap'
     }).addTo(map);
 
-    // REGISTRO AMPLIATO: CAPOLUOGHI + GRANDI CITTÀ D'ARTE E SICILIA
-    const heritageSites = [
-      { key: "colosseo", name: "Colosseo & Parco Archeologico", city: "Roma (Lazio)", lat: 41.89021, lng: 12.49223, desc: "Anfiteatro Flavio dell'antica Roma, inserito tra le Sette Meraviglie del Mondo Moderno.", wiki: "https://it.wikipedia.org/wiki/Colosseo" },
-      { key: "pantheon", name: "Pantheon", city: "Roma (Lazio)", lat: 41.8986, lng: 12.4769, desc: "Tempio romano dedicato a tutte le divinità, celebre per la sua enorme cupola ad oculo aperto.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)" },
-      { key: "duomo_catania", name: "Duomo di Catania & Piazza del Duomo", city: "Catania (Sicilia)", lat: 37.5027, lng: 15.0873, desc: "Dedicato a Sant'Agata, celebre per la Fontana dell'Elefante in pietra lavica simbolo della città etnea.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Sant'Agata" },
-      { key: "teatro_romano_catania", name: "Teatro Romano e Odeon", city: "Catania (Sicilia)", lat: 37.5015, lng: 15.0838, desc: "Splendido complesso monumentale di età romana incastonato nel cuore barocco di Catania.", wiki: "https://it.wikipedia.org/wiki/Teatro_romano_di_Catania" },
-      { key: "parco_neapolis", name: "Parco Archeologico della Neapolis", city: "Siracusa (Sicilia)", lat: 37.0755, lng: 15.2866, desc: "Straordinario parco che ospita il Teatro Greco, l'Anfiteatro Romano e l'Orecchio di Dionisio.", wiki: "https://it.wikipedia.org/wiki/Parco_archeologico_della_Neapolis" },
-      { key: "ortigia_siracusa", name: "Isola di Ortigia & Duomo", city: "Siracusa (Sicilia)", lat: 37.0594, lng: 15.2925, desc: "Il cuore storico di Siracusa, ricco di testimonianze greche, normanne e barocche affacciate sul mare.", wiki: "https://it.wikipedia.org/wiki/Ortigia" },
-      { key: "teatro_greco_taormina", name: "Teatro Antico di Taormina", city: "Taormina (Sicilia)", lat: 37.8514, lng: 15.2845, desc: "Famoso teatro greco-romano con una vista mozzafiato sulla costa ionica e sull'Etna.", wiki: "https://it.wikipedia.org/wiki/Teatro_antico_di_Taormina" },
-      { key: "valle_dei_templi", name: "Valle dei Templi", city: "Agrigento (Sicilia)", lat: 37.2917, lng: 13.5857, desc: "Parco archeologico tra i più grandi e meglio conservati della Magna Grecia, celebre per il Tempio della Concordia.", wiki: "https://it.wikipedia.org/wiki/Valle_dei_templj" },
-      { key: "duomo_milano", name: "Duomo di Milano", city: "Milano (Lombardia)", lat: 45.4641, lng: 9.1919, desc: "Cattedrale gotica imponente, simbolo di Milano, rivestita in marmo di Candoglia.", wiki: "https://it.wikipedia.org/wiki/Duomo_di_Milano" },
-      { key: "mole_torino", name: "Mole Antonelliana", city: "Torino (Piemonte)", lat: 45.0689, lng: 7.6930, desc: "Monumento simbolo di Torino, progettato da Alessandro Antonelli, sede del Museo Nazionale del Cinema.", wiki: "https://it.wikipedia.org/wiki/Mole_Antonelliana" },
-      { key: "piazza_san_marco", name: "Piazza San Marco", city: "Venezia (Veneto)", lat: 45.4342, lng: 12.3385, desc: "L'unica piazza di Venezia, dominata dalla Basilica di San Marco e dal Campanile.", wiki: "https://it.wikipedia.org/wiki/Piazza_San_Marco" },
-      { key: "piazza_duomo_firenze", name: "Piazza del Duomo & Battistero", city: "Firenze (Toscana)", lat: 43.7731, lng: 11.2560, desc: "Cuore rinascimentale di Firenze con la Cattedrale di Santa Maria del Fiore e la Cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)" },
-      { key: "piazza_plebiscito", name: "Piazza del Plebiscito", city: "Napoli (Campania)", lat: 40.8359, lng: 14.2488, desc: "Una delle più grandi piazze d'Italia, dominata dal Palazzo Reale e dalla Basilica di San Francesco di Paola.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Plebiscito_(Napoli)" },
-      { key: "cattedrale_palermo", name: "Cattedrale di Palermo", city: "Palermo (Sicilia)", lat: 38.1145, lng: 13.3561, desc: "Capolavoro arabo-normanno patrimonio UNESCO, testimone delle influenze culturali della Sicilia.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Palermo" },
-      { key: "piazza_maggiore", name: "Piazza Maggiore", city: "Bologna (Emilia-Romagna)", lat: 44.4938, lng: 11.3426, desc: "Il cuore della città medievale di Bologna, circondata dalla Basilica di San Petronio e dai palazzi storici.", wiki: "https://it.wikipedia.org/wiki/Piazza_Maggiore" },
-      { key: "arena_verona", name: "Arena di Verona", city: "Verona (Veneto)", lat: 45.4384, lng: 10.9916, desc: "Anfiteatro romano celebre in tutto il mondo per la sua acustica e le grandi stagioni liriche.", wiki: "https://it.wikipedia.org/wiki/Arena_di_Verona" },
-      { key: "piazza_de_ferrari", name: "Piazza De Ferrari", city: "Genova (Liguria)", lat: 44.4072, lng: 8.9340, desc: "La piazza principale di Genova con la sua monumentale fontana in bronzo e il Palazzo Ducale.", wiki: "https://it.wikipedia.org/wiki/Piazza_De_Ferrari" },
-      { key: "basilica_san_nicola", name: "Basilica di San Nicola", city: "Bari (Puglia)", lat: 41.1306, lng: 16.8703, desc: "Capolavoro dell'architettura romanica pugliese, custodisce le reliquie di San Nicola.", wiki: "https://it.wikipedia.org/wiki/Basilica_di_San_Nicola" },
-      { key: "sassi_matera", name: "Sassi di Matera", city: "Matera (Basilicata)", lat: 40.6664, lng: 16.6108, desc: "Architettura rupestre scavata nella calcarenite, abitata fin dalla preistoria e patrimonio UNESCO.", wiki: "https://it.wikipedia.org/wiki/Sassi_di_Matera" }
-    ];
+    const markersMap = {};
 
-    heritageSites.forEach(site => {
-      const marker = L.marker([site.lat, site.lng]).addTo(map);
-      
-      marker.on('click', () => {
-        activeSite = site;
-        document.getElementById('site-title').innerText = `🏛️ ${site.name}`;
-        document.getElementById('site-city').innerText = site.city;
-        document.getElementById('site-desc').innerText = site.desc;
-        document.getElementById('wiki-link').href = site.wiki;
+    // LEGGE AUTOMATICAMENTE DA APP.JS
+    if (typeof MONUMENTS !== 'undefined') {
+      Object.keys(MONUMENTS).forEach(key => {
+        const site = MONUMENTS[key];
+        const marker = L.marker([site.lat, site.lng]).addTo(map);
+        markersMap[key] = { marker, site };
         
-        if (window.Telegram?.WebApp?.HapticFeedback) {
-          window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-        }
+        marker.on('click', () => {
+          selectSiteUI(key, site);
+        });
       });
-    });
+    }
 
-    function jumpToCity(lat, lng, zoom) {
+    function selectSiteUI(key, site) {
+      activeSiteKey = key;
+      document.getElementById('site-title').innerText = `🏛️ ${site.name}`;
+      document.getElementById('site-city').innerText = site.city;
+      document.getElementById('site-desc').innerText = site.desc;
+      document.getElementById('wiki-link').href = site.wiki;
+      
+      if (window.Telegram?.WebApp?.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+      }
+    }
+
+    function jumpToCity(lat, lng, zoom, targetSiteKey) {
       map.setView([lat, lng], zoom);
+      
+      if (targetSiteKey && markersMap[targetSiteKey]) {
+        selectSiteUI(targetSiteKey, markersMap[targetSiteKey].site);
+      }
+
       if (window.Telegram?.WebApp?.HapticFeedback) {
         window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
       }
@@ -278,19 +258,19 @@
         window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
       }
 
-      alert(`🏛️ Grazie per la segnalazione!\n\nIl sito "${name}" (${city}) è stato inviato al team di validazione $MEETO.`);
+      alert(`🏛️ Proposta inviata!\n\n"${name}" (${city}) è stato inviato al team $MEETO.`);
       toggleSuggestModal(false);
       document.getElementById('suggest-form').reset();
     }
 
     function confirmSiteSelection() {
-      localStorage.setItem('selected_site', activeSite.key);
+      localStorage.setItem('selected_site', activeSiteKey);
 
       if (window.Telegram?.WebApp?.HapticFeedback) {
         window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
       }
 
-      window.location.href = `index.html?site=${activeSite.key}`;
+      window.location.href = `index.html?site=${activeSiteKey}`;
     }
 
     function getUserLocation() {
