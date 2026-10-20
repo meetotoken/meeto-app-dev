@@ -53,9 +53,23 @@
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Stili per evidenziare il bottone città attivo */
+    .btn-city {
+      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.05);
+      color: #D1D5DB;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .btn-city.active {
+      background: rgba(212, 175, 55, 0.2);
+      color: #FBBF24;
+      border-color: rgba(212, 175, 55, 0.6);
+      font-weight: 700;
+    }
   </style>
 </head>
-<body class="h-[100dvh] w-screen flex flex-col justify-between overflow-hidden">
+<body class="h-[100dvh] w-screen flex flex-col justify-between overflow-hidden relative">
 
   <!-- HEADER & BARRA CITTA' -->
   <header class="w-full border-b border-brandBorder/30 bg-black/95 backdrop-blur-md px-3 py-2 flex flex-col gap-1.5 z-50 shrink-0">
@@ -71,47 +85,48 @@
       </div>
     </div>
 
-    <!-- BOTTONI RAPIDI CITTÀ -->
+    <!-- SELETTORE CITTA' INTUITIVO CON EVIDENZIATORE -->
     <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar text-xs">
-      <button onclick="jumpToSite('colosseo')" class="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 whitespace-nowrap font-medium">🏛️ Roma</button>
-      <button onclick="jumpToSite('duomo_milano')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Milano</button>
-      <button onclick="jumpToSite('mole_torino')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Torino</button>
-      <button onclick="jumpToSite('piazza_san_marco')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Venezia</button>
-      <button onclick="jumpToSite('piazza_duomo_firenze')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Firenze</button>
-      <button onclick="jumpToSite('duomo_catania')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Catania</button>
-      <button onclick="jumpToSite('valle_dei_templi')" class="px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 border border-white/10 whitespace-nowrap font-medium">Agrigento</button>
+      <button id="btn-colosseo" onclick="jumpToSite('colosseo')" class="btn-city btn-site px-3 py-1 rounded-full whitespace-nowrap">🏛️ Roma</button>
+      <button id="btn-duomo_milano" onclick="jumpToSite('duomo_milano')" class="btn-city btn-site px-3 py-1 rounded-full whitespace-nowrap">Milano</button>
+      <button id="btn-mole_torino" onclick="jumpToSite('mole_torino')" class="btn-city btn-site px-3 py-1 rounded-full whitespace-nowrap">Torino</button>
+      <button id="btn-piazza_san_marco" onclick="jumpToSite('piazza_san_marco')" class="btn-city btn-site px-3 py-1 rounded-full whitespace-nowrap">Venezia</button>
+      <button id="btn-arena_verona" onclick="jumpToSite('arena_verona')" class="btn-city btn-site px-3 py-1 rounded-full whitespace-nowrap">Verona</button>
+      <button id="btn-piazza_duomo_firenze" onclick="jumpToSite('piazza_duomo_firenze')" class="btn-city btn-site px-3 py-1 rounded-full whitespace-nowrap">Firenze</button>
+      <button id="btn-duomo_catania" onclick="jumpToSite('duomo_catania')" class="btn-city btn-site px-3 py-1 rounded-full whitespace-nowrap">🌋 Catania</button>
+      <button id="btn-valle_dei_templi" onclick="jumpToSite('valle_dei_templi')" class="btn-city btn-site px-3 py-1 rounded-full whitespace-nowrap">🏺 Agrigento</button>
     </div>
   </header>
 
-  <!-- CONTENITORE MAPPA -->
-  <main class="relative flex-1 w-full overflow-hidden">
+  <!-- MAPPA CONTENITORE -->
+  <main class="relative flex-1 w-full h-full overflow-hidden">
     <div id="map" class="w-full h-full"></div>
-    
-    <!-- CASELLA INFORMATIVA SELEZIONATORE (SEMPRE VISIBILE IN BASSO) -->
-    <div id="heritage-card" class="absolute bottom-3 left-3 right-3 z-20 glass-panel p-3.5 rounded-2xl max-w-md mx-auto shadow-2xl block">
-      <div class="flex justify-between items-start gap-2 mb-1.5">
-        <div>
-          <span class="text-[9px] text-amber-400 font-mono uppercase tracking-widest font-semibold">Patrimonio Culturale Verificato</span>
-          <h3 id="site-title" class="font-bold text-sm text-white">🏛️ Colosseo & Parco Archeologico</h3>
-          <p id="site-city" class="text-[11px] text-gray-400">Roma (Lazio)</p>
-        </div>
-        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0">+100 XP</span>
-      </div>
-
-      <p id="site-desc" class="text-[11px] text-gray-300 line-clamp-2 mb-2.5 leading-relaxed">
-        Anfiteatro Flavio dell'antica Roma, tra le Sette Meraviglie del Mondo Moderno.
-      </p>
-
-      <div class="flex items-center gap-2">
-        <a id="wiki-link" href="https://it.wikipedia.org/wiki/Colosseo" target="_blank" class="flex-1 text-center py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center gap-1">
-          📖 Wikipedia
-        </a>
-        <button onclick="confirmSiteSelection()" class="flex-1 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-600 text-black shadow-lg active:scale-95 transition">
-          📍 Attiva per Check-In
-        </button>
-      </div>
-    </div>
   </main>
+
+  <!-- CASELLA SELEZIONATORE FISSA IN SOVRAMPOSIZIONE (FUORI DAL LAYER MAPPA) -->
+  <div id="heritage-card" class="fixed bottom-14 left-3 right-3 z-[60] glass-panel p-3.5 rounded-2xl max-w-md mx-auto shadow-2xl pointer-events-auto">
+    <div class="flex justify-between items-start gap-2 mb-1.5">
+      <div>
+        <span class="text-[9px] text-amber-400 font-mono uppercase tracking-widest font-semibold">Sito Selezionato</span>
+        <h3 id="site-title" class="font-bold text-sm text-white">🏛️ Colosseo & Parco Archeologico</h3>
+        <p id="site-city" class="text-[11px] text-gray-400">Roma (Lazio)</p>
+      </div>
+      <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0">+100 XP</span>
+    </div>
+
+    <p id="site-desc" class="text-[11px] text-gray-300 line-clamp-2 mb-2.5 leading-relaxed">
+      Anfiteatro Flavio dell'antica Roma, tra le Sette Meraviglie del Mondo Moderno.
+    </p>
+
+    <div class="flex items-center gap-2">
+      <a id="wiki-link" href="https://it.wikipedia.org/wiki/Colosseo" target="_blank" class="flex-1 text-center py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center gap-1">
+        📖 Wikipedia
+      </a>
+      <button onclick="confirmSiteSelection()" class="flex-1 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-600 text-black shadow-lg active:scale-95 transition">
+        📍 Attiva per Check-In
+      </button>
+    </div>
+  </div>
 
   <!-- MODALE SEGNALAZIONE -->
   <div id="suggest-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4">
@@ -128,7 +143,7 @@
     </div>
   </div>
 
-  <!-- NAVIGAZIONE BOTTOM BAR -->
+  <!-- NAVIGAZIONE BOTTOM BAR FISSA -->
   <nav class="w-full bg-black/95 border-t border-brandBorder/30 backdrop-blur-lg px-6 py-2 flex justify-between items-center text-center z-50 shrink-0">
     <a href="index.html" class="flex flex-col items-center text-gray-400"><span class="text-lg">🏠</span><span class="text-[10px] mt-0.5">Home</span></a>
     <a href="mappa.html" class="flex flex-col items-center text-amber-400"><span class="text-lg">🗺️</span><span class="text-[10px] mt-0.5 font-semibold">Mappa</span></a>
@@ -136,7 +151,7 @@
     <a href="token.html" class="flex flex-col items-center text-gray-400"><span class="text-lg">🪙</span><span class="text-[10px] mt-0.5">Token</span></a>
   </nav>
 
-  <!-- LOGICA MAPPA INTEGRATA CON LA CASELLA VISIBILE -->
+  <!-- LOGICA MAPPA CON SCRIPT CONDIVISO -->
   <script src="app.js"></script>
   <script>
     let activeSiteKey = "colosseo";
@@ -164,7 +179,7 @@
           }
         });
 
-        // Ripristina la selezione salvata precedentemente (o Colosseo di default)
+        // Carica la città attualmente attiva
         const savedKey = localStorage.getItem('selected_site') || 'colosseo';
         if (MONUMENTS[savedKey]) {
           selectSiteUI(savedKey, MONUMENTS[savedKey]);
@@ -180,6 +195,11 @@
       document.getElementById('site-city').innerText = site.city;
       document.getElementById('site-desc').innerText = site.desc;
       document.getElementById('wiki-link').href = site.wiki;
+
+      // Aggiorna l'evidenziatore dorato sui tasti in alto
+      document.querySelectorAll('.btn-site').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`btn-${key}`);
+      if (activeBtn) activeBtn.classList.add('active');
 
       if (window.Telegram?.WebApp?.HapticFeedback) {
         window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
