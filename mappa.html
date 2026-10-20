@@ -57,7 +57,6 @@
         <span class="font-bold text-base text-amber-400 tracking-wide">$MEETO Heritage</span>
       </a>
       <div class="flex items-center gap-2">
-        <button onclick="resetItalyView()" class="px-2.5 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30">🇮🇹 Italia</button>
         <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full text-xs font-bold bg-amber-400 text-black shadow-lg">🎯 GPS</button>
       </div>
     </div>
@@ -103,7 +102,7 @@
     </div>
   </main>
 
-  <!-- BARRA DI NAVIGAZIONE IN BASSO (BLINDATA IN PRIMO PIANO) -->
+  <!-- BARRA DI NAVIGAZIONE IN BASSO -->
   <nav class="fixed bottom-0 left-0 right-0 bg-black/95 border-t border-yellow-600/30 backdrop-blur-lg px-6 py-2.5 flex justify-between items-center text-center z-[100]">
     <a href="index.html" class="flex flex-col items-center text-gray-400"><span class="text-xl">🏠</span><span class="text-[10px] mt-0.5">Home</span></a>
     <a href="mappa.html" class="flex flex-col items-center text-amber-400"><span class="text-xl">🗺️</span><span class="text-[10px] mt-0.5 font-semibold">Mappa</span></a>
@@ -175,11 +174,6 @@
           markersMap[siteKey].marker.openPopup();
         }
       }
-      setTimeout(() => { map.invalidateSize(); }, 100);
-    }
-
-    function resetItalyView() {
-      map.setView([41.89021, 12.49223], 6);
       setTimeout(() => { map.invalidateSize(); }, 100);
     }
 
