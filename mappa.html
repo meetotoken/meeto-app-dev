@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>$MEETO — Mappa Culturale</title>
+  <title>$MEETO — Mappa del Patrimonio Culturale</title>
   
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -50,29 +50,13 @@
       touch-action: pan-x pan-y;
     }
     .glass-panel {
-      background: rgba(11, 14, 20, 0.90);
+      background: rgba(11, 14, 20, 0.94);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(212, 175, 55, 0.3);
     }
     .leaflet-tile-pane { 
       filter: brightness(0.65) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.3); 
-    }
-    .leaflet-popup-content-wrapper {
-      background: #0B0E14 !important;
-      color: #FFF !important;
-      border: 1px solid #D4AF37 !important;
-      border-radius: 12px !important;
-      padding: 4px !important;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8) !important;
-    }
-    .leaflet-popup-tip {
-      background: #0B0E14 !important;
-      border: 1px solid #D4AF37 !important;
-    }
-    .leaflet-container a.leaflet-popup-close-button {
-      color: #D4AF37 !important;
-      padding: 8px !important;
     }
   </style>
 </head>
@@ -82,30 +66,45 @@
   <header class="w-full border-b border-brandBorder/30 bg-black/90 backdrop-blur-md px-4 py-3 flex items-center justify-between z-50 shrink-0">
     <a href="index.html" class="flex items-center space-x-2 active:opacity-70 transition">
       <span class="text-xl">🏛️</span>
-      <span class="font-bold text-base text-amber-400 tracking-wide">$MEETO Map</span>
+      <span class="font-bold text-base text-amber-400 tracking-wide">$MEETO Heritage</span>
     </a>
-    <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full text-xs font-bold bg-amber-400 text-black hover:bg-amber-300 active:scale-95 transition flex items-center gap-1 shadow-lg shadow-amber-400/20">
-      🎯 Mia Posizione
-    </button>
+    <div class="flex items-center gap-2">
+      <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full text-xs font-bold bg-amber-400 text-black hover:bg-amber-300 active:scale-95 transition flex items-center gap-1 shadow-lg shadow-amber-400/20">
+        🎯 Mia Posizione
+      </button>
+    </div>
   </header>
 
   <!-- MAPPA INTERATTIVA -->
   <main class="relative flex-1 w-full h-full overflow-hidden">
     <div id="map"></div>
     
-    <!-- CARD INFORMATIVA FISSA -->
-    <div class="absolute bottom-16 left-3 right-3 z-20 glass-panel p-3.5 rounded-2xl max-w-md mx-auto shadow-2xl">
-      <div class="flex justify-between items-center gap-3">
-        <div class="flex-1">
-          <div class="flex items-center gap-1.5 mb-0.5">
-            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-            <span class="text-[9px] text-amber-400 font-mono uppercase tracking-widest font-semibold">Visit-to-Earn GPS</span>
-          </div>
-          <h3 id="site-title" class="font-bold text-sm text-white truncate">Seleziona un monumento</h3>
-          <p id="site-desc" class="text-[11px] text-gray-400 truncate">Clicca su un pin per la scheda e il check-in</p>
+    <!-- CARD SCHEDA CULTURALE & SELEZIONE -->
+    <div id="heritage-card" class="absolute bottom-16 left-3 right-3 z-20 glass-panel p-4 rounded-2xl max-w-md mx-auto shadow-2xl transition-all">
+      <div class="flex justify-between items-start gap-2 mb-2">
+        <div>
+          <span class="text-[9px] text-amber-400 font-mono uppercase tracking-widest font-semibold">Patrimonio Culturale Verificato</span>
+          <h3 id="site-title" class="font-bold text-base text-white">🏛️ Colosseo & Parco Archeologico</h3>
+          <p id="site-city" class="text-xs text-gray-400">Roma, Lazio</p>
         </div>
-        <button id="checkin-btn" onclick="triggerCheckIn()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-600 text-black active:scale-95 transition shrink-0">
-          📍 Check-In
+        <span id="site-reward" class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0">
+          +100 XP
+        </span>
+      </div>
+
+      <!-- DESCRIZIONE SINTETICA & WIKIPEDIA -->
+      <p id="site-desc" class="text-xs text-gray-300 line-clamp-2 mb-3 leading-relaxed">
+        L'Anfiteatro Flavio, conosciuto come Colosseo, è il più grande anfiteatro dell'antica Roma, situato nel centro della città.
+      </p>
+
+      <div class="flex items-center gap-2">
+        <!-- LINK WIKIPEDIA -->
+        <a id="wiki-link" href="https://it.wikipedia.org/wiki/Colosseo" target="_blank" class="flex-1 text-center py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 active:scale-95 transition flex items-center justify-center gap-1">
+          📖 Wikipedia
+        </a>
+        <!-- PULSANTE SELEZIONE HOME -->
+        <button id="select-btn" onclick="confirmSiteSelection()" class="flex-1 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-600 text-black active:scale-95 transition shadow-lg shadow-amber-500/10">
+          📍 Attiva per Check-In
         </button>
       </div>
     </div>
@@ -137,12 +136,15 @@
       window.Telegram.WebApp.expand();
     }
 
-    let selectedSite = "Colosseo";
+    let activeSite = {
+      key: "colosseo",
+      name: "Colosseo & Parco Archeologico",
+      city: "Roma (Lazio)",
+      desc: "L'Anfiteatro Flavio, simbolo di Roma nel mondo, costruito tra il 70 e l'80 d.C.",
+      wiki: "https://it.wikipedia.org/wiki/Colosseo"
+    };
 
-    const map = L.map('map', {
-      zoomControl: false
-    }).setView([41.9028, 12.4964], 6);
-
+    const map = L.map('map', { zoomControl: false }).setView([41.89021, 12.49223], 6);
     L.control.zoom({ position: 'topright' }).addTo(map);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -150,40 +152,43 @@
       attribution: '© OpenStreetMap'
     }).addTo(map);
 
-    const sites = [
-      { name: "Colosseo", lat: 41.8902, lng: 12.4922, city: "Roma", reward: "+50 $MEETO" },
-      { name: "Duomo di Milano", lat: 45.4641, lng: 9.1919, city: "Milano", reward: "+50 $MEETO" },
-      { name: "Galleria degli Uffizi", lat: 43.7678, lng: 11.2553, city: "Firenze", reward: "+50 $MEETO" },
-      { name: "Scavi di Pompei", lat: 40.7489, lng: 14.4849, city: "Napoli", reward: "+50 $MEETO" },
-      { name: "Teatro Massimo", lat: 38.1203, lng: 13.3572, city: "Palermo", reward: "+50 $MEETO" }
+    // REGISTRO PATRIMONIO CULTURALE CON SCHEDA STORICA & WIKIPEDIA
+    const heritageSites = [
+      { key: "colosseo", name: "Colosseo & Parco Archeologico", city: "Roma (Lazio)", lat: 41.89021, lng: 12.49223, desc: "Anfiteatro Flavio dell'antica Roma, inserito tra le Sette Meraviglie del Mondo Moderno.", wiki: "https://it.wikipedia.org/wiki/Colosseo" },
+      { key: "pantheon", name: "Pantheon", city: "Roma (Lazio)", lat: 41.8986, lng: 12.4769, desc: "Tempio romano dedicato a tutte le divinità passate, presenti e future, celebre per la sua enorme cupola ad oculo aperto.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)" },
+      { key: "duomo_milano", name: "Duomo di Milano", city: "Milano (Lombardia)", lat: 45.4641, lng: 9.1919, desc: "Cattedrale gotica imponente, simbolo di Milano, rivestita in marmo di Candoglia.", wiki: "https://it.wikipedia.org/wiki/Duomo_di_Milano" },
+      { key: "mole_torino", name: "Mole Antonelliana", city: "Torino (Piemonte)", lat: 45.0689, lng: 7.6930, desc: "Monumento simbolo di Torino, progettato da Alessandro Antonelli, sede del Museo Nazionale del Cinema.", wiki: "https://it.wikipedia.org/wiki/Mole_Antonelliana" },
+      { key: "piazza_san_marco", name: "Piazza San Marco", city: "Venezia (Veneto)", lat: 45.4342, lng: 12.3385, desc: "L'unica piazza di Venezia, dominata dalla Basilica di San Marco e dal Campanile.", wiki: "https://it.wikipedia.org/wiki/Piazza_San_Marco" },
+      { key: "piazza_duomo_firenze", name: "Piazza del Duomo & Battistero", city: "Firenze (Toscana)", lat: 43.7731, lng: 11.2560, desc: "Cuore rinascimentale di Firenze con la Cattedrale di Santa Maria del Fiore e la Cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)" },
+      { key: "piazza_plebiscito", name: "Piazza del Plebiscito", city: "Napoli (Campania)", lat: 40.8359, lng: 14.2488, desc: "Una delle più grandi piazze d'Italia, dominata dal Palazzo Reale e dalla Basilica di San Francesco di Paola.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Plebiscito_(Napoli)" },
+      { key: "cattedrale_palermo", name: "Cattedrale di Palermo", city: "Palermo (Sicilia)", lat: 38.1145, lng: 13.3561, desc: "Capolavoro arabo-normanno patrimonio UNESCO, testimone delle influenze culturali della Sicilia.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Palermo" },
+      { key: "sassi_matera", name: "Sassi di Matera", city: "Matera (Basilicata)", lat: 40.6664, lng: 16.6108, desc: "Architettura rupestre scavata nella calcarenite, abitata fin dalla preistoria e patrimonio UNESCO.", wiki: "https://it.wikipedia.org/wiki/Sassi_di_Matera" }
     ];
 
-    sites.forEach(site => {
+    heritageSites.forEach(site => {
       const marker = L.marker([site.lat, site.lng]).addTo(map);
       
       marker.on('click', () => {
-        selectedSite = site.name;
+        activeSite = site;
         document.getElementById('site-title').innerText = `🏛️ ${site.name}`;
-        document.getElementById('site-desc').innerText = `${site.city} • Ricompensa: ${site.reward}`;
+        document.getElementById('site-city').innerText = site.city;
+        document.getElementById('site-desc').innerText = site.desc;
+        document.getElementById('wiki-link').href = site.wiki;
         
         if (window.Telegram?.WebApp?.HapticFeedback) {
           window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
         }
       });
-
-      marker.bindPopup(`
-        <div style="text-align: center; padding: 4px;">
-          <h4 style="font-weight: bold; font-size: 13px; color: #D4AF37;">🏛️ ${site.name}</h4>
-          <p style="font-size: 11px; color: #AAA; margin-top: 2px;">${site.city}</p>
-        </div>
-      `);
     });
 
-    function triggerCheckIn() {
+    function confirmSiteSelection() {
+      localStorage.setItem('selected_site', activeSite.key);
+
       if (window.Telegram?.WebApp?.HapticFeedback) {
         window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
       }
-      alert(`📍 Verifica GPS avviata per: ${selectedSite}\n\nAssicurati di essere entro 200 metri per ricevere +50 $MEETO!`);
+
+      window.location.href = `index.html?site=${activeSite.key}`;
     }
 
     function getUserLocation() {
@@ -191,25 +196,19 @@
         navigator.geolocation.getCurrentPosition(position => {
           const userLat = position.coords.latitude;
           const userLng = position.coords.longitude;
-          map.setView([userLat, userLng], 15);
+          map.setView([userLat, userLng], 14);
           
           L.circle([userLat, userLng], { 
-            radius: 150, 
+            radius: 200, 
             color: '#D4AF37', 
             fillColor: '#D4AF37', 
             fillOpacity: 0.25 
           }).addTo(map);
-          
-          document.getElementById('site-title').innerText = "📍 Tua Posizione";
-          document.getElementById('site-desc').innerText = "Rilevamento GPS completato";
         }, () => {
           alert("Attiva i permessi GPS sul tuo smartphone.");
         });
-      } else {
-        alert("Geolocalizzazione non supportata.");
       }
     }
   </script>
-
 </body>
 </html>
