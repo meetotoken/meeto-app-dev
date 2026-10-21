@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>$MEETO — Passaporto & Mappa</title>
+  <title>$MEETO — Passaporto Culturale & Mappa</title>
   
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -25,17 +25,16 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
     .glass-card {
-      background: rgba(18, 22, 31, 0.85);
+      background: rgba(18, 22, 31, 0.88);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(212, 175, 55, 0.2);
+      border: 1px solid rgba(212, 175, 55, 0.25);
     }
     .gold-gradient-text {
       background: linear-gradient(135deg, #FFF5C0 0%, #D4AF37 50%, #AA7C11 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    /* Filtro scuro per le tile della mappa */
     .leaflet-tile-pane { 
       filter: brightness(0.65) invert(1) contrast(2.6) hue-rotate(200deg) saturate(0.3); 
     }
@@ -46,11 +45,11 @@
 <body class="h-full w-full flex flex-col justify-between overflow-hidden relative">
 
   <!-- TOP HEADER -->
-  <header class="w-full border-b border-amber-500/20 bg-black/80 backdrop-blur-md sticky top-0 z-50 px-4 py-2.5 flex items-center justify-between shrink-0">
+  <header class="w-full border-b border-amber-500/20 bg-black/85 backdrop-blur-md sticky top-0 z-50 px-4 py-2.5 flex items-center justify-between shrink-0">
     <div class="flex items-center space-x-2">
       <span class="text-xl">🏛️</span>
       <span class="font-extrabold text-base tracking-wider gold-gradient-text">$MEETO</span>
-      <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">Alpha V2</span>
+      <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">Heritage V2</span>
     </div>
     <div class="flex items-center gap-2">
       <span id="user-xp-badge" class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-zinc-900 border border-amber-500/40 text-amber-300">
@@ -59,23 +58,39 @@
     </div>
   </header>
 
-  <!-- CONTENITORE VISTE (SPA) -->
+  <!-- CONTENITORE VISTE SPA -->
   <main class="flex-1 w-full h-full relative overflow-hidden">
 
     <!-- TAB 1: MAPPA ESPLORA -->
     <section id="tab-map" class="w-full h-full relative flex flex-col">
-      <!-- Selettore Rapido Città -->
+      <!-- Selettore Orizzontale Tutte le Città -->
       <div class="absolute top-3 left-3 right-3 z-[400] flex gap-1.5 overflow-x-auto no-scrollbar py-1">
-        <button onclick="jumpToCity('roma')" class="px-3 py-1.5 rounded-full bg-black/80 border border-amber-500/40 text-amber-300 text-xs font-bold whitespace-nowrap shadow-lg">🏛️ Roma</button>
-        <button onclick="jumpToCity('milano')" class="px-3 py-1.5 rounded-full bg-black/80 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">Milano</button>
-        <button onclick="jumpToCity('firenze')" class="px-3 py-1.5 rounded-full bg-black/80 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">Firenze</button>
+        <button onclick="jumpToCity('roma')" class="px-3 py-1.5 rounded-full bg-black/85 border border-amber-500/50 text-amber-300 text-xs font-bold whitespace-nowrap shadow-lg">🏛️ Roma</button>
+        <button onclick="jumpToCity('firenze')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">🎨 Firenze</button>
+        <button onclick="jumpToCity('venezia')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">🎭 Venezia</button>
+        <button onclick="jumpToCity('napoli')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">🍕 Napoli</button>
+        <button onclick="jumpToCity('milano')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">🏰 Milano</button>
+        <button onclick="jumpToCity('torino')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">👑 Torino</button>
+        <button onclick="jumpToCity('bologna')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">🗼 Bologna</button>
+        <button onclick="jumpToCity('verona')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">⚔️ Verona</button>
+        <button onclick="jumpToCity('pisa')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">📐 Pisa</button>
+        <button onclick="jumpToCity('siena')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">🐎 Siena</button>
+        <button onclick="jumpToCity('genova')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">⚓ Genova</button>
+        <button onclick="jumpToCity('matera')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">🪨 Matera</button>
+        <button onclick="jumpToCity('bari_puglia')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">🏰 Puglia</button>
+        <button onclick="jumpToCity('palermo')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">🌴 Palermo</button>
+        <button onclick="jumpToCity('catania')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">🌋 Catania</button>
+        <button onclick="jumpToCity('agrigento')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">🏺 Agrigento</button>
+        <button onclick="jumpToCity('assisi')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">🕊️ Assisi</button>
+        <button onclick="jumpToCity('trieste')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">🌊 Trieste</button>
+        <button onclick="jumpToCity('cagliari')" class="px-3 py-1.5 rounded-full bg-black/85 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-lg">⛵ Cagliari</button>
         <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full bg-amber-400 text-black text-xs font-extrabold whitespace-nowrap shadow-lg ml-auto">🎯 GPS</button>
       </div>
 
       <!-- Mappa Leaflet -->
       <div id="map" class="w-full h-full"></div>
 
-      <!-- Bottom Sheet Scheda Monumento Selezionato -->
+      <!-- Bottom Sheet Monumento -->
       <div id="monument-sheet" class="absolute bottom-20 left-3 right-3 z-[400] glass-card p-4 rounded-2xl max-w-lg mx-auto shadow-2xl transition-all duration-300">
         <div class="flex justify-between items-start gap-2 mb-1.5">
           <div>
@@ -98,24 +113,24 @@
       </div>
     </section>
 
-    <!-- TAB 2: PASSAPORTO CULTURALE (DIARIO & TIMBRI) -->
+    <!-- TAB 2: PASSAPORTO CULTURALE -->
     <section id="tab-passport" class="w-full h-full overflow-y-auto px-4 py-5 space-y-4 pb-24 hidden">
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center relative overflow-hidden">
         <div class="text-4xl mb-2">📜</div>
         <h2 class="text-lg font-black text-white gold-gradient-text">Passaporto Explorer Ufficiale</h2>
-        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1">Colleziona visite reali, completa i quiz sul posto e sblocca i badge da custode del patrimonio.</p>
+        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1">Colleziona visite storiche verificate, supera i quiz sul posto e scala il rango esploratore.</p>
         
         <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-zinc-800 text-center">
           <div>
-            <div class="text-xs text-zinc-400 uppercase">Livello</div>
+            <div class="text-[11px] text-zinc-400 uppercase font-semibold">Livello</div>
             <div id="pass-level" class="text-base font-black text-amber-400">1</div>
           </div>
           <div>
-            <div class="text-xs text-zinc-400 uppercase">Totale XP</div>
+            <div class="text-[11px] text-zinc-400 uppercase font-semibold">Totale XP</div>
             <div id="pass-xp" class="text-base font-black text-white">0</div>
           </div>
           <div>
-            <div class="text-xs text-zinc-400 uppercase">Timbri</div>
+            <div class="text-[11px] text-zinc-400 uppercase font-semibold">Timbri</div>
             <div id="pass-stamps" class="text-base font-black text-emerald-400">0</div>
           </div>
         </div>
@@ -125,16 +140,16 @@
       <div class="space-y-2">
         <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">I Tuoi Timbri Sbloccati</h3>
         <div id="stamps-gallery" class="grid grid-cols-2 gap-3">
-          <!-- Popolato dinamicamente da app.js -->
-          <div class="glass-card p-4 rounded-xl text-center border-dashed border-zinc-700/80">
-            <span class="text-2xl opacity-40">🏛️</span>
-            <p class="text-[11px] text-zinc-500 mt-1">Nessun timbro ancora</p>
+          <div class="col-span-2 glass-card p-5 rounded-2xl text-center border-dashed border-zinc-700">
+            <span class="text-3xl opacity-30">🏛️</span>
+            <p class="text-xs text-zinc-400 mt-2 font-medium">Nessun timbro sbloccato.</p>
+            <p class="text-[10px] text-zinc-500">Raggiungi uno dei monumenti sulla mappa per timbrare il passaporto!</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TAB 3: TOKEN & TRASPARENZA -->
+    <!-- TAB 3: TOKEN & MERCATO ON-CHAIN -->
     <section id="tab-token" class="w-full h-full overflow-y-auto px-4 py-5 space-y-4 pb-24 hidden">
       <!-- Card Prezzo Live -->
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30">
@@ -143,10 +158,10 @@
           <div id="token-price-display" class="text-2xl font-black gold-gradient-text">Caricamento...</div>
           <span id="token-change" class="text-xs font-bold text-zinc-400">--</span>
         </div>
-        <p class="text-[11px] text-zinc-400 mt-2">Dati aggiornati in tempo reale da DexScreener (Solana Mainnet).</p>
+        <p class="text-[11px] text-zinc-400 mt-2">Dati integrati in tempo reale da DexScreener (Solana Mainnet).</p>
       </div>
 
-      <!-- Grafico Integrato -->
+      <!-- Grafico Integrato DexScreener -->
       <div class="glass-card rounded-2xl p-3 border border-zinc-800">
         <div style="position: relative; width: 100%; height: 320px;">
           <iframe src="https://dexscreener.com/solana/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump?embed=1&theme=dark&trades=0&info=0" 
@@ -163,9 +178,9 @@
           <div class="h-full bg-purple-500" style="width: 10%" title="Treasury 10%"></div>
         </div>
         <div class="grid grid-cols-3 gap-2 text-[10px] text-center pt-1">
-          <div><span class="text-emerald-400 font-bold block">70%</span> Mercato</div>
-          <div><span class="text-amber-400 font-bold block">20%</span> Team</div>
-          <div><span class="text-purple-400 font-bold block">10%</span> Treasury</div>
+          <div><span class="text-emerald-400 font-bold block">70%</span> Mercato Pubblico</div>
+          <div><span class="text-amber-400 font-bold block">20%</span> Team & Dev</div>
+          <div><span class="text-purple-400 font-bold block">10%</span> Treasury & Rewards</div>
         </div>
       </div>
 
@@ -185,15 +200,15 @@
   <div id="checkin-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[500] hidden flex items-center justify-center p-4">
     <div class="glass-card w-full max-w-sm rounded-2xl p-5 border border-amber-500/40 space-y-4">
       <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
-        <h3 class="font-bold text-sm text-white" id="modal-monument-name">Check-in</h3>
-        <button onclick="closeCheckInModal()" class="text-zinc-400 hover:text-white font-bold text-base">✕</button>
+        <h3 class="font-bold text-sm text-white truncate" id="modal-monument-name">Check-in</h3>
+        <button onclick="closeCheckInModal()" class="text-zinc-400 hover:text-white font-bold text-base px-1">✕</button>
       </div>
 
       <!-- STEP 1: VERIFICA GPS -->
       <div id="step-gps" class="space-y-3">
         <div class="text-center py-2">
           <div class="text-3xl mb-1">📍</div>
-          <p class="text-xs text-zinc-300">Passo 1: Verifica la tua posizione hardware sul posto.</p>
+          <p class="text-xs text-zinc-300">Passo 1: Verifica la tua posizione sul posto.</p>
         </div>
         <button id="btn-verify-gps" onclick="verifyGPSLocation()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-amber-400 text-black shadow-md">
           Verifica Posizione GPS
@@ -201,11 +216,11 @@
         <div id="gps-status-msg" class="text-[11px] text-center text-zinc-400 font-medium"></div>
       </div>
 
-      <!-- STEP 2: FOTOCAMERA LIVE (OBBLIGATORIA) -->
+      <!-- STEP 2: FOTOCAMERA LIVE -->
       <div id="step-photo" class="space-y-3 hidden">
         <div class="text-center py-2">
           <div class="text-3xl mb-1">📸</div>
-          <p class="text-xs text-zinc-300">Passo 2: Scatta una foto ricordo dal vivo per il tuo passaporto.</p>
+          <p class="text-xs text-zinc-300">Passo 2: Scatta una foto dal vivo per il tuo passaporto.</p>
         </div>
         <label class="block w-full py-2.5 rounded-xl text-xs font-bold text-center bg-zinc-800 border border-amber-500/40 text-amber-300 cursor-pointer hover:bg-zinc-700">
           📷 Scatta Foto Live
@@ -220,18 +235,18 @@
       <div id="step-quiz" class="space-y-3 hidden">
         <div class="text-left py-1">
           <span class="text-[10px] text-amber-400 font-mono uppercase font-bold">Passo 3: Dettaglio sul posto</span>
-          <p id="quiz-question-text" class="text-xs font-bold text-white mt-1">Caricamento domanda...</p>
+          <p id="quiz-question-text" class="text-xs font-bold text-white mt-1 leading-snug">Caricamento domanda...</p>
         </div>
         <div id="quiz-options-container" class="space-y-2"></div>
       </div>
 
-      <!-- STEP 4: SUCCESSO TIMBRO -->
+      <!-- STEP 4: SUCCESSO -->
       <div id="step-success" class="space-y-3 text-center py-4 hidden">
         <div class="text-5xl animate-bounce">🎉</div>
-        <h4 class="font-black text-base text-emerald-400">Check-in Completato!</h4>
-        <p class="text-xs text-zinc-300">Hai guadagnato <b class="text-amber-400">+100 XP</b> e sbloccato il timbro nel tuo passaporto.</p>
+        <h4 class="font-black text-base text-emerald-400">Visita Convalidata!</h4>
+        <p class="text-xs text-zinc-300">Hai guadagnato <b class="text-amber-400">+100 XP</b> e sbloccato il timbro ufficiale nel diario di viaggio.</p>
         <button onclick="finishCheckIn()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-emerald-500 text-black mt-2">
-          Chiudi e Guarda Passaporto
+          Guarda nel Passaporto
         </button>
       </div>
 
@@ -254,7 +269,7 @@
     </button>
   </nav>
 
-  <!-- LOGICA JAVASCRIPT CENTRALE -->
+  <!-- JAVASCRIPT CENTRALE -->
   <script src="app.js"></script>
 </body>
 </html>
