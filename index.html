@@ -58,16 +58,14 @@
     <div class="flex items-center space-x-2">
       <span class="text-xl">🏛️</span>
       <span class="font-extrabold text-base tracking-wider gold-gradient-text">$MEETO</span>
-      <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">V2</span>
+      <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">Cloud V2</span>
     </div>
-    <div class="flex items-center gap-2">
-      <span id="user-xp-badge" class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-zinc-900 border border-amber-500/40 text-amber-300">
-        ⭐ 0 XP
-      </span>
-    </div>
+    <span id="user-xp-badge" class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-zinc-900 border border-amber-500/40 text-amber-300">
+      ⭐ 0 XP
+    </span>
   </header>
 
-  <!-- CONTENITORE VISTE (SPA) -->
+  <!-- CONTENITORE PRINCIPALE VISTE -->
   <main class="w-full relative">
 
     <!-- ==================== TAB 1: MAPPA ESPLORA ==================== -->
@@ -120,12 +118,14 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 2: PASSAPORTO CULTURALE ==================== -->
+    <!-- ==================== TAB 2: PASSAPORTO CULTURALE AGGIORNATO ==================== -->
     <section id="tab-passport" class="w-full px-4 py-5 space-y-4 hidden">
+      
+      <!-- Card Profilo & Rango -->
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center">
         <div class="text-4xl mb-1">📜</div>
         <h2 class="text-lg font-black text-white gold-gradient-text" id="pass-user-title">Passaporto Explorer Ufficiale</h2>
-        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1" id="pass-user-subtitle">Colleziona visite storiche, scatta le tue foto ricordo e salva i timbri nel cloud.</p>
+        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1" id="pass-user-subtitle">Colleziona visite storiche, scatta foto ricordo e salva i timbri nel cloud.</p>
         
         <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-zinc-800 text-center">
           <div>
@@ -141,8 +141,59 @@
             <div id="pass-stamps" class="text-base font-black text-emerald-400">0</div>
           </div>
         </div>
+
+        <!-- BARRA PROGRESSO RISCATTO -->
+        <div class="mt-4 pt-3 border-t border-zinc-800/80 text-left space-y-1.5">
+          <div class="flex justify-between text-[11px]">
+            <span class="text-zinc-400">Soglia Idoneità Airdrop:</span>
+            <span id="redeem-progress-text" class="font-bold text-amber-300">0 / 500 XP</span>
+          </div>
+          <div class="w-full h-2.5 bg-black/60 rounded-full overflow-hidden border border-zinc-800">
+            <div id="redeem-progress-bar" class="h-full bg-gradient-to-r from-amber-400 to-yellow-500 transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <p class="text-[10px] text-zinc-500">Raggiungi 500 XP (5 visite verificate) per sbloccare l'idoneità al riscatto stagionale.</p>
+        </div>
       </div>
 
+      <!-- SEZIONE: COME FUNZIONA IL RISCATTO DEI PUNTI -->
+      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
+        <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+          <span>🎁</span> Come Riscattare i tuoi Punti XP
+        </h3>
+        
+        <div class="space-y-2 text-xs text-zinc-300">
+          <div class="flex items-start gap-2 bg-black/40 p-2.5 rounded-xl border border-zinc-800/80">
+            <span class="text-amber-400 text-sm">🪙</span>
+            <div>
+              <strong class="text-white block">1. Airdrop Stagionale Token ($MEETO)</strong>
+              <p class="text-[11px] text-zinc-400 mt-0.5">I punti XP determinano la tua quota di ripartizione della Treasury Rewards (100M token). I migliori esploratori ricevono token reali sul wallet collegato.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-2 bg-black/40 p-2.5 rounded-xl border border-zinc-800/80">
+            <span class="text-emerald-400 text-sm">🎟️</span>
+            <div>
+              <strong class="text-white block">2. Badge On-Chain & Souvenir</strong>
+              <p class="text-[11px] text-zinc-400 mt-0.5">Completando tutte le tappe di una città sblocchi il passaporto certificato su Solana.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLLEGAMENTO WALLET SOLANA -->
+        <div class="pt-2 border-t border-zinc-800 space-y-2">
+          <label class="block text-[11px] font-bold text-zinc-300">Wallet Solana per accredito ricompense:</label>
+          <div class="flex gap-2">
+            <input type="text" id="wallet-input" placeholder="Incolla indirizzo Phantom o Solflare..." 
+                   class="flex-1 bg-black/60 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-amber-400" />
+            <button onclick="saveUserWallet()" class="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold rounded-xl active:scale-95 transition">
+              Salva
+            </button>
+          </div>
+          <p id="wallet-status-msg" class="text-[10px] text-zinc-500 font-medium"></p>
+        </div>
+      </div>
+
+      <!-- GALLERIA TIMBRI E FOTO RICORDO -->
       <div class="space-y-2">
         <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">I Tuoi Timbri e Foto Ricordo</h3>
         <div id="stamps-gallery" class="grid grid-cols-2 gap-3"></div>
@@ -200,7 +251,7 @@
 
   </main>
 
-  <!-- ================= MODALE: QUIZ + FOTOCAMERA LIVE + GPS ================= -->
+  <!-- ================= MODALE: QUIZ + FOTOCAMERA + GPS ================= -->
   <div id="checkin-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[2000] hidden flex items-center justify-center p-4">
     <div class="glass-card w-full max-w-sm rounded-2xl p-5 border border-amber-500/40 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
@@ -208,7 +259,7 @@
         <button onclick="closeQuizModal()" class="text-zinc-400 hover:text-white font-bold text-base px-1">✕</button>
       </div>
 
-      <!-- PASSO 1: IL QUIZ CULTURALE -->
+      <!-- PASSO 1: QUIZ -->
       <div id="step-quiz" class="space-y-3">
         <div class="text-left py-1">
           <span class="text-[10px] text-amber-400 font-mono uppercase font-bold">🎯 Passo 1: Domanda sul monumento</span>
@@ -217,26 +268,22 @@
         <div id="quiz-options-container" class="space-y-2"></div>
       </div>
 
-      <!-- PASSO 2: SCATTO DELLA FOTO RICORDO (ORA BEN VISIBILE) -->
+      <!-- PASSO 2: FOTOCAMERA LIVE -->
       <div id="step-photo" class="space-y-3 hidden text-center">
         <div class="py-1">
           <span class="text-[10px] text-emerald-400 font-mono uppercase font-bold">✅ Risposta Esatta!</span>
           <h4 class="text-sm font-bold text-white mt-0.5">📸 Passo 2: Foto Ricordo dal Vivo</h4>
-          <p class="text-[11px] text-zinc-300 mt-1">Inquadra il monumento o scatta un selfie per timbrare il passaporto:</p>
+          <p class="text-[11px] text-zinc-300 mt-1">Inquadra il monumento per timbrare il passaporto:</p>
         </div>
 
-        <!-- TASTO CHE APRE LA FOTOCAMERA -->
         <label class="block w-full py-3 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-yellow-500 text-black cursor-pointer hover:opacity-90 active:scale-95 transition shadow-lg shadow-amber-500/20">
           📷 Apri Fotocamera & Scatta Foto
           <input type="file" accept="image/*" capture="camera" class="hidden" onchange="handleLivePhoto(event)" />
         </label>
 
-        <!-- ANTEPRIMA DELLA FOTO SCATTATA -->
         <div id="photo-preview-container" class="hidden space-y-2 pt-2">
           <img id="photo-preview-img" src="" alt="Anteprima Foto" class="w-full h-40 object-cover rounded-xl border border-amber-500/40 shadow-md" />
           <span class="text-[11px] text-emerald-400 font-bold block">✨ Foto acquisita con successo!</span>
-          
-          <!-- TASTO PER PASSARE AL GPS -->
           <button onclick="proceedToGPS()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-amber-300 hover:bg-zinc-700 active:scale-95 transition">
             ➡️ Prosegui alla Convalida GPS
           </button>
@@ -313,8 +360,8 @@
       } catch (e) {}
     }
 
-    let userState = { xp: 0, level: 1, stamps: [] };
-    let tempCapturedPhoto = null; // Memorizza temporaneamente la foto scattata
+    let userState = { xp: 0, level: 1, stamps: [], wallet_address: "" };
+    let tempCapturedPhoto = null;
 
     // CATALOGO DI 26 MONUMENTI
     const MONUMENTS = {
@@ -370,6 +417,10 @@
       if (userTitle && currentUser.first_name) {
         userTitle.innerText = `Passaporto di ${currentUser.first_name}`;
       }
+      const walletInput = document.getElementById("wallet-input");
+      if (walletInput && userState.wallet_address) {
+        walletInput.value = userState.wallet_address;
+      }
     }
 
     async function syncUserWithCloud() {
@@ -387,11 +438,17 @@
             username: currentUser.username,
             first_name: currentUser.first_name,
             total_xp: userState.xp || 0,
-            level: userState.level || 1
+            level: userState.level || 1,
+            wallet_address: userState.wallet_address || ""
           });
         } else {
           userState.xp = dbUser.total_xp || 0;
           userState.level = dbUser.level || 1;
+          if (dbUser.wallet_address) {
+            userState.wallet_address = dbUser.wallet_address;
+            const walletInput = document.getElementById("wallet-input");
+            if (walletInput) walletInput.value = dbUser.wallet_address;
+          }
         }
 
         const { data: checkinRows } = await sbClient
@@ -408,6 +465,41 @@
       } catch (err) {
         console.warn("Cloud sync offline:", err);
       }
+    }
+
+    // SALVA WALLET SOLANA
+    async function saveUserWallet() {
+      const input = document.getElementById("wallet-input");
+      const msg = document.getElementById("wallet-status-msg");
+      const address = input.value.trim();
+
+      if (address.length < 32 || address.length > 44) {
+        msg.className = "text-[10px] text-rose-400 font-bold";
+        msg.innerText = "❌ Indirizzo Solana non valido. Controlla e riprova.";
+        return;
+      }
+
+      userState.wallet_address = address;
+      localStorage.setItem("meeto_user_state", JSON.stringify(userState));
+
+      if (sbClient) {
+        try {
+          await sbClient.from("users").upsert({
+            telegram_id: currentUser.telegram_id,
+            username: currentUser.username,
+            first_name: currentUser.first_name,
+            total_xp: userState.xp || 0,
+            level: userState.level || 1,
+            wallet_address: address
+          });
+        } catch (e) {
+          console.warn("Salvataggio wallet su Supabase non riuscito:", e);
+        }
+      }
+
+      msg.className = "text-[10px] text-emerald-400 font-bold";
+      msg.innerText = "✅ Wallet collegato! Riceverai l'airdrop su questo indirizzo.";
+      if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
     }
 
     function switchTab(tabId) {
@@ -496,7 +588,7 @@
       }
     }
 
-    // ================= FLUSSO CHECK-IN COMPLETO =================
+    // FLUSSO CHECK-IN
     function openQuizModal() {
       const site = MONUMENTS[activeSiteKey];
       const quiz = site.quiz;
@@ -515,18 +607,16 @@
         btn.onclick = () => {
           if (idx === quiz.correct) {
             if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
-            // Passa al PASSO 2: FOTOCAMERA
             document.getElementById("step-quiz").classList.add("hidden");
             document.getElementById("step-photo").classList.remove("hidden");
           } else {
             if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
-            alert("Risposta non corretta! Osserva meglio il monumento e riprova.");
+            alert("Risposta errata! Osserva bene il monumento e riprova.");
           }
         };
         container.appendChild(btn);
       });
 
-      // Reset step
       document.getElementById("step-quiz").classList.remove("hidden");
       document.getElementById("step-photo").classList.add("hidden");
       document.getElementById("step-gps").classList.add("hidden");
@@ -539,7 +629,6 @@
       document.getElementById("checkin-modal").classList.add("hidden");
     }
 
-    // GESTIONE SCATTO FOTO LIVE
     function handleLivePhoto(event) {
       const file = event.target.files[0];
       if (file) {
@@ -604,7 +693,8 @@
               username: currentUser.username,
               first_name: currentUser.first_name,
               total_xp: userState.xp,
-              level: userState.level
+              level: userState.level,
+              wallet_address: userState.wallet_address || ""
             });
           } catch (e) {
             console.warn("Salvataggio Supabase non riuscito:", e);
@@ -623,9 +713,17 @@
       document.getElementById("pass-level").innerText = userState.level;
       document.getElementById("pass-xp").innerText = userState.xp;
       document.getElementById("pass-stamps").innerText = userState.stamps.length;
+
+      // Aggiorna la barra di progresso riscatto
+      const redeemThreshold = 500;
+      const progressPct = Math.min(Math.round((userState.xp / redeemThreshold) * 100), 100);
+      const progressBar = document.getElementById("redeem-progress-bar");
+      const progressText = document.getElementById("redeem-progress-text");
+      
+      if (progressBar) progressBar.style.width = progressPct + "%";
+      if (progressText) progressText.innerText = `${userState.xp} / ${redeemThreshold} XP`;
     }
 
-    // MOSTRA I TIMBRI CON LA FOTO REALE SCATTATA
     function renderPassport() {
       updateUIBadges();
       const gallery = document.getElementById("stamps-gallery");
@@ -649,7 +747,6 @@
         const card = document.createElement("div");
         card.className = "glass-card p-2.5 rounded-2xl border border-amber-500/40 text-center space-y-2 overflow-hidden shadow-lg";
         
-        // Se c'è la foto scattata la mostra, altrimenti mostra l'icona
         const visualBox = stampPhoto 
           ? `<img src="${stampPhoto}" alt="${stampName}" class="w-full h-28 object-cover rounded-xl border border-zinc-700/80" />`
           : `<div class="w-full h-20 bg-zinc-900 rounded-xl flex items-center justify-center text-3xl">🏛️</div>`;
