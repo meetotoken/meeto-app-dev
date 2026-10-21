@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>$MEETO — Passaporto Culturale & Mappa</title>
+  <title>$MEETO — Passaporto & Mappa</title>
   
   <!-- SDK Telegram -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -96,7 +96,7 @@
       <!-- Mappa Leaflet -->
       <div id="map"></div>
 
-      <!-- Bottom Sheet Monumento -->
+      <!-- Scheda Monumento Selezionato -->
       <div id="monument-sheet" class="absolute bottom-3 left-3 right-3 z-20 glass-card p-4 rounded-2xl max-w-lg mx-auto shadow-2xl">
         <div class="flex justify-between items-start gap-2 mb-1">
           <div>
@@ -199,7 +199,6 @@
         <button onclick="closeCheckInModal()" class="text-zinc-400 hover:text-white font-bold text-base px-1">✕</button>
       </div>
 
-      <!-- STEP 1: GPS -->
       <div id="step-gps" class="space-y-3">
         <div class="text-center py-2">
           <div class="text-3xl mb-1">📍</div>
@@ -211,7 +210,6 @@
         <div id="gps-status-msg" class="text-[11px] text-center text-zinc-400 font-medium"></div>
       </div>
 
-      <!-- STEP 2: FOTOCAMERA LIVE -->
       <div id="step-photo" class="space-y-3 hidden">
         <div class="text-center py-2">
           <div class="text-3xl mb-1">📸</div>
@@ -226,7 +224,6 @@
         </div>
       </div>
 
-      <!-- STEP 3: MICRO-QUIZ -->
       <div id="step-quiz" class="space-y-3 hidden">
         <div class="text-left py-1">
           <span class="text-[10px] text-amber-400 font-mono uppercase font-bold">Dettaglio sul posto:</span>
@@ -235,7 +232,6 @@
         <div id="quiz-options-container" class="space-y-2"></div>
       </div>
 
-      <!-- STEP 4: SUCCESSO -->
       <div id="step-success" class="space-y-3 text-center py-4 hidden">
         <div class="text-5xl animate-bounce">🎉</div>
         <h4 class="font-black text-base text-emerald-400">Visita Convalidata!</h4>
@@ -263,17 +259,25 @@
     </button>
   </nav>
 
-  <!-- MOTORE JAVASCRIPT: SUPABASE CLOUD & MAPPA -->
+  <!-- MOTORE LOGICO E SUPABASE ISOLATO -->
   <script>
-    // CONFIGURAZIONE SUPABASE CLOUD
+    // CONFIGURAZIONE SUPABASE PULITA SENZA CONFLITTI
     const SUPABASE_URL = "https://vhezlswrjifsqhmensmb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_4N818y2Y7UgFeeHJx_u8HQ_oI675Qpg";
-    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    
+    let sbClient = null;
+    try {
+      if (window.supabase && typeof window.supabase.createClient === 'function') {
+        sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      }
+    } catch (err) {
+      console.warn("Inizializzazione Supabase ignorata:", err);
+    }
 
-    // SDK Telegram
+    // TELEGRAM USER
     const tg = window.Telegram ? window.Telegram.WebApp : null;
     let currentUser = {
-      telegram_id: 999999999, // Fallback per browser esterno
+      telegram_id: 999999999,
       username: "Esploratore",
       first_name: "Ospite"
     };
@@ -290,14 +294,14 @@
       } catch (e) {}
     }
 
-    // STATO UTENTE (Sincronizzato Cloud + Locale)
+    // STATO UTENTE
     let userState = {
       xp: 0,
       level: 1,
       stamps: []
     };
 
-    // CATALOGO DI 30+ MONUMENTI IN TUTTA ITALIA
+    // CATALOGO MONUMENTI NAZIONALE
     const MONUMENTS = {
       colosseo: { name: "Colosseo & Fori Imperiali", city: "Roma (Lazio)", lat: 41.89021, lng: 12.49223, radiusMeters: 200, desc: "Anfiteatro Flavio dell'antica Roma, tra le Sette Meraviglie del Mondo.", wiki: "https://it.wikipedia.org/wiki/Colosseo", quiz: { question: "Quale ordine di capitelli si trova al livello più basso degli archi esterni?", options: ["Dorico / Tuscanico", "Corinzio", "Ionico"], correct: 0 } },
       pantheon: { name: "Pantheon", city: "Roma (Lazio)", lat: 41.8986, lng: 12.4769, radiusMeters: 150, desc: "Tempio romano celebre per la sua maestosa cupola in calcestruzzo con oculo centrale.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)", quiz: { question: "Quale celebre maestro del Rinascimento è sepolto all'interno del Pantheon?", options: ["Raffaello Sanzio", "Michelangelo", "Leonardo da Vinci"], correct: 0 } },
@@ -331,64 +335,70 @@
     let activeSiteKey = "colosseo";
     let markers = {};
 
-    // AVVIO APPLICAZIONE
-    window.addEventListener("load", async () => {
-      await syncUserWithCloud();
-      initMap();
+    // AVVIO IMMEDIATO NON BLOCCANTE
+    window.addEventListener("DOMContentLoaded", () => {
+      loadLocalState();
+      try {
+        initMap();
+      } catch (e) {
+        console.error("Errore inizializzazione mappa:", e);
+      }
       fetchDexScreenerPrice();
       setInterval(fetchDexScreenerPrice, 30000);
+
+      // Sincronizzazione cloud in secondo piano (senza bloccare l'interfaccia)
+      setTimeout(syncUserWithCloud, 500);
     });
 
-    // SINCRONIZZAZIONE CON SUPABASE
-    async function syncUserWithCloud() {
-      // Caricamento cache locale
+    function loadLocalState() {
       const saved = localStorage.getItem("meeto_user_state");
       if (saved) {
         try { userState = JSON.parse(saved); } catch (e) {}
       }
-
-      if (supabase) {
-        try {
-          // 1. Controlla o crea utente su Supabase
-          const { data: dbUser, error } = await supabase
-            .from("users")
-            .select("*")
-            .eq("telegram_id", currentUser.telegram_id)
-            .single();
-
-          if (!dbUser && !error) {
-            await supabase.from("users").insert({
-              telegram_id: currentUser.telegram_id,
-              username: currentUser.username,
-              first_name: currentUser.first_name,
-              total_xp: userState.xp || 0,
-              level: userState.level || 1
-            });
-          } else if (dbUser) {
-            userState.xp = dbUser.total_xp || 0;
-            userState.level = dbUser.level || 1;
-          }
-
-          // 2. Scarica i timbri verificati dal database
-          const { data: checkinRows } = await supabase
-            .from("checkins")
-            .select("monument_name")
-            .eq("telegram_id", currentUser.telegram_id);
-
-          if (checkinRows) {
-            userState.stamps = checkinRows.map(r => r.monument_name);
-          }
-
-          localStorage.setItem("meeto_user_state", JSON.stringify(userState));
-        } catch (err) {
-          console.warn("Sincronizzazione cloud offline, uso memoria locale:", err);
-        }
-      }
-
       updateUIBadges();
       const userTitle = document.getElementById("pass-user-title");
       if (userTitle && currentUser.first_name) {
         userTitle.innerText = `Passaporto di ${currentUser.first_name}`;
+      }
+    }
+
+    // SINCRONIZZAZIONE SUPABASE
+    async function syncUserWithCloud() {
+      if (!sbClient) return;
+
+      try {
+        const { data: dbUser } = await sbClient
+          .from("users")
+          .select("*")
+          .eq("telegram_id", currentUser.telegram_id)
+          .maybeSingle();
+
+        if (!dbUser) {
+          await sbClient.from("users").upsert({
+            telegram_id: currentUser.telegram_id,
+            username: currentUser.username,
+            first_name: currentUser.first_name,
+            total_xp: userState.xp || 0,
+            level: userState.level || 1
+          });
+        } else {
+          userState.xp = dbUser.total_xp || 0;
+          userState.level = dbUser.level || 1;
+        }
+
+        const { data: checkinRows } = await sbClient
+          .from("checkins")
+          .select("monument_name")
+          .eq("telegram_id", currentUser.telegram_id);
+
+        if (checkinRows && checkinRows.length > 0) {
+          userState.stamps = checkinRows.map(r => r.monument_name);
+        }
+
+        localStorage.setItem("meeto_user_state", JSON.stringify(userState));
+        updateUIBadges();
+      } catch (err) {
+        console.warn("Cloud sync non riuscito:", err);
       }
     }
 
@@ -590,26 +600,27 @@
         userState.xp = (userState.xp || 0) + 100;
         userState.level = Math.floor(userState.xp / 200) + 1;
         
-        // Salvataggio cache locale
         localStorage.setItem("meeto_user_state", JSON.stringify(userState));
         updateUIBadges();
 
-        // SALVATAGGIO CLOUD SU SUPABASE
-        if (supabase) {
+        if (sbClient) {
           try {
-            await supabase.from("checkins").insert({
+            await sbClient.from("checkins").insert({
               telegram_id: currentUser.telegram_id,
               monument_name: siteName,
               monument_city: siteCity,
               xp_earned: 100
             });
 
-            await supabase.from("users").update({
+            await sbClient.from("users").upsert({
+              telegram_id: currentUser.telegram_id,
+              username: currentUser.username,
+              first_name: currentUser.first_name,
               total_xp: userState.xp,
               level: userState.level
-            }).eq("telegram_id", currentUser.telegram_id);
+            });
           } catch (e) {
-            console.error("Errore salvataggio Supabase:", e);
+            console.warn("Salvataggio Supabase non riuscito:", e);
           }
         }
       }
