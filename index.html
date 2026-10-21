@@ -86,7 +86,7 @@
         <button onclick="jumpToCity('siena')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🐎 Siena</button>
         <button onclick="jumpToCity('genova')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">⚓ Genova</button>
         <button onclick="jumpToCity('matera')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🪨 Matera</button>
-        <button onclick="jumpToCity('puglia')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Puglia</button>
+        <button onclick="jumpToCity('bari')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Puglia</button>
         <button onclick="jumpToCity('palermo')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌴 Palermo</button>
         <button onclick="jumpToCity('catania')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌋 Catania</button>
         <button onclick="jumpToCity('agrigento')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏺 Agrigento</button>
@@ -96,7 +96,7 @@
       <!-- Mappa Leaflet -->
       <div id="map"></div>
 
-      <!-- Scheda Monumento Selezionato (Ancorata sopra la mappa) -->
+      <!-- Scheda Monumento Selezionato -->
       <div id="monument-sheet" class="absolute bottom-4 left-3 right-3 z-[1000] glass-card p-4 rounded-2xl max-w-lg mx-auto shadow-2xl">
         <div class="flex justify-between items-start gap-2 mb-1.5">
           <div>
@@ -125,7 +125,7 @@
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center">
         <div class="text-4xl mb-1">📜</div>
         <h2 class="text-lg font-black text-white gold-gradient-text" id="pass-user-title">Passaporto Explorer Ufficiale</h2>
-        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1" id="pass-user-subtitle">Colleziona visite storiche verificate e salva i timbri nel cloud.</p>
+        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1" id="pass-user-subtitle">Colleziona visite storiche, scatta le tue foto ricordo e salva i timbri nel cloud.</p>
         
         <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-zinc-800 text-center">
           <div>
@@ -144,15 +144,13 @@
       </div>
 
       <div class="space-y-2">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">I Tuoi Timbri Sbloccati</h3>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">I Tuoi Timbri e Foto Ricordo</h3>
         <div id="stamps-gallery" class="grid grid-cols-2 gap-3"></div>
       </div>
     </section>
 
     <!-- ==================== TAB 3: TOKEN & MERCATO ==================== -->
     <section id="tab-token" class="w-full px-4 py-5 space-y-4 hidden">
-      
-      <!-- Card Metriche Prezzo & Liquidità -->
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 space-y-3">
         <div class="flex justify-between items-start">
           <div>
@@ -165,7 +163,6 @@
           </span>
         </div>
 
-        <!-- TASTI RAPIDI DI ACQUISTO E SCAMBIO -->
         <div class="grid grid-cols-2 gap-2.5 pt-2">
           <a href="https://pump.fun/coin/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" 
              class="py-3 px-3 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-yellow-500 text-black flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/20 active:scale-95 transition">
@@ -178,7 +175,6 @@
         </div>
       </div>
 
-      <!-- Tokenomics Reale 70 / 20 / 10 -->
       <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
         <h3 class="text-xs font-bold text-white uppercase tracking-wider">Tokenomics Ufficiale (1B Supply)</h3>
         <div class="w-full h-3 bg-black/60 rounded-full overflow-hidden flex border border-zinc-800">
@@ -193,7 +189,6 @@
         </div>
       </div>
 
-      <!-- Trasparenza CA -->
       <div class="glass-card p-3 rounded-xl flex justify-between items-center text-xs">
         <div class="truncate mr-2"><span class="text-zinc-500 font-bold">CA:</span> <code class="text-amber-300 font-mono">4MPMa8mdsrja...pump</code></div>
         <button onclick="navigator.clipboard.writeText('4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump'); alert('Contract Address copiato!');" 
@@ -201,50 +196,71 @@
           Copia CA
         </button>
       </div>
-
-      <!-- Info Utilità -->
-      <div class="p-3 bg-black/40 rounded-xl border border-zinc-800/80 text-[11px] text-zinc-400 leading-relaxed">
-        💡 <b>Nota:</b> Il token $MEETO vive sulla blockchain decentralizzata di Solana. Il grafico in tempo reale e il form di acquisto con il tuo wallet Phantom/Solflare sono consultabili direttamente su Pump.fun.
-      </div>
     </section>
 
   </main>
 
-  <!-- ================= MODALE QUIZ & CHECK-IN ================= -->
+  <!-- ================= MODALE: QUIZ + FOTOCAMERA LIVE + GPS ================= -->
   <div id="checkin-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[2000] hidden flex items-center justify-center p-4">
-    <div class="glass-card w-full max-w-sm rounded-2xl p-5 border border-amber-500/40 space-y-4">
+    <div class="glass-card w-full max-w-sm rounded-2xl p-5 border border-amber-500/40 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
-        <h3 class="font-bold text-sm text-white truncate" id="modal-monument-name">Quiz Culturale</h3>
+        <h3 class="font-bold text-sm text-white truncate" id="modal-monument-name">Quiz & Check-in</h3>
         <button onclick="closeQuizModal()" class="text-zinc-400 hover:text-white font-bold text-base px-1">✕</button>
       </div>
 
-      <!-- STEP 1: QUIZ IMMEDIATO -->
+      <!-- PASSO 1: IL QUIZ CULTURALE -->
       <div id="step-quiz" class="space-y-3">
         <div class="text-left py-1">
-          <span class="text-[10px] text-amber-400 font-mono uppercase font-bold">🎯 Dettaglio sul posto:</span>
+          <span class="text-[10px] text-amber-400 font-mono uppercase font-bold">🎯 Passo 1: Domanda sul monumento</span>
           <p id="quiz-question-text" class="text-xs font-bold text-white mt-1 leading-snug">Caricamento domanda...</p>
         </div>
         <div id="quiz-options-container" class="space-y-2"></div>
       </div>
 
-      <!-- STEP 2: CONFERMA POSIZIONE -->
-      <div id="step-gps" class="space-y-3 hidden">
-        <div class="text-center py-1">
+      <!-- PASSO 2: SCATTO DELLA FOTO RICORDO (ORA BEN VISIBILE) -->
+      <div id="step-photo" class="space-y-3 hidden text-center">
+        <div class="py-1">
+          <span class="text-[10px] text-emerald-400 font-mono uppercase font-bold">✅ Risposta Esatta!</span>
+          <h4 class="text-sm font-bold text-white mt-0.5">📸 Passo 2: Foto Ricordo dal Vivo</h4>
+          <p class="text-[11px] text-zinc-300 mt-1">Inquadra il monumento o scatta un selfie per timbrare il passaporto:</p>
+        </div>
+
+        <!-- TASTO CHE APRE LA FOTOCAMERA -->
+        <label class="block w-full py-3 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-yellow-500 text-black cursor-pointer hover:opacity-90 active:scale-95 transition shadow-lg shadow-amber-500/20">
+          📷 Apri Fotocamera & Scatta Foto
+          <input type="file" accept="image/*" capture="camera" class="hidden" onchange="handleLivePhoto(event)" />
+        </label>
+
+        <!-- ANTEPRIMA DELLA FOTO SCATTATA -->
+        <div id="photo-preview-container" class="hidden space-y-2 pt-2">
+          <img id="photo-preview-img" src="" alt="Anteprima Foto" class="w-full h-40 object-cover rounded-xl border border-amber-500/40 shadow-md" />
+          <span class="text-[11px] text-emerald-400 font-bold block">✨ Foto acquisita con successo!</span>
+          
+          <!-- TASTO PER PASSARE AL GPS -->
+          <button onclick="proceedToGPS()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-amber-300 hover:bg-zinc-700 active:scale-95 transition">
+            ➡️ Prosegui alla Convalida GPS
+          </button>
+        </div>
+      </div>
+
+      <!-- PASSO 3: CONVALIDA GPS -->
+      <div id="step-gps" class="space-y-3 hidden text-center">
+        <div class="py-1">
           <div class="text-3xl mb-1">📍</div>
-          <p class="text-xs text-emerald-400 font-bold">Risposta Esatta!</p>
-          <p class="text-[11px] text-zinc-300">Conferma la visita sul posto per registrare il timbro nel passaporto.</p>
+          <h4 class="text-sm font-bold text-white">Passo 3: Convalida Posizione</h4>
+          <p class="text-[11px] text-zinc-300">Conferma che sei nei pressi del monumento per registrare la visita.</p>
         </div>
         <button id="btn-verify-gps" onclick="verifyGPSAndSave()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-amber-400 text-black shadow-md">
-          Conferma Posizione GPS & Timbro
+          Conferma Posizione GPS & Registra Timbro
         </button>
         <div id="gps-status-msg" class="text-[11px] text-center text-zinc-400 font-medium"></div>
       </div>
 
-      <!-- STEP 3: SUCCESSO -->
+      <!-- PASSO 4: SUCCESSO -->
       <div id="step-success" class="space-y-3 text-center py-4 hidden">
         <div class="text-5xl animate-bounce">🎉</div>
         <h4 class="font-black text-base text-emerald-400">Visita Convalidata!</h4>
-        <p class="text-xs text-zinc-300">Hai guadagnato <b class="text-amber-400">+100 XP</b> e sbloccato il timbro nel passaporto.</p>
+        <p class="text-xs text-zinc-300">Hai guadagnato <b class="text-amber-400">+100 XP</b> e salvato il timbro con la tua foto nel passaporto.</p>
         <button onclick="finishCheckIn()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-emerald-500 text-black mt-2">
           Guarda nel Passaporto
         </button>
@@ -268,9 +284,8 @@
     </button>
   </nav>
 
-  <!-- JAVASCRIPT MOTORE COMPLETO -->
+  <!-- MOTORE JAVASCRIPT COMPLETO -->
   <script>
-    // Configurazione Supabase protetta
     const SUPABASE_URL = "https://vhezlswrjifsqhmensmb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_4N818y2Y7UgFeeHJx_u8HQ_oI675Qpg";
     
@@ -280,16 +295,11 @@
         sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       }
     } catch (err) {
-      console.warn("Supabase fallback locale:", err);
+      console.warn("Supabase fallback:", err);
     }
 
-    // Telegram User
     const tg = window.Telegram ? window.Telegram.WebApp : null;
-    let currentUser = {
-      telegram_id: 999999999,
-      username: "Esploratore",
-      first_name: "Ospite"
-    };
+    let currentUser = { telegram_id: 999999999, username: "Esploratore", first_name: "Ospite" };
 
     if (tg) {
       try {
@@ -303,54 +313,33 @@
       } catch (e) {}
     }
 
-    // Stato Utente
     let userState = { xp: 0, level: 1, stamps: [] };
+    let tempCapturedPhoto = null; // Memorizza temporaneamente la foto scattata
 
-    // CATALOGO DI 26 MONUMENTI ICONICI ITALIANI
+    // CATALOGO DI 26 MONUMENTI
     const MONUMENTS = {
-      // ROMA
       colosseo: { name: "Colosseo & Fori Imperiali", city: "Roma (Lazio)", lat: 41.89021, lng: 12.49223, radiusMeters: 200, desc: "Anfiteatro Flavio dell'antica Roma, tra le Sette Meraviglie del Mondo.", wiki: "https://it.wikipedia.org/wiki/Colosseo", quiz: { question: "Quale ordine di capitelli si trova al livello più basso degli archi esterni?", options: ["Dorico / Tuscanico", "Corinzio", "Ionico"], correct: 0 } },
       pantheon: { name: "Pantheon", city: "Roma (Lazio)", lat: 41.8986, lng: 12.4769, radiusMeters: 150, desc: "Tempio romano celebre per la sua maestosa cupola in calcestruzzo con oculo centrale.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)", quiz: { question: "Quale celebre maestro del Rinascimento è sepolto all'interno del Pantheon?", options: ["Raffaello Sanzio", "Michelangelo", "Leonardo da Vinci"], correct: 0 } },
       fontana_trevi: { name: "Fontana di Trevi", city: "Roma (Lazio)", lat: 41.9009, lng: 12.4833, radiusMeters: 120, desc: "La più imponente e celebre tra le fontane barocche di Roma.", wiki: "https://it.wikipedia.org/wiki/Fontana_di_Trevi", quiz: { question: "Quale divinità mitologica troneggia sulla conchiglia al centro?", options: ["Oceano (Nettuno)", "Apollo", "Mercurio"], correct: 0 } },
       castel_sant_angelo: { name: "Castel Sant'Angelo", city: "Roma (Lazio)", lat: 41.9031, lng: 12.4663, radiusMeters: 150, desc: "Mausoleo dell'imperatore Adriano trasformato nei secoli in fortezza pontificia.", wiki: "https://it.wikipedia.org/wiki/Castel_Sant%27Angelo", quiz: { question: "Quale statua bronzea svetta sulla sommità del castello?", options: ["L'Arcangelo Michele", "San Pietro", "Cesare Augusto"], correct: 0 } },
-      
-      // FIRENZE & TOSCANA
       piazza_duomo_firenze: { name: "Piazza del Duomo & Cupola", city: "Firenze (Toscana)", lat: 43.7731, lng: 11.2560, radiusMeters: 150, desc: "Cattedrale di Santa Maria del Fiore con la rivoluzionaria cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)", quiz: { question: "Come viene chiamata la celebre porta orientale in bronzo dorato del Battistero?", options: ["Porta del Paradiso", "Porta dei Martiri", "Porta d'Oro"], correct: 0 } },
       galleria_uffizi: { name: "Galleria degli Uffizi", city: "Firenze (Toscana)", lat: 43.7677, lng: 11.2553, radiusMeters: 150, desc: "Uno dei musei d'arte più prestigiosi e visitati al mondo.", wiki: "https://it.wikipedia.org/wiki/Galleria_degli_Uffizi", quiz: { question: "Quale dipinto di Botticelli raffigura la dea della bellezza su una conchiglia marina?", options: ["La Nascita di Venere", "La Primavera", "Pallade"], correct: 0 } },
       ponte_vecchio: { name: "Ponte Vecchio", city: "Firenze (Toscana)", lat: 43.7680, lng: 11.2531, radiusMeters: 120, desc: "Il ponte medievale simbolo di Firenze, noto per le sue storiche botteghe orafe.", wiki: "https://it.wikipedia.org/wiki/Ponte_Vecchio", quiz: { question: "Quale corridoio sopraelevato attraversa il ponte per collegare Palazzo Vecchio a Palazzo Pitti?", options: ["Corridoio Vasariano", "Corridoio Mediceo", "Passetto Borbonico"], correct: 0 } },
       piazza_miracoli_pisa: { name: "Piazza dei Miracoli & Torre", city: "Pisa (Toscana)", lat: 43.7230, lng: 10.3966, radiusMeters: 180, desc: "Patrimonio UNESCO con la Cattedrale, il Battistero e la famosa Torre Pendente.", wiki: "https://it.wikipedia.org/wiki/Torre_di_Pisa", quiz: { question: "Qual è la funzione architettonica originaria della Torre Pendente?", options: ["Campanile della cattedrale", "Torre di avvistamento militare", "Faro fluviale"], correct: 0 } },
       piazza_campo_siena: { name: "Piazza del Campo", city: "Siena (Toscana)", lat: 43.3184, lng: 11.3316, radiusMeters: 150, desc: "Piazza monumentale a conchiglia pavimentata in mattoni rossi, teatro del Palio di Siena.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Campo", quiz: { question: "In quanti spicchi è suddivisa la pavimentazione in mattoni rossi della conchiglia?", options: ["9 spicchi", "7 spicchi", "12 spicchi"], correct: 0 } },
-
-      // VENEZIA & VENETO
       piazza_san_marco: { name: "Piazza San Marco", city: "Venezia (Veneto)", lat: 45.4342, lng: 12.3385, radiusMeters: 180, desc: "Il salotto d'Europa dominato dai mosaici dorati della Basilica e dal Campanile.", wiki: "https://it.wikipedia.org/wiki/Piazza_San_Marco", quiz: { question: "Quale animale alato svetta sulla colonna in piazza accanto a San Teodoro?", options: ["Il Leone di San Marco", "L'Aquila Imperiale", "Il Grifone"], correct: 0 } },
       ponte_rialto: { name: "Ponte di Rialto", city: "Venezia (Veneto)", lat: 45.4380, lng: 12.3359, radiusMeters: 100, desc: "Il ponte più antico e scenografico che attraversa il Canal Grande.", wiki: "https://it.wikipedia.org/wiki/Ponte_di_Rialto", quiz: { question: "In quale pietra bianca tipica della costa adriatica è costruito il ponte?", options: ["Pietra d'Istria", "Marmo di Carrara", "Travertino"], correct: 0 } },
       arena_verona: { name: "Arena di Verona", city: "Verona (Veneto)", lat: 45.4384, lng: 10.9916, radiusMeters: 150, desc: "Anfiteatro romano perfettamente conservato, capitale mondiale dell'opera lirica.", wiki: "https://it.wikipedia.org/wiki/Arena_di_Verona", quiz: { question: "In quale grande piazza monumentale del centro di Verona sorge l'Arena?", options: ["Piazza Bra", "Piazza delle Erbe", "Piazza dei Signori"], correct: 0 } },
-
-      // NAPOLI & CAMPANIA
       piazza_plebiscito: { name: "Piazza del Plebiscito", city: "Napoli (Campania)", lat: 40.8359, lng: 14.2488, radiusMeters: 180, desc: "La piazza monumentale simbolo di Napoli con il grande colonnato neoclassico.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Plebiscito", quiz: { question: "Quale basilica si affaccia al centro del colonnato?", options: ["San Francesco di Paola", "Santa Chiara", "San Domenico"], correct: 0 } },
       spaccanapoli: { name: "Spaccanapoli & Cristo Velato", city: "Napoli (Campania)", lat: 40.8493, lng: 14.2549, radiusMeters: 150, desc: "Il decumano del centro storico, custode del capolavoro scultoreo del Cristo Velato.", wiki: "https://it.wikipedia.org/wiki/Spaccanapoli", quiz: { question: "Quale celebre scultura marmorea settecentesca è custodita nella Cappella Sansevero?", options: ["Il Cristo Velato", "La Pietà", "Il David"], correct: 0 } },
       pompei: { name: "Scavi Archeologici di Pompei", city: "Pompei (Campania)", lat: 40.7509, lng: 14.4870, radiusMeters: 300, desc: "L'antica città romana preservata per secoli dalle ceneri dell'eruzione del 79 d.C.", wiki: "https://it.wikipedia.org/wiki/Scavi_archeologici_di_Pompei", quiz: { question: "Quale vulcano incombe alle spalle dell'antico Foro civile di Pompei?", options: ["Il Vesuvio", "L'Etna", "I Campi Flegrei"], correct: 0 } },
-
-      // MILANO & LOMBARDIA
       duomo_milano: { name: "Duomo di Milano", city: "Milano (Lombardia)", lat: 45.4641, lng: 9.1919, radiusMeters: 200, desc: "Cattedrale gotica imponente rivestita in marmo di Candoglia con oltre 3.400 statue.", wiki: "https://it.wikipedia.org/wiki/Duomo_di_Milano", quiz: { question: "Quale statua dorata svetta sulla guglia più alta del Duomo?", options: ["La Madonnina", "Sant'Ambrogio", "San Michele Arcangelo"], correct: 0 } },
       castello_sforzesco: { name: "Castello Sforzesco", city: "Milano (Lombardia)", lat: 45.4705, lng: 9.1793, radiusMeters: 200, desc: "Grande fortezza rinascimentale dei duchi di Milano, oggi polo museale.", wiki: "https://it.wikipedia.org/wiki/Castello_Sforzesco", quiz: { question: "Come si chiama la torre d'ingresso monumentale del castello?", options: ["Torre del Filarete", "Torre Falconiera", "Torre del Parco"], correct: 0 } },
-
-      // PIEMONTE
       mole_torino: { name: "Mole Antonelliana", city: "Torino (Piemonte)", lat: 45.0689, lng: 7.6930, radiusMeters: 150, desc: "Monumento simbolo di Torino, sede del Museo Nazionale del Cinema.", wiki: "https://it.wikipedia.org/wiki/Mole_Antonelliana", quiz: { question: "Su quale moneta italiana in euro è incisa la sagoma della Mole Antonelliana?", options: ["2 centesimi", "5 centesimi", "1 euro"], correct: 0 } },
-
-      // EMILIA-ROMAGNA
       due_torri_bo: { name: "Le Due Torri (Asinelli)", city: "Bologna (Emilia-Romagna)", lat: 44.4943, lng: 11.3468, radiusMeters: 120, desc: "Le torri pendenti medievali simbolo dell'antica Bologna turrita.", wiki: "https://it.wikipedia.org/wiki/Torre_degli_Asinelli", quiz: { question: "Delle due torri affiancate, qual è quella notevolmente più alta (97 metri)?", options: ["Torre degli Asinelli", "Torre Garisenda", "Hanno la stessa altezza"], correct: 0 } },
-
-      // LIGURIA
       porto_antico_ge: { name: "Porto Antico di Genova", city: "Genova (Liguria)", lat: 44.4102, lng: 8.9275, radiusMeters: 180, desc: "L'antico porto restaurato da Renzo Piano con il grande Acquario e il Bigo.", wiki: "https://it.wikipedia.org/wiki/Porto_antico_di_Genova", quiz: { question: "Quale celebre architetto genovese ha curato il recupero del Porto Antico?", options: ["Renzo Piano", "Carlo Scarpa", "Gae Aulenti"], correct: 0 } },
-
-      // BASILICATA
       sassi_matera: { name: "I Sassi di Matera", city: "Matera (Basilicata)", lat: 40.6669, lng: 16.6113, radiusMeters: 250, desc: "Antica città scavata nella roccia calcarea, patrimonio mondiale UNESCO.", wiki: "https://it.wikipedia.org/wiki/Sassi_di_Matera", quiz: { question: "Quali sono i due grandi rioni scavati nella roccia che compongono i Sassi?", options: ["Caveoso e Barisano", "Inferiore e Superiore", "Antico e Nuovo"], correct: 0 } },
-
-      // PUGLIA
       castel_monte: { name: "Castel del Monte", city: "Andria (Puglia)", lat: 41.0847, lng: 16.2709, radiusMeters: 200, desc: "Fortezza ottagonale voluta dall'imperatore Federico II di Svevia nel XIII secolo.", wiki: "https://it.wikipedia.org/wiki/Castel_del_Monte", quiz: { question: "Quale figura geometrica caratterizza la pianta dell'intero castello e delle torri?", options: ["Ottagono", "Esagono", "Pentagono"], correct: 0 } },
-
-      // SICILIA
       cattedrale_palermo: { name: "Cattedrale di Palermo", city: "Palermo (Sicilia)", lat: 38.1144, lng: 13.3561, radiusMeters: 150, desc: "Monumento arabo-normanno con le tombe reali normanne e sveve.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Palermo", quiz: { question: "Quale imperatore del Sacro Romano Impero è sepolto al suo interno?", options: ["Federico II di Svevia", "Carlo V", "Guglielmo II"], correct: 0 } },
       duomo_catania: { name: "Piazza Duomo & Liotru", city: "Catania (Sicilia)", lat: 37.5027, lng: 15.0873, radiusMeters: 150, desc: "Cuore del barocco catanese in pietra lavica con la fontana dell'Elefante.", wiki: "https://it.wikipedia.org/wiki/Fontana_dell%27Elefante", quiz: { question: "Quale animale in pietra lavica sorregge l'obelisco al centro della piazza?", options: ["Un Elefante (Liotru)", "Un Cavallo", "Un Leone"], correct: 0 } },
       valle_templi: { name: "Valle dei Templi", city: "Agrigento (Sicilia)", lat: 37.2905, lng: 13.5866, radiusMeters: 250, desc: "Parco archeologico monumentale greco con il Tempio della Concordia.", wiki: "https://it.wikipedia.org/wiki/Valle_dei_Templi", quiz: { question: "In quale ordine architettonico classico greco sono costruiti i templi?", options: ["Dorico", "Ionico", "Corinzio"], correct: 0 } }
@@ -360,7 +349,6 @@
     let activeSiteKey = "colosseo";
     let markers = {};
 
-    // AVVIO IMMEDIATO
     window.addEventListener("DOMContentLoaded", () => {
       loadLocalState();
       try {
@@ -422,7 +410,6 @@
       }
     }
 
-    // CAMBIO SCHEDA
     function switchTab(tabId) {
       document.getElementById("tab-map").classList.add("hidden");
       document.getElementById("tab-passport").classList.add("hidden");
@@ -448,7 +435,6 @@
       window.scrollTo(0, 0);
     }
 
-    // INIZIALIZZAZIONE MAPPA
     function initMap() {
       const initialSite = MONUMENTS[activeSiteKey];
       map = L.map("map", { zoomControl: false }).setView([initialSite.lat, initialSite.lng], 13);
@@ -510,11 +496,12 @@
       }
     }
 
-    // GESTIONE QUIZ IMMEDIATO
+    // ================= FLUSSO CHECK-IN COMPLETO =================
     function openQuizModal() {
       const site = MONUMENTS[activeSiteKey];
       const quiz = site.quiz;
 
+      tempCapturedPhoto = null;
       document.getElementById("modal-monument-name").innerText = site.name;
       document.getElementById("quiz-question-text").innerText = quiz.question;
 
@@ -528,8 +515,9 @@
         btn.onclick = () => {
           if (idx === quiz.correct) {
             if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+            // Passa al PASSO 2: FOTOCAMERA
             document.getElementById("step-quiz").classList.add("hidden");
-            document.getElementById("step-gps").classList.remove("hidden");
+            document.getElementById("step-photo").classList.remove("hidden");
           } else {
             if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
             alert("Risposta non corretta! Osserva meglio il monumento e riprova.");
@@ -538,15 +526,37 @@
         container.appendChild(btn);
       });
 
+      // Reset step
       document.getElementById("step-quiz").classList.remove("hidden");
+      document.getElementById("step-photo").classList.add("hidden");
       document.getElementById("step-gps").classList.add("hidden");
       document.getElementById("step-success").classList.add("hidden");
-      document.getElementById("gps-status-msg").innerText = "";
+      document.getElementById("photo-preview-container").classList.add("hidden");
       document.getElementById("checkin-modal").classList.remove("hidden");
     }
 
     function closeQuizModal() {
       document.getElementById("checkin-modal").classList.add("hidden");
+    }
+
+    // GESTIONE SCATTO FOTO LIVE
+    function handleLivePhoto(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          tempCapturedPhoto = e.target.result;
+          document.getElementById("photo-preview-img").src = tempCapturedPhoto;
+          document.getElementById("photo-preview-container").classList.remove("hidden");
+          if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function proceedToGPS() {
+      document.getElementById("step-photo").classList.add("hidden");
+      document.getElementById("step-gps").classList.remove("hidden");
     }
 
     function verifyGPSAndSave() {
@@ -555,20 +565,25 @@
       btn.innerText = "Convalida in corso...";
       btn.disabled = true;
 
-      saveCheckIn(site.name, site.city);
+      saveCheckIn(site.name, site.city, tempCapturedPhoto);
       if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
 
       setTimeout(() => {
         document.getElementById("step-gps").classList.add("hidden");
         document.getElementById("step-success").classList.remove("hidden");
-        btn.innerText = "Conferma Posizione GPS & Timbro";
+        btn.innerText = "Conferma Posizione GPS & Registra Timbro";
         btn.disabled = false;
       }, 500);
     }
 
-    async function saveCheckIn(siteName, siteCity) {
-      if (!userState.stamps.includes(siteName)) {
-        userState.stamps.push(siteName);
+    async function saveCheckIn(siteName, siteCity, photoData) {
+      if (!userState.stamps.some(s => s.name === siteName)) {
+        userState.stamps.push({
+          name: siteName,
+          city: siteCity,
+          photo: photoData || null,
+          date: new Date().toLocaleDateString('it-IT')
+        });
         userState.xp = (userState.xp || 0) + 100;
         userState.level = Math.floor(userState.xp / 200) + 1;
         
@@ -610,6 +625,7 @@
       document.getElementById("pass-stamps").innerText = userState.stamps.length;
     }
 
+    // MOSTRA I TIMBRI CON LA FOTO REALE SCATTATA
     function renderPassport() {
       updateUIBadges();
       const gallery = document.getElementById("stamps-gallery");
@@ -620,25 +636,35 @@
           <div class="col-span-2 glass-card p-5 rounded-2xl text-center border-dashed border-zinc-700">
             <span class="text-3xl opacity-30">🏛️</span>
             <p class="text-xs text-zinc-400 mt-2 font-medium">Nessun timbro sbloccato.</p>
-            <p class="text-[10px] text-zinc-500">Raggiungi uno dei monumenti sulla mappa per timbrare il passaporto!</p>
+            <p class="text-[10px] text-zinc-500">Fai il tuo primo check-in sulla mappa per scattare una foto e inaugurare il passaporto!</p>
           </div>
         `;
         return;
       }
 
-      userState.stamps.forEach(stampName => {
+      userState.stamps.forEach(stamp => {
+        const stampName = typeof stamp === 'string' ? stamp : stamp.name;
+        const stampPhoto = stamp.photo || null;
+
         const card = document.createElement("div");
-        card.className = "glass-card p-3 rounded-2xl border border-amber-500/40 text-center";
+        card.className = "glass-card p-2.5 rounded-2xl border border-amber-500/40 text-center space-y-2 overflow-hidden shadow-lg";
+        
+        // Se c'è la foto scattata la mostra, altrimenti mostra l'icona
+        const visualBox = stampPhoto 
+          ? `<img src="${stampPhoto}" alt="${stampName}" class="w-full h-28 object-cover rounded-xl border border-zinc-700/80" />`
+          : `<div class="w-full h-20 bg-zinc-900 rounded-xl flex items-center justify-center text-3xl">🏛️</div>`;
+
         card.innerHTML = `
-          <div class="text-2xl mb-1">🏛️</div>
-          <h4 class="text-xs font-bold text-white truncate">${stampName}</h4>
-          <span class="inline-block mt-1 text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono font-bold">Cloud Verificato</span>
+          ${visualBox}
+          <div>
+            <h4 class="text-xs font-bold text-white truncate">${stampName}</h4>
+            <span class="inline-block mt-1 text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono font-bold">Verificato</span>
+          </div>
         `;
         gallery.appendChild(card);
       });
     }
 
-    // GESTIONE FALLBACK DATI ON-CHAIN
     async function fetchDexScreenerPrice() {
       const tokenAddress = "4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump";
       const priceDisplay = document.getElementById("token-price-display");
