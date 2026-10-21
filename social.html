@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="it" class="h-full w-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>$MEETO — Social & Meetups</title>
+  
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    * { -webkit-tap-highlight-color: transparent; }
+    body { background-color: #0B0E14; color: #E2E8F0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .glass-card { background: rgba(18, 22, 31, 0.85); backdrop-filter: blur(14px); border: 1px solid rgba(212, 175, 55, 0.25); }
+    .gold-gradient-text { background: linear-gradient(135deg, #FFF5C0 0%, #D4AF37 50%, #AA7C11 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-24">
+
+  <!-- HEADER -->
+  <header class="w-full border-b border-amber-500/20 bg-black/80 backdrop-blur-md sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
+    <a href="index.html" class="flex items-center space-x-2">
+      <span class="text-xl">👥</span>
+      <span class="font-extrabold text-lg tracking-wider gold-gradient-text">$MEETO Social</span>
+    </a>
+    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+      Community
+    </span>
+  </header>
+
+  <!-- CONTENUTO PRINCIPALE -->
+  <main class="max-w-4xl mx-auto w-full px-4 py-6 space-y-6">
+
+    <!-- ACCESSO COMMUNITY TELEGRAM -->
+    <div class="glass-card rounded-2xl p-4 border border-amber-500/30 flex items-center justify-between bg-gradient-to-r from-amber-500/10 to-transparent">
+      <div class="space-y-0.5">
+        <h3 class="font-bold text-sm text-white flex items-center gap-1.5">💬 Canale Ufficiale Telegram</h3>
+        <p class="text-[11px] text-zinc-400">Unisciti agli annunci per aggiornamenti sullo sviluppo.</p>
+      </div>
+      <a href="https://t.me/MeetoOfficial" target="_blank" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 shrink-0">
+        Apri Canale
+      </a>
+    </div>
+
+    <!-- PROSSIMI MEETUP CULTURALI -->
+    <section class="space-y-3">
+      <h2 class="text-base font-bold text-white flex items-center gap-2">
+        <span>📅</span> Eventi Culturali & Tour di Gruppo
+      </h2>
+
+      <!-- EVENTO 1 -->
+      <div class="glass-card rounded-2xl p-4 space-y-3 border border-amber-500/30">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-[10px] font-mono text-amber-400 uppercase tracking-wider font-bold">Roma • Sabato Ore 15:30</span>
+            <h3 class="font-bold text-sm text-white mt-0.5">🏛️ Tour Archeologico ai Fori Imperiali</h3>
+          </div>
+          <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            Aperto
+          </span>
+        </div>
+        <p class="text-xs text-zinc-300 bg-black/40 p-2.5 rounded-xl border border-zinc-800">
+          Incontro al Colosseo per passeggiata archeologica e check-in di gruppo sul passaporto (+100 XP).
+        </p>
+      </div>
+
+      <!-- EVENTO 2 -->
+      <div class="glass-card rounded-2xl p-4 space-y-3 border border-zinc-800">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-[10px] font-mono text-amber-400 uppercase tracking-wider font-bold">Firenze • Domenica Ore 11:00</span>
+            <h3 class="font-bold text-sm text-white mt-0.5">🎨 Passeggiata del Rinascimento agli Uffizi</h3>
+          </div>
+          <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            Aperto
+          </span>
+        </div>
+        <p class="text-xs text-zinc-300 bg-black/40 p-2.5 rounded-xl border border-zinc-800">
+          Visita dei capolavori rinascimentali con timbro esclusivo sul passaporto.
+        </p>
+      </div>
+    </section>
+
+    <!-- CLASSIFICA TOP ESPLORATORI -->
+    <section class="glass-card rounded-2xl p-5 border border-amber-500/30 space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <span>🏆</span> Top Esploratori della Settimana
+        </h2>
+        <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-mono font-bold">Live</span>
+      </div>
+
+      <div class="space-y-2 text-xs">
+        <div class="flex justify-between items-center bg-black/40 p-2.5 rounded-xl border border-amber-500/30">
+          <div class="flex items-center gap-3">
+            <span class="text-base font-black text-amber-400">🥇</span>
+            <div>
+              <p class="font-bold text-white">@Alessandro_M</p>
+              <p class="text-[10px] text-zinc-400">14 Check-In • Badge Imperiale</p>
+            </div>
+          </div>
+          <span class="font-mono font-bold text-amber-300">1,400 XP</span>
+        </div>
+
+        <div class="flex justify-between items-center bg-black/40 p-2.5 rounded-xl border border-zinc-800">
+          <div class="flex items-center gap-3">
+            <span class="text-base font-black text-zinc-300">🥈</span>
+            <div>
+              <p class="font-bold text-white">@Giulia_Culture</p>
+              <p class="text-[10px] text-zinc-400">11 Check-In • Badge Rinascimento</p>
+            </div>
+          </div>
+          <span class="font-mono font-bold text-amber-300">1,100 XP</span>
+        </div>
+
+        <div class="flex justify-between items-center bg-black/40 p-2.5 rounded-xl border border-zinc-800">
+          <div class="flex items-center gap-3">
+            <span class="text-base font-black text-amber-700">🥉</span>
+            <div>
+              <p class="font-bold text-white">@CryptoTraveler</p>
+              <p class="text-[10px] text-zinc-400">9 Check-In • Badge Esploratore</p>
+            </div>
+          </div>
+          <span class="font-mono font-bold text-amber-300">900 XP</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BARRA DI NAVIGAZIONE IN BASSO FISSA -->
+  <nav class="fixed bottom-0 left-0 right-0 h-16 bg-black/95 border-t border-amber-500/20 backdrop-blur-lg px-6 flex justify-between items-center text-center z-50">
+    <a href="index.html" class="flex flex-col items-center text-zinc-400 hover:text-amber-300">
+      <span class="text-xl">🏠</span>
+      <span class="text-[10px] mt-0.5 font-semibold">Home</span>
+    </a>
+    <a href="mappa.html" class="flex flex-col items-center text-zinc-400 hover:text-amber-300">
+      <span class="text-xl">🗺️</span>
+      <span class="text-[10px] mt-0.5 font-semibold">Mappa</span>
+    </a>
+    <a href="social.html" class="flex flex-col items-center text-amber-400">
+      <span class="text-xl">👥</span>
+      <span class="text-[10px] mt-0.5 font-bold">Social</span>
+    </a>
+    <a href="token.html" class="flex flex-col items-center text-zinc-400 hover:text-amber-300">
+      <span class="text-xl">🪙</span>
+      <span class="text-[10px] mt-0.5 font-semibold">Token</span>
+    </a>
+  </nav>
+
+</body>
+</html>
