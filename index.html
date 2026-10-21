@@ -70,24 +70,24 @@
 
     <!-- ==================== TAB 1: MAPPA ESPLORA ==================== -->
     <section id="tab-map" class="w-full relative">
-      <!-- Selettore Rapido Città -->
-      <div class="absolute top-2 left-2 right-2 z-[1000] flex gap-1.5 overflow-x-auto no-scrollbar py-1">
-        <button onclick="jumpToCity('roma')" class="px-3 py-1.5 rounded-full bg-black/95 border border-amber-500/60 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl">🏛️ Roma</button>
-        <button onclick="jumpToCity('firenze')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎨 Firenze</button>
-        <button onclick="jumpToCity('venezia')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎭 Venezia</button>
-        <button onclick="jumpToCity('napoli')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🍕 Napoli</button>
-        <button onclick="jumpToCity('milano')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Milano</button>
-        <button onclick="jumpToCity('torino')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">👑 Torino</button>
-        <button onclick="jumpToCity('bologna')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🗼 Bologna</button>
-        <button onclick="jumpToCity('verona')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">⚔️ Verona</button>
-        <button onclick="jumpToCity('pisa')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">📐 Pisa</button>
-        <button onclick="jumpToCity('siena')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🐎 Siena</button>
-        <button onclick="jumpToCity('genova')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">⚓ Genova</button>
-        <button onclick="jumpToCity('matera')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🪨 Matera</button>
-        <button onclick="jumpToCity('puglia')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Puglia</button>
-        <button onclick="jumpToCity('palermo')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌴 Palermo</button>
-        <button onclick="jumpToCity('catania')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌋 Catania</button>
-        <button onclick="jumpToCity('agrigento')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏺 Agrigento</button>
+      <!-- Selettore Orizzontale Città -->
+      <div id="city-buttons-bar" class="absolute top-2 left-2 right-2 z-[1000] flex gap-1.5 overflow-x-auto no-scrollbar py-1">
+        <button onclick="setGlobalCity('roma')" id="btn-city-roma" class="px-3 py-1.5 rounded-full bg-black/95 border border-amber-500 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl">🏛️ Roma</button>
+        <button onclick="setGlobalCity('firenze')" id="btn-city-firenze" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎨 Firenze</button>
+        <button onclick="setGlobalCity('venezia')" id="btn-city-venezia" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎭 Venezia</button>
+        <button onclick="setGlobalCity('napoli')" id="btn-city-napoli" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🍕 Napoli</button>
+        <button onclick="setGlobalCity('milano')" id="btn-city-milano" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Milano</button>
+        <button onclick="setGlobalCity('torino')" id="btn-city-torino" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">👑 Torino</button>
+        <button onclick="setGlobalCity('bologna')" id="btn-city-bologna" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🗼 Bologna</button>
+        <button onclick="setGlobalCity('verona')" id="btn-city-verona" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">⚔️ Verona</button>
+        <button onclick="setGlobalCity('pisa')" id="btn-city-pisa" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">📐 Pisa</button>
+        <button onclick="setGlobalCity('siena')" id="btn-city-siena" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🐎 Siena</button>
+        <button onclick="setGlobalCity('genova')" id="btn-city-genova" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">⚓ Genova</button>
+        <button onclick="setGlobalCity('matera')" id="btn-city-matera" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🪨 Matera</button>
+        <button onclick="setGlobalCity('bari')" id="btn-city-bari" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Puglia</button>
+        <button onclick="setGlobalCity('palermo')" id="btn-city-palermo" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌴 Palermo</button>
+        <button onclick="setGlobalCity('catania')" id="btn-city-catania" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌋 Catania</button>
+        <button onclick="setGlobalCity('agrigento')" id="btn-city-agrigento" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏺 Agrigento</button>
         <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full bg-amber-400 text-black text-xs font-extrabold whitespace-nowrap shadow-xl ml-auto">🎯 GPS</button>
       </div>
 
@@ -118,56 +118,67 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 2: VIAGGI, ITINERARI & AFFILIAZIONI ==================== -->
+    <!-- ==================== TAB 2: VIAGGI & ITINERARI (ARMONIZZATO) ==================== -->
     <section id="tab-travel" class="w-full px-4 py-5 space-y-4 hidden">
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center">
         <div class="text-4xl mb-1">🧭</div>
         <h2 class="text-lg font-black text-white gold-gradient-text">Pianificatore di Viaggi Culturali</h2>
-        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1">Studia gli itinerari, prenota trasporti e alloggi storici e organizza il tuo tour culturale.</p>
+        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1">Sincronizzato in tempo reale con i monumenti selezionati sulla mappa.</p>
       </div>
 
-      <!-- SELETTORE CITTÀ PER PIANIFICARE -->
-      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
-        <label class="block text-[11px] font-bold uppercase tracking-wider text-amber-400">Scegli la Destinazione del Viaggio:</label>
-        <select id="travel-city-select" onchange="updateTravelPlan(this.value)" class="w-full bg-black/60 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-amber-400">
-          <option value="roma">🏛️ Roma — L'Eterna Bellezza Imperiale</option>
-          <option value="firenze">🎨 Firenze — La Culla del Rinascimento</option>
-          <option value="venezia">🎭 Venezia — La Serenissima sull'Acqua</option>
-          <option value="napoli">🍕 Napoli — Storia Millenaria & Vesuvio</option>
-          <option value="milano">🏰 Milano — Gotico, Arte & Innovazione</option>
-          <option value="sicilia">🌋 Sicilia Storica — Magna Grecia & Barocco</option>
+      <!-- SELETTORE CITTÀ SINCRONIZZATO -->
+      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-2">
+        <label class="block text-[11px] font-bold uppercase tracking-wider text-amber-400">Destinazione Attualmente Selezionata:</label>
+        <select id="travel-city-select" onchange="setGlobalCity(this.value)" class="w-full bg-black/60 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-amber-400 font-bold">
+          <option value="roma">🏛️ Roma (Lazio)</option>
+          <option value="firenze">🎨 Firenze (Toscana)</option>
+          <option value="venezia">🎭 Venezia (Veneto)</option>
+          <option value="napoli">🍕 Napoli (Campania)</option>
+          <option value="milano">🏰 Milano (Lombardia)</option>
+          <option value="torino">👑 Torino (Piemonte)</option>
+          <option value="bologna">🗼 Bologna (Emilia-Romagna)</option>
+          <option value="verona">⚔️ Verona (Veneto)</option>
+          <option value="pisa">📐 Pisa (Toscana)</option>
+          <option value="siena">🐎 Siena (Toscana)</option>
+          <option value="genova">⚓ Genova (Liguria)</option>
+          <option value="matera">🪨 Matera (Basilicata)</option>
+          <option value="bari">🏰 Puglia (Bari & Castelli)</option>
+          <option value="palermo">🌴 Palermo (Sicilia)</option>
+          <option value="catania">🌋 Catania (Sicilia)</option>
+          <option value="agrigento">🏺 Agrigento (Sicilia)</option>
         </select>
+        <p class="text-[10px] text-zinc-500">Cambiando destinazione qui, la Mappa si sposterà automaticamente sulla stessa città.</p>
       </div>
 
-      <!-- MODULI AFFILIAZIONE / SERVIZI -->
+      <!-- MODULI AFFILIAZIONE / SERVIZI DINAMICI -->
       <div class="space-y-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">Servizi Ufficiali & Convenzioni</h3>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">Prenota il Viaggio per <span id="travel-target-city-name" class="text-amber-400 font-bold">Roma</span></h3>
 
         <!-- 1. BIGLIETTI SALTA-FILA -->
         <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
           <div class="flex items-center gap-3">
             <span class="text-2xl p-2 bg-amber-500/10 rounded-xl border border-amber-500/20">🎟️</span>
             <div>
-              <h4 class="text-xs font-bold text-white">Biglietti Salta-Fila & Tour</h4>
-              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-ticket-desc">Acquista ingressi prioritari ufficiali per musei e mostre.</p>
+              <h4 class="text-xs font-bold text-white">Biglietti Salta-Fila & Musei</h4>
+              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-ticket-desc">Ingressi prioritari ufficiali per i monumenti di Roma.</p>
             </div>
           </div>
-          <a id="btn-affiliate-tickets" href="https://www.getyourguide.it" target="_blank" 
+          <a id="btn-affiliate-tickets" href="#" target="_blank" 
              class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 hover:bg-amber-300 text-black shrink-0 active:scale-95 transition shadow-md">
-            Prenota
+            Biglietti
           </a>
         </div>
 
-        <!-- 2. TRENI & TRASPORTI -->
+        <!-- 2. TRENI ALTA VELOCITÀ -->
         <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
           <div class="flex items-center gap-3">
             <span class="text-2xl p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20">🚆</span>
             <div>
               <h4 class="text-xs font-bold text-white">Treni & Trasporti Rapidi</h4>
-              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-train-desc">Collegamenti Alta Velocità Frecciarossa e Italo per la città.</p>
+              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-train-desc">Treni Frecciarossa e Italo con destinazione Roma.</p>
             </div>
           </div>
-          <a id="btn-affiliate-trains" href="https://www.thetrainline.com/it" target="_blank" 
+          <a id="btn-affiliate-trains" href="#" target="_blank" 
              class="px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-emerald-400 hover:bg-zinc-700 shrink-0 active:scale-95 transition">
             Orari Treni
           </a>
@@ -179,12 +190,27 @@
             <span class="text-2xl p-2 bg-purple-500/10 rounded-xl border border-purple-500/20">🏨</span>
             <div>
               <h4 class="text-xs font-bold text-white">Alloggi nel Centro Storico</h4>
-              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-hotel-desc">Hotel e dimore d'epoca a pochi passi dai monumenti.</p>
+              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-hotel-desc">Hotel e dimore d'epoca nei pressi dei monumenti di Roma.</p>
             </div>
           </div>
-          <a id="btn-affiliate-hotels" href="https://www.booking.com" target="_blank" 
+          <a id="btn-affiliate-hotels" href="#" target="_blank" 
              class="px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-purple-300 hover:bg-zinc-700 shrink-0 active:scale-95 transition">
             Vedi Hotel
+          </a>
+        </div>
+
+        <!-- 4. VOLI AEREI -->
+        <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl p-2 bg-blue-500/10 rounded-xl border border-blue-500/20">✈️</span>
+            <div>
+              <h4 class="text-xs font-bold text-white">Voli Nazionali & Internazionali</h4>
+              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-flight-desc">Voli aerei verso gli aeroporti più vicini a Roma.</p>
+            </div>
+          </div>
+          <a id="btn-affiliate-flights" href="#" target="_blank" 
+             class="px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-blue-300 hover:bg-zinc-700 shrink-0 active:scale-95 transition">
+            Cerca Voli
           </a>
         </div>
       </div>
@@ -192,8 +218,6 @@
 
     <!-- ==================== TAB 3: PASSAPORTO CULTURALE ==================== -->
     <section id="tab-passport" class="w-full px-4 py-5 space-y-4 hidden">
-      
-      <!-- Card Profilo & Rango -->
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center">
         <div class="text-4xl mb-1">📜</div>
         <h2 class="text-lg font-black text-white gold-gradient-text" id="pass-user-title">Passaporto Explorer Ufficiale</h2>
@@ -279,7 +303,6 @@
           <span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono font-bold">Cloud Live</span>
         </div>
         <div id="leaderboard-list" class="space-y-2 text-xs">
-          <!-- Popolato dinamicamente da Supabase -->
           <div class="p-2.5 bg-black/40 rounded-xl text-center text-[11px] text-zinc-500">
             Caricamento classifica...
           </div>
@@ -428,7 +451,7 @@
     </button>
   </nav>
 
-  <!-- MOTORE JAVASCRIPT COMPLETO -->
+  <!-- MOTORE JAVASCRIPT: ARMONIZZAZIONE STATO MAPPA & VIAGGI -->
   <script>
     const SUPABASE_URL = "https://vhezlswrjifsqhmensmb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_4N818y2Y7UgFeeHJx_u8HQ_oI675Qpg";
@@ -459,6 +482,7 @@
 
     let userState = { xp: 0, level: 1, stamps: [], wallet_address: "" };
     let tempCapturedPhoto = null;
+    let activeCityGlobal = "roma"; // STATO GLOBALE SINCRONIZZATO TRA MAPPA E VIAGGI
 
     // CATALOGO DI 26 MONUMENTI
     const MONUMENTS = {
@@ -489,6 +513,25 @@
       valle_templi: { name: "Valle dei Templi", city: "Agrigento (Sicilia)", lat: 37.2905, lng: 13.5866, radiusMeters: 250, desc: "Parco archeologico monumentale greco con il Tempio della Concordia.", wiki: "https://it.wikipedia.org/wiki/Valle_dei_Templi", quiz: { question: "In quale ordine architettonico classico greco sono costruiti i templi?", options: ["Dorico", "Ionico", "Corinzio"], correct: 0 } }
     };
 
+    const CITY_METADATA = {
+      roma: { name: "Roma", siteKey: "colosseo", iata: "FCO", ticketsQuery: "Roma", trainQuery: "roma" },
+      firenze: { name: "Firenze", siteKey: "piazza_duomo_firenze", iata: "FLR", ticketsQuery: "Firenze", trainQuery: "firenze" },
+      venezia: { name: "Venezia", siteKey: "piazza_san_marco", iata: "VCE", ticketsQuery: "Venezia", trainQuery: "venezia" },
+      napoli: { name: "Napoli", siteKey: "piazza_plebiscito", iata: "NAP", ticketsQuery: "Napoli", trainQuery: "napoli" },
+      milano: { name: "Milano", siteKey: "duomo_milano", iata: "MIL", ticketsQuery: "Milano", trainQuery: "milano" },
+      torino: { name: "Torino", siteKey: "mole_torino", iata: "TRN", ticketsQuery: "Torino", trainQuery: "torino" },
+      bologna: { name: "Bologna", siteKey: "due_torri_bo", iata: "BLQ", ticketsQuery: "Bologna", trainQuery: "bologna" },
+      verona: { name: "Verona", siteKey: "arena_verona", iata: "VRN", ticketsQuery: "Verona", trainQuery: "verona" },
+      pisa: { name: "Pisa", siteKey: "piazza_miracoli_pisa", iata: "PSA", ticketsQuery: "Pisa", trainQuery: "pisa" },
+      siena: { name: "Siena", siteKey: "piazza_campo_siena", iata: "FLR", ticketsQuery: "Siena", trainQuery: "siena" },
+      genova: { name: "Genova", siteKey: "porto_antico_ge", iata: "GOA", ticketsQuery: "Genova", trainQuery: "genova" },
+      matera: { name: "Matera", siteKey: "sassi_matera", iata: "BRI", ticketsQuery: "Matera", trainQuery: "matera" },
+      bari: { name: "Bari & Puglia", siteKey: "castel_monte", iata: "BRI", ticketsQuery: "Bari", trainQuery: "bari" },
+      palermo: { name: "Palermo", siteKey: "cattedrale_palermo", iata: "PMO", ticketsQuery: "Palermo", trainQuery: "palermo" },
+      catania: { name: "Catania", siteKey: "duomo_catania", iata: "CTA", ticketsQuery: "Catania", trainQuery: "catania" },
+      agrigento: { name: "Agrigento", siteKey: "valle_templi", iata: "CTA", ticketsQuery: "Agrigento", trainQuery: "agrigento" }
+    };
+
     let map = null;
     let activeSiteKey = "colosseo";
     let markers = {};
@@ -501,9 +544,51 @@
         console.error("Mappa errore:", e);
       }
       fetchDexScreenerPrice();
+      setGlobalCity("roma"); // Imposta Roma di default sincronizzata
       setTimeout(syncUserWithCloud, 600);
       setTimeout(loadLeaderboard, 800);
     });
+
+    // ================= SINCRONIZZAZIONE GLOBALE CITTÀ =================
+    function setGlobalCity(cityKey) {
+      if (!CITY_METADATA[cityKey]) return;
+      activeCityGlobal = cityKey;
+      const meta = CITY_METADATA[cityKey];
+
+      // 1. Sposta la Mappa sul monumento iconico di quella città
+      if (MONUMENTS[meta.siteKey] && map) {
+        const site = MONUMENTS[meta.siteKey];
+        map.setView([site.lat, site.lng], 14);
+        selectMonument(meta.siteKey);
+        setTimeout(() => { map.invalidateSize(); }, 150);
+      }
+
+      // 2. Sincronizza la barra dei pulsanti sulla Mappa (stile evidenziato)
+      document.querySelectorAll("#city-buttons-bar button").forEach(btn => {
+        btn.className = "px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl";
+      });
+      const activeBtn = document.getElementById(`btn-city-${cityKey}`);
+      if (activeBtn) {
+        activeBtn.className = "px-3 py-1.5 rounded-full bg-black/95 border border-amber-500 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl";
+      }
+
+      // 3. Sincronizza il selettore nella scheda Viaggi
+      const travelSelect = document.getElementById("travel-city-select");
+      if (travelSelect) travelSelect.value = cityKey;
+
+      // 4. Aggiorna i testi e i link di affiliazione/prenotazione dinamici
+      document.getElementById("travel-target-city-name").innerText = meta.name;
+      document.getElementById("travel-ticket-desc").innerText = `Ingressi prioritari e tour ufficiali per i monumenti di ${meta.name}.`;
+      document.getElementById("travel-train-desc").innerText = `Treni Frecciarossa e Italo con destinazione ${meta.name}.`;
+      document.getElementById("travel-hotel-desc").innerText = `Hotel e dimore d'epoca nel centro storico di ${meta.name}.`;
+      document.getElementById("travel-flight-desc").innerText = `Cerca i voli più convenienti verso l'area di ${meta.name} (${meta.iata}).`;
+
+      // LINK DINAMICI DI AFFILIAZIONE / PARTNER
+      document.getElementById("btn-affiliate-tickets").href = `https://www.getyourguide.it/s/?q=${encodeURIComponent(meta.ticketsQuery)}`;
+      document.getElementById("btn-affiliate-trains").href = `https://www.thetrainline.com/it/treni-per/${encodeURIComponent(meta.trainQuery)}`;
+      document.getElementById("btn-affiliate-hotels").href = `https://www.booking.com/searchresults.it.html?ss=${encodeURIComponent(meta.name)}`;
+      document.getElementById("btn-affiliate-flights").href = `https://www.skyscanner.it/trasporti/voli-verso/${meta.iata.toLowerCase()}/`;
+    }
 
     function loadLocalState() {
       const saved = localStorage.getItem("meeto_user_state");
@@ -625,49 +710,6 @@
       }
     }
 
-    // AGGIORNA ITINERARIO VIAGGIO
-    function updateTravelPlan(cityKey) {
-      const cityData = {
-        roma: {
-          tickets: "Acquista biglietti salta-fila per Colosseo, Fori e Musei Vaticani.",
-          trains: "Collegamenti Frecciarossa e Italo per Roma Termini & Tiburtina.",
-          hotels: "Dimore e hotel a pochi passi dal Pantheon e Fontana di Trevi."
-        },
-        firenze: {
-          tickets: "Ingressi prioritari ufficiali per Galleria degli Uffizi e Cupola.",
-          trains: "Treni Alta Velocità per Firenze Santa Maria Novella.",
-          hotels: "Boutique hotel con affaccio sul Duomo e Lungarno."
-        },
-        venezia: {
-          tickets: "Pass Musei di Piazza San Marco e tour Palazzo Ducale.",
-          trains: "Treni diretti sulla laguna a Venezia Santa Lucia.",
-          hotels: "Palazzi storici affacciati sul Canal Grande e Rialto."
-        },
-        napoli: {
-          tickets: "Biglietti per Cappella Sansevero (Cristo Velato) e Pompei.",
-          trains: "Collegamenti rapidi per Napoli Centrale e Circumvesuviana.",
-          hotels: "Hotel a Spaccanapoli e sul lungomare di Caracciolo."
-        },
-        milano: {
-          tickets: "Pass Terrazze del Duomo e Cenacolo Vinciano.",
-          trains: "Stazione Milano Centrale con collegamenti ogni 15 minuti.",
-          hotels: "Alloggi nel quartiere artistico di Brera e Duomo."
-        },
-        sicilia: {
-          tickets: "Ingressi per la Valle dei Templi e Teatro di Taormina.",
-          trains: "Collegamenti regionali e transfer aeroportuali Catania/Palermo.",
-          hotels: "Residenze barocche a Catania e resort vista mare a Taormina."
-        }
-      };
-
-      const data = cityData[cityKey];
-      if (data) {
-        document.getElementById("travel-ticket-desc").innerText = data.tickets;
-        document.getElementById("travel-train-desc").innerText = data.trains;
-        document.getElementById("travel-hotel-desc").innerText = data.hotels;
-      }
-    }
-
     // SALVA WALLET SOLANA
     async function saveUserWallet() {
       const input = document.getElementById("wallet-input");
@@ -764,25 +806,6 @@
       document.getElementById("sheet-city").innerText = site.city;
       document.getElementById("sheet-desc").innerText = site.desc;
       document.getElementById("sheet-wiki").href = site.wiki;
-    }
-
-    function jumpToCity(city) {
-      const cityMap = {
-        roma: "colosseo", firenze: "piazza_duomo_firenze", venezia: "piazza_san_marco",
-        napoli: "piazza_plebiscito", milano: "duomo_milano", torino: "mole_torino",
-        bologna: "due_torri_bo", verona: "arena_verona", pisa: "piazza_miracoli_pisa",
-        siena: "piazza_campo_siena", genova: "porto_antico_ge", matera: "sassi_matera",
-        bari: "castel_monte", palermo: "cattedrale_palermo", catania: "duomo_catania",
-        agrigento: "valle_templi"
-      };
-
-      const siteKey = cityMap[city];
-      if (siteKey && MONUMENTS[siteKey] && map) {
-        const site = MONUMENTS[siteKey];
-        map.setView([site.lat, site.lng], 14);
-        selectMonument(siteKey);
-        setTimeout(() => { map.invalidateSize(); }, 100);
-      }
     }
 
     function getUserLocation() {
