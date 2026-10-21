@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>$MEETO — Passaporto Culturale & Mappa</title>
+  <title>$MEETO — Passaporto & Travel Planner</title>
   
   <!-- SDK Telegram -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -58,7 +58,7 @@
     <div class="flex items-center space-x-2">
       <span class="text-xl">🏛️</span>
       <span class="font-extrabold text-base tracking-wider gold-gradient-text">$MEETO</span>
-      <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">Cloud V2</span>
+      <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">V2</span>
     </div>
     <span id="user-xp-badge" class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-zinc-900 border border-amber-500/40 text-amber-300">
       ⭐ 0 XP
@@ -70,7 +70,7 @@
 
     <!-- ==================== TAB 1: MAPPA ESPLORA ==================== -->
     <section id="tab-map" class="w-full relative">
-      <!-- Selettore Orizzontale Città -->
+      <!-- Selettore Rapido Città -->
       <div class="absolute top-2 left-2 right-2 z-[1000] flex gap-1.5 overflow-x-auto no-scrollbar py-1">
         <button onclick="jumpToCity('roma')" class="px-3 py-1.5 rounded-full bg-black/95 border border-amber-500/60 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl">🏛️ Roma</button>
         <button onclick="jumpToCity('firenze')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎨 Firenze</button>
@@ -84,7 +84,7 @@
         <button onclick="jumpToCity('siena')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🐎 Siena</button>
         <button onclick="jumpToCity('genova')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">⚓ Genova</button>
         <button onclick="jumpToCity('matera')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🪨 Matera</button>
-        <button onclick="jumpToCity('bari')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Puglia</button>
+        <button onclick="jumpToCity('puglia')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Puglia</button>
         <button onclick="jumpToCity('palermo')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌴 Palermo</button>
         <button onclick="jumpToCity('catania')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌋 Catania</button>
         <button onclick="jumpToCity('agrigento')" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏺 Agrigento</button>
@@ -118,7 +118,79 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 2: PASSAPORTO CULTURALE AGGIORNATO ==================== -->
+    <!-- ==================== TAB 2: VIAGGI, ITINERARI & AFFILIAZIONI ==================== -->
+    <section id="tab-travel" class="w-full px-4 py-5 space-y-4 hidden">
+      <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center">
+        <div class="text-4xl mb-1">🧭</div>
+        <h2 class="text-lg font-black text-white gold-gradient-text">Pianificatore di Viaggi Culturali</h2>
+        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1">Studia gli itinerari, prenota trasporti e alloggi storici e organizza il tuo tour culturale.</p>
+      </div>
+
+      <!-- SELETTORE CITTÀ PER PIANIFICARE -->
+      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
+        <label class="block text-[11px] font-bold uppercase tracking-wider text-amber-400">Scegli la Destinazione del Viaggio:</label>
+        <select id="travel-city-select" onchange="updateTravelPlan(this.value)" class="w-full bg-black/60 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-amber-400">
+          <option value="roma">🏛️ Roma — L'Eterna Bellezza Imperiale</option>
+          <option value="firenze">🎨 Firenze — La Culla del Rinascimento</option>
+          <option value="venezia">🎭 Venezia — La Serenissima sull'Acqua</option>
+          <option value="napoli">🍕 Napoli — Storia Millenaria & Vesuvio</option>
+          <option value="milano">🏰 Milano — Gotico, Arte & Innovazione</option>
+          <option value="sicilia">🌋 Sicilia Storica — Magna Grecia & Barocco</option>
+        </select>
+      </div>
+
+      <!-- MODULI AFFILIAZIONE / SERVIZI -->
+      <div class="space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">Servizi Ufficiali & Convenzioni</h3>
+
+        <!-- 1. BIGLIETTI SALTA-FILA -->
+        <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl p-2 bg-amber-500/10 rounded-xl border border-amber-500/20">🎟️</span>
+            <div>
+              <h4 class="text-xs font-bold text-white">Biglietti Salta-Fila & Tour</h4>
+              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-ticket-desc">Acquista ingressi prioritari ufficiali per musei e mostre.</p>
+            </div>
+          </div>
+          <a id="btn-affiliate-tickets" href="https://www.getyourguide.it" target="_blank" 
+             class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 hover:bg-amber-300 text-black shrink-0 active:scale-95 transition shadow-md">
+            Prenota
+          </a>
+        </div>
+
+        <!-- 2. TRENI & TRASPORTI -->
+        <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20">🚆</span>
+            <div>
+              <h4 class="text-xs font-bold text-white">Treni & Trasporti Rapidi</h4>
+              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-train-desc">Collegamenti Alta Velocità Frecciarossa e Italo per la città.</p>
+            </div>
+          </div>
+          <a id="btn-affiliate-trains" href="https://www.thetrainline.com/it" target="_blank" 
+             class="px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-emerald-400 hover:bg-zinc-700 shrink-0 active:scale-95 transition">
+            Orari Treni
+          </a>
+        </div>
+
+        <!-- 3. HOTEL E SOGGIORNI STORICI -->
+        <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl p-2 bg-purple-500/10 rounded-xl border border-purple-500/20">🏨</span>
+            <div>
+              <h4 class="text-xs font-bold text-white">Alloggi nel Centro Storico</h4>
+              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-hotel-desc">Hotel e dimore d'epoca a pochi passi dai monumenti.</p>
+            </div>
+          </div>
+          <a id="btn-affiliate-hotels" href="https://www.booking.com" target="_blank" 
+             class="px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-purple-300 hover:bg-zinc-700 shrink-0 active:scale-95 transition">
+            Vedi Hotel
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: PASSAPORTO CULTURALE ==================== -->
     <section id="tab-passport" class="w-full px-4 py-5 space-y-4 hidden">
       
       <!-- Card Profilo & Rango -->
@@ -153,6 +225,11 @@
           </div>
           <p class="text-[10px] text-zinc-500">Raggiungi 500 XP (5 visite verificate) per sbloccare l'idoneità al riscatto stagionale.</p>
         </div>
+
+        <!-- TASTO CONDIVIDI SU TELEGRAM -->
+        <button onclick="shareOnTelegram()" class="w-full mt-4 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-95 text-white flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 active:scale-95 transition">
+          <span>📢</span> Condividi il tuo Passaporto su Telegram
+        </button>
       </div>
 
       <!-- SEZIONE: COME FUNZIONA IL RISCATTO DEI PUNTI -->
@@ -193,6 +270,22 @@
         </div>
       </div>
 
+      <!-- CLASSIFICA TOP ESPLORATORI (LIVE DA SUPABASE) -->
+      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+            <span>🏆</span> Top Esploratori della Settimana
+          </h3>
+          <span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono font-bold">Cloud Live</span>
+        </div>
+        <div id="leaderboard-list" class="space-y-2 text-xs">
+          <!-- Popolato dinamicamente da Supabase -->
+          <div class="p-2.5 bg-black/40 rounded-xl text-center text-[11px] text-zinc-500">
+            Caricamento classifica...
+          </div>
+        </div>
+      </div>
+
       <!-- GALLERIA TIMBRI E FOTO RICORDO -->
       <div class="space-y-2">
         <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">I Tuoi Timbri e Foto Ricordo</h3>
@@ -200,7 +293,7 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 3: TOKEN & MERCATO ==================== -->
+    <!-- ==================== TAB 4: TOKEN & MERCATO ==================== -->
     <section id="tab-token" class="w-full px-4 py-5 space-y-4 hidden">
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 space-y-3">
         <div class="flex justify-between items-start">
@@ -315,19 +408,23 @@
     </div>
   </div>
 
-  <!-- BARRA DI NAVIGAZIONE IN BASSO FISSA -->
-  <nav class="fixed bottom-0 left-0 right-0 h-16 bg-[#07090E]/95 border-t border-amber-500/30 backdrop-blur-lg px-8 flex justify-around items-center text-center z-[1500] shadow-2xl">
+  <!-- BARRA DI NAVIGAZIONE A 4 TASTI FISSA (Z-INDEX 1500) -->
+  <nav class="fixed bottom-0 left-0 right-0 h-16 bg-[#07090E]/95 border-t border-amber-500/30 backdrop-blur-lg px-4 flex justify-around items-center text-center z-[1500] shadow-2xl">
     <button onclick="switchTab('map')" id="nav-map" class="flex flex-col items-center text-amber-400 transition">
-      <span class="text-xl">🗺️</span>
-      <span class="text-[11px] mt-0.5 font-bold">Mappa</span>
+      <span class="text-lg">🗺️</span>
+      <span class="text-[10px] mt-0.5 font-bold">Mappa</span>
+    </button>
+    <button onclick="switchTab('travel')" id="nav-travel" class="flex flex-col items-center text-zinc-400 hover:text-amber-300 transition">
+      <span class="text-lg">🧭</span>
+      <span class="text-[10px] mt-0.5 font-bold">Viaggi</span>
     </button>
     <button onclick="switchTab('passport')" id="nav-passport" class="flex flex-col items-center text-zinc-400 hover:text-amber-300 transition">
-      <span class="text-xl">📜</span>
-      <span class="text-[11px] mt-0.5 font-bold">Passaporto</span>
+      <span class="text-lg">📜</span>
+      <span class="text-[10px] mt-0.5 font-bold">Passaporto</span>
     </button>
     <button onclick="switchTab('token')" id="nav-token" class="flex flex-col items-center text-zinc-400 hover:text-amber-300 transition">
-      <span class="text-xl">🪙</span>
-      <span class="text-[11px] mt-0.5 font-bold">Token</span>
+      <span class="text-lg">🪙</span>
+      <span class="text-[10px] mt-0.5 font-bold">Token</span>
     </button>
   </nav>
 
@@ -405,6 +502,7 @@
       }
       fetchDexScreenerPrice();
       setTimeout(syncUserWithCloud, 600);
+      setTimeout(loadLeaderboard, 800);
     });
 
     function loadLocalState() {
@@ -467,6 +565,109 @@
       }
     }
 
+    // CLASSIFICA LIVE SUPABASE
+    async function loadLeaderboard() {
+      const listContainer = document.getElementById("leaderboard-list");
+      if (!listContainer) return;
+
+      if (sbClient) {
+        try {
+          const { data: topUsers } = await sbClient
+            .from("users")
+            .select("first_name, username, total_xp, level")
+            .order("total_xp", { ascending: false })
+            .limit(5);
+
+          if (topUsers && topUsers.length > 0) {
+            listContainer.innerHTML = "";
+            topUsers.forEach((u, idx) => {
+              const medal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${idx + 1}`;
+              const name = u.first_name || (u.username ? "@" + u.username : "Esploratore");
+              
+              const row = document.createElement("div");
+              row.className = "flex justify-between items-center bg-black/40 p-2.5 rounded-xl border border-zinc-800";
+              row.innerHTML = `
+                <div class="flex items-center gap-2.5">
+                  <span class="font-bold text-sm text-amber-400">${medal}</span>
+                  <div>
+                    <strong class="text-white block text-xs truncate max-w-[140px]">${name}</strong>
+                    <span class="text-[10px] text-zinc-500">Livello ${u.level || 1}</span>
+                  </div>
+                </div>
+                <span class="font-mono font-bold text-amber-300 text-xs">${u.total_xp || 0} XP</span>
+              `;
+              listContainer.appendChild(row);
+            });
+            return;
+          }
+        } catch (e) {
+          console.warn("Classifica errore:", e);
+        }
+      }
+
+      listContainer.innerHTML = `
+        <div class="p-2.5 bg-black/40 rounded-xl text-center text-[11px] text-zinc-400">
+          🏆 Sii il primo a completare una visita per dominare la classifica!
+        </div>
+      `;
+    }
+
+    // TASTO CONDIVIDI SU TELEGRAM
+    function shareOnTelegram() {
+      const botUser = "MeetoOfficialBot";
+      const text = encodeURIComponent(`🏛️ Ho sbloccato ${userState.stamps.length} timbri e ${userState.xp} XP sul mio Passaporto Culturale $MEETO! Unisciti all'esplorazione:`);
+      const shareUrl = `https://t.me/share/url?url=https://t.me/${botUser}&text=${text}`;
+      
+      if (tg && typeof tg.openTelegramLink === 'function') {
+        tg.openTelegramLink(shareUrl);
+      } else {
+        window.open(shareUrl, '_blank');
+      }
+    }
+
+    // AGGIORNA ITINERARIO VIAGGIO
+    function updateTravelPlan(cityKey) {
+      const cityData = {
+        roma: {
+          tickets: "Acquista biglietti salta-fila per Colosseo, Fori e Musei Vaticani.",
+          trains: "Collegamenti Frecciarossa e Italo per Roma Termini & Tiburtina.",
+          hotels: "Dimore e hotel a pochi passi dal Pantheon e Fontana di Trevi."
+        },
+        firenze: {
+          tickets: "Ingressi prioritari ufficiali per Galleria degli Uffizi e Cupola.",
+          trains: "Treni Alta Velocità per Firenze Santa Maria Novella.",
+          hotels: "Boutique hotel con affaccio sul Duomo e Lungarno."
+        },
+        venezia: {
+          tickets: "Pass Musei di Piazza San Marco e tour Palazzo Ducale.",
+          trains: "Treni diretti sulla laguna a Venezia Santa Lucia.",
+          hotels: "Palazzi storici affacciati sul Canal Grande e Rialto."
+        },
+        napoli: {
+          tickets: "Biglietti per Cappella Sansevero (Cristo Velato) e Pompei.",
+          trains: "Collegamenti rapidi per Napoli Centrale e Circumvesuviana.",
+          hotels: "Hotel a Spaccanapoli e sul lungomare di Caracciolo."
+        },
+        milano: {
+          tickets: "Pass Terrazze del Duomo e Cenacolo Vinciano.",
+          trains: "Stazione Milano Centrale con collegamenti ogni 15 minuti.",
+          hotels: "Alloggi nel quartiere artistico di Brera e Duomo."
+        },
+        sicilia: {
+          tickets: "Ingressi per la Valle dei Templi e Teatro di Taormina.",
+          trains: "Collegamenti regionali e transfer aeroportuali Catania/Palermo.",
+          hotels: "Residenze barocche a Catania e resort vista mare a Taormina."
+        }
+      };
+
+      const data = cityData[cityKey];
+      if (data) {
+        document.getElementById("travel-ticket-desc").innerText = data.tickets;
+        document.getElementById("travel-train-desc").innerText = data.trains;
+        document.getElementById("travel-hotel-desc").innerText = data.hotels;
+      }
+    }
+
     // SALVA WALLET SOLANA
     async function saveUserWallet() {
       const input = document.getElementById("wallet-input");
@@ -502,12 +703,15 @@
       if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
     }
 
+    // CAMBIO SCHEDA
     function switchTab(tabId) {
       document.getElementById("tab-map").classList.add("hidden");
+      document.getElementById("tab-travel").classList.add("hidden");
       document.getElementById("tab-passport").classList.add("hidden");
       document.getElementById("tab-token").classList.add("hidden");
 
       document.getElementById("nav-map").className = "flex flex-col items-center text-zinc-400 hover:text-amber-300 transition";
+      document.getElementById("nav-travel").className = "flex flex-col items-center text-zinc-400 hover:text-amber-300 transition";
       document.getElementById("nav-passport").className = "flex flex-col items-center text-zinc-400 hover:text-amber-300 transition";
       document.getElementById("nav-token").className = "flex flex-col items-center text-zinc-400 hover:text-amber-300 transition";
 
@@ -515,10 +719,14 @@
         document.getElementById("tab-map").classList.remove("hidden");
         document.getElementById("nav-map").className = "flex flex-col items-center text-amber-400 transition";
         if (map) setTimeout(() => { map.invalidateSize(); }, 150);
+      } else if (tabId === "travel") {
+        document.getElementById("tab-travel").classList.remove("hidden");
+        document.getElementById("nav-travel").className = "flex flex-col items-center text-amber-400 transition";
       } else if (tabId === "passport") {
         document.getElementById("tab-passport").classList.remove("hidden");
         document.getElementById("nav-passport").className = "flex flex-col items-center text-amber-400 transition";
         renderPassport();
+        loadLeaderboard();
       } else if (tabId === "token") {
         document.getElementById("tab-token").classList.remove("hidden");
         document.getElementById("nav-token").className = "flex flex-col items-center text-amber-400 transition";
@@ -527,6 +735,7 @@
       window.scrollTo(0, 0);
     }
 
+    // MAPPA LEAFLET
     function initMap() {
       const initialSite = MONUMENTS[activeSiteKey];
       map = L.map("map", { zoomControl: false }).setView([initialSite.lat, initialSite.lng], 13);
@@ -714,7 +923,6 @@
       document.getElementById("pass-xp").innerText = userState.xp;
       document.getElementById("pass-stamps").innerText = userState.stamps.length;
 
-      // Aggiorna la barra di progresso riscatto
       const redeemThreshold = 500;
       const progressPct = Math.min(Math.round((userState.xp / redeemThreshold) * 100), 100);
       const progressBar = document.getElementById("redeem-progress-bar");
