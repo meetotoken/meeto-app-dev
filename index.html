@@ -97,12 +97,12 @@
       <!-- MAPPA LEAFLET -->
       <div id="map"></div>
 
-      <!-- SCHEDA PRINCIPALE ESPANSA (SCOMPARE CON TRASCINAMENTO/ZOOM) -->
-      <div id="monument-sheet" class="absolute bottom-4 left-3 right-3 z-[1000] glass-card p-4 rounded-2xl max-w-lg mx-auto shadow-2xl space-y-3.5 sheet-transition">
+      <!-- SCHEDA PRINCIPALE ESPANSA (STILE GOOGLE AI STUDIO - SCOMPARE CON TRASCINAMENTO/ZOOM) -->
+      <div id="monument-sheet" class="absolute bottom-4 left-3 right-3 z-[1000] glass-card p-4 rounded-2xl max-w-lg mx-auto shadow-2xl space-y-3 sheet-transition">
         <!-- CAROSELLO DEI MONUMENTI DELLA CITTÀ -->
         <div>
-          <div class="flex justify-between items-center mb-1.5">
-            <span class="text-[10px] uppercase tracking-wider text-amber-400 font-mono font-bold" id="carousel-city-title">Monumenti a Roma:</span>
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-[10px] uppercase tracking-wider text-amber-400 font-mono font-bold" id="carousel-city-title">MONUMENTI A ROMA:</span>
             <span class="text-[10px] text-zinc-400 font-mono" id="carousel-count">4 monumenti</span>
           </div>
           <div id="city-monuments-carousel" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
@@ -112,19 +112,30 @@
         <div class="pt-2 border-t border-zinc-800 space-y-2">
           <div class="flex justify-between items-start gap-2">
             <div>
-              <span class="text-[10px] text-zinc-400 font-mono uppercase tracking-wider" id="sheet-city">Roma (Lazio)</span>
-              <h3 id="sheet-title" class="font-black text-base text-white leading-tight">🏛️ Colosseo & Fori Imperiali</h3>
+              <span class="text-[10px] text-amber-400 font-mono uppercase font-bold" id="sheet-city">ROMA · LAZIO</span>
+              <h3 id="sheet-title" class="font-black text-base text-white leading-tight uppercase">COLOSSEO (ANFITEATRO FLAVIO)</h3>
+              <p id="sheet-era" class="text-[11px] text-zinc-400">70–80 d.C. (Età Flavia)</p>
             </div>
-            <span class="px-2.5 py-1 rounded-full text-[11px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0">+100 XP</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0">+100 XP</span>
           </div>
           
-          <p id="sheet-desc" class="text-xs text-zinc-300 leading-relaxed min-h-[36px]">
-            Anfiteatro Flavio dell antica Roma, tra le Sette Meraviglie del Mondo Moderno.
+          <p id="sheet-desc" class="text-xs text-zinc-300 leading-relaxed">
+            Il più grande anfiteatro dell’Impero Romano, simbolo immortale della Città Eterna e patrimonio dell'umanità.
           </p>
+
+          <!-- BOX RAGGIO GPS E DISTANZA STIMATA -->
+          <div class="p-2.5 bg-black/60 rounded-xl border border-zinc-800 flex justify-between items-center text-xs">
+            <div class="flex items-center gap-2">
+              <span class="text-amber-400">📍</span>
+              <span class="text-zinc-400">Distanza stimata:</span>
+              <span class="font-bold text-white" id="sheet-distance">39 metri</span>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">🎯 Nel raggio!</span>
+          </div>
           
           <div class="flex gap-2 pt-1">
-            <a id="sheet-wiki" href="https://it.wikipedia.org" target="_blank" class="px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center shrink-0 active:scale-95 transition">
-              📖 Wikipedia
+            <a id="sheet-wiki" href="https://it.wikipedia.org" target="_blank" class="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-zinc-800 hover:bg-zinc-700 text-amber-300 border border-amber-500/30 flex items-center justify-center shrink-0 active:scale-95 transition">
+              📖 Guida & Storia ↗
             </a>
             <button onclick="openQuizModal()" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black shadow-lg shadow-amber-500/25 active:scale-95 transition flex items-center justify-center gap-1.5">
               <span>🎯</span> Fai il Quiz & Check-In
@@ -134,11 +145,11 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 2: VIAGGI & ITINERARI (AFFILIAZIONI) ==================== -->
+    <!-- ==================== TAB 2: VIAGGI & ITINERARI (AFFILIAZIONI DEDICATE) ==================== -->
     <section id="tab-travel" class="w-full px-4 py-5 space-y-4 hidden">
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center">
         <div class="text-4xl mb-1">🧭</div>
-        <h2 class="text-lg font-black text-white gold-gradient-text">Pianificatore di Viaggi Culturali</h2>
+        <h2 class="text-lg font-black text-white gold-gradient-text uppercase">Pianificatore di Viaggi Culturali</h2>
         <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1">Sincronizzato in tempo reale con i monumenti selezionati sulla mappa.</p>
       </div>
 
@@ -165,7 +176,7 @@
         </select>
       </div>
 
-      <!-- SERVIZI DI PRENOTAZIONE (AFFILIAZIONI DEDICATE) -->
+      <!-- SERVIZI DI PRENOTAZIONE -->
       <div class="space-y-3">
         <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">Servizi di Viaggio per <span id="travel-target-city-name" class="text-amber-400 font-bold">Roma</span></h3>
 
@@ -189,7 +200,7 @@
             <span class="text-2xl p-2 bg-blue-500/10 rounded-xl border border-blue-500/20">✈️</span>
             <div>
               <h4 class="text-xs font-bold text-white">Voli Nazionali & Internazionali</h4>
-              <p class="text-[11px] text-zinc-400 mt-0.5">Confronta e trova i voli con la tariffa piu bassa.</p>
+              <p class="text-[11px] text-zinc-400 mt-0.5">Confronta e trova i voli con la tariffa più bassa.</p>
             </div>
           </div>
           <a href="https://aviasales.tpx.gr/Nde5oFmC" target="_blank" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-blue-300 hover:bg-zinc-700 shrink-0 active:scale-95 transition">
@@ -203,7 +214,7 @@
             <span class="text-2xl p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20">🎒</span>
             <div>
               <h4 class="text-xs font-bold text-white">Deposito Bagagli in Centro</h4>
-              <p class="text-[11px] text-zinc-400 mt-0.5">Lascia le valigie per esplorare la citta in liberta.</p>
+              <p class="text-[11px] text-zinc-400 mt-0.5">Lascia le valigie per esplorare la città in libertà.</p>
             </div>
           </div>
           <a href="https://radicalstorage.tpx.gr/XR76jrDS" target="_blank" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-emerald-400 hover:bg-zinc-700 shrink-0 active:scale-95 transition">
@@ -231,36 +242,36 @@
     <section id="tab-passport" class="w-full px-4 py-5 space-y-4 hidden">
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center">
         <div class="text-4xl mb-1">📜</div>
-        <h2 class="text-lg font-black text-white gold-gradient-text" id="pass-user-title">Passaporto Explorer Ufficiale</h2>
+        <h2 class="text-lg font-black text-white gold-gradient-text uppercase" id="pass-user-title">Passaporto Explorer Ufficiale</h2>
         <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1" id="pass-user-subtitle">Colleziona visite storiche, scatta foto ricordo e salva i timbri nel cloud.</p>
         
-        <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-zinc-800 text-center">
+        <div class="grid grid-cols-4 gap-2 mt-4 pt-3 border-t border-zinc-800 text-center">
           <div>
-            <div class="text-[10px] text-zinc-400 uppercase font-semibold">Livello</div>
-            <div id="pass-level" class="text-base font-black text-amber-400">1</div>
+            <div class="text-[9px] text-zinc-400 uppercase font-semibold">Timbri</div>
+            <div id="pass-stamps" class="text-base font-black text-white">0</div>
           </div>
           <div>
-            <div class="text-[10px] text-zinc-400 uppercase font-semibold">Totale XP</div>
-            <div id="pass-xp" class="text-base font-black text-white">0</div>
+            <div class="text-[9px] text-zinc-400 uppercase font-semibold">Città</div>
+            <div id="pass-cities" class="text-base font-black text-white">0</div>
           </div>
           <div>
-            <div class="text-[10px] text-zinc-400 uppercase font-semibold">Timbri</div>
-            <div id="pass-stamps" class="text-base font-black text-emerald-400">0</div>
+            <div class="text-[9px] text-zinc-400 uppercase font-semibold">Badge</div>
+            <div id="pass-badges" class="text-base font-black text-white">0</div>
+          </div>
+          <div>
+            <div class="text-[9px] text-zinc-400 uppercase font-semibold">XP Totali</div>
+            <div id="pass-xp" class="text-base font-black text-amber-400">0</div>
           </div>
         </div>
 
-        <div class="mt-4 pt-3 border-t border-zinc-800/80 text-left space-y-1.5">
-          <div class="flex justify-between text-[11px]">
-            <span class="text-zinc-400">Soglia Idoneita Airdrop:</span>
-            <span id="redeem-progress-text" class="font-bold text-amber-300">0 / 500 XP</span>
-          </div>
-          <div class="w-full h-2.5 bg-black/60 rounded-full overflow-hidden border border-zinc-800">
-            <div id="redeem-progress-bar" class="h-full bg-gradient-to-r from-amber-400 to-yellow-500 transition-all duration-500" style="width: 0%"></div>
-          </div>
-          <p class="text-[10px] text-zinc-500">Raggiungi 500 XP (5 visite verificate) per sbloccare l idoneita al riscatto stagionale.</p>
+        <!-- SOTTO SEZIONI PASSAPORTO -->
+        <div class="flex gap-2 pt-3 border-t border-zinc-800 text-xs font-bold">
+          <button class="flex-1 py-1.5 rounded-xl bg-amber-400 text-black">🏛️ Timbri (1)</button>
+          <button class="flex-1 py-1.5 rounded-xl bg-zinc-800 text-zinc-400">📷 Diario (1)</button>
+          <button class="flex-1 py-1.5 rounded-xl bg-zinc-800 text-zinc-400">🏅 Badge (1)</button>
         </div>
 
-        <button onclick="shareOnTelegram()" class="w-full mt-4 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-95 text-white flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 active:scale-95 transition">
+        <button onclick="shareOnTelegram()" class="w-full mt-3 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-95 text-white flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 active:scale-95 transition">
           <span>📢</span> Condividi il tuo Passaporto su Telegram
         </button>
       </div>
@@ -281,55 +292,60 @@
           <p id="wallet-status-msg" class="text-[10px] text-zinc-500 font-medium"></p>
         </div>
       </div>
-
-      <!-- CLASSIFICA CLOUD LIVE -->
-      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
-        <div class="flex justify-between items-center">
-          <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-            <span>🏆</span> Top Esploratori
-          </h3>
-          <span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono font-bold">Cloud Live</span>
-        </div>
-        <div id="leaderboard-list" class="space-y-2 text-xs">
-          <div class="p-2.5 bg-black/40 rounded-xl text-center text-[11px] text-zinc-500">Caricamento classifica...</div>
-        </div>
-      </div>
-
-      <div class="space-y-2">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">I Tuoi Timbri e Foto Ricordo</h3>
-        <div id="stamps-gallery" class="grid grid-cols-2 gap-3"></div>
-      </div>
     </section>
 
-    <!-- ==================== TAB 4: TOKEN & MERCATO (COMPLETO) ==================== -->
+    <!-- ==================== TAB 4: TOKEN & TOKENOMICS ==================== -->
     <section id="tab-token" class="w-full px-4 py-5 space-y-4 hidden">
+      <!-- DASHBOARD TOKEN METRICHE LIVE -->
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 space-y-3">
         <div class="flex justify-between items-start">
           <div>
-            <span class="text-[10px] text-zinc-400 uppercase tracking-widest font-mono font-bold">Stato Token ($MEETO)</span>
-            <div id="token-price-display" class="text-2xl font-black gold-gradient-text">Solana Mainnet</div>
-            <span id="token-change" class="text-xs font-bold text-emerald-400">🟢 Rete Attiva</span>
+            <span class="text-[10px] text-amber-400 uppercase font-mono font-bold">ECOSISTEMA TOKEN SOLANA</span>
+            <h2 class="text-lg font-black text-white gold-gradient-text uppercase leading-tight">$MEETO TOKENOMICS & DATI LIVE</h2>
           </div>
-          <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
-            Pump.fun / Solana
-          </span>
+          <button onclick="fetchDexScreenerPrice()" class="px-3 py-1 rounded-xl bg-zinc-800 border border-zinc-700 text-xs text-amber-300 font-bold shrink-0">
+            🔄 Aggiorna
+          </button>
         </div>
 
         <div class="grid grid-cols-2 gap-2.5 pt-2">
+          <div class="p-3 bg-black/50 rounded-xl border border-zinc-800">
+            <span class="text-[9px] text-zinc-400 uppercase font-mono font-bold block">PREZZO LIVE USD</span>
+            <div id="token-price-usd" class="text-base font-black text-emerald-400 mt-0.5">$0.000004</div>
+            <span id="token-price-sol" class="text-[10px] text-zinc-500 font-mono">0.00000028 SOL</span>
+          </div>
+          <div class="p-3 bg-black/50 rounded-xl border border-zinc-800">
+            <span class="text-[9px] text-zinc-400 uppercase font-mono font-bold block">MARKET CAP</span>
+            <div class="text-base font-black text-white mt-0.5">$4,200</div>
+            <span class="text-[10px] text-zinc-500 font-mono">FDV: $4,200</span>
+          </div>
+          <div class="p-3 bg-black/50 rounded-xl border border-zinc-800">
+            <span class="text-[9px] text-zinc-400 uppercase font-mono font-bold block">TOTAL SUPPLY</span>
+            <div class="text-base font-black text-amber-400 mt-0.5">1.000.000.000</div>
+            <span class="text-[10px] text-zinc-500 font-mono">100% Fixed Supply</span>
+          </div>
+          <div class="p-3 bg-black/50 rounded-xl border border-zinc-800">
+            <span class="text-[9px] text-zinc-400 uppercase font-mono font-bold block">TREASURY POOL</span>
+            <div class="text-base font-black text-purple-400 mt-0.5">100.000.000</div>
+            <span class="text-[10px] text-zinc-500 font-mono">10% Riservato Rewards</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
           <a href="https://pump.fun/coin/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" 
-             class="py-3 px-3 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-yellow-500 text-black flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/20 active:scale-95 transition">
-            <span>🚀</span> Vai su Pump.fun
+             class="py-2.5 px-3 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-yellow-500 text-black flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/20 active:scale-95 transition">
+            <span>🚀</span> Pump.fun ↗
           </a>
           <a href="https://dexscreener.com/solana/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" 
-             class="py-3 px-3 rounded-xl text-xs font-black bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 flex items-center justify-center gap-1.5 active:scale-95 transition">
-            <span>📊</span> Scheda DexScreener
+             class="py-2.5 px-3 rounded-xl text-xs font-black bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 flex items-center justify-center gap-1.5 active:scale-95 transition">
+            <span>📊</span> DexScreener ↗
           </a>
         </div>
       </div>
 
-      <!-- TOKENOMICS UFFICIALE -->
+      <!-- RIPARTIZIONE OFFERTA -->
       <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
-        <h3 class="text-xs font-bold text-white uppercase tracking-wider">Tokenomics Ufficiale (1B Supply)</h3>
+        <h3 class="text-xs font-bold text-white uppercase tracking-wider">Ripartizione Ufficiale dell'Offerta (1B $MEETO)</h3>
         <div class="w-full h-3 bg-black/60 rounded-full overflow-hidden flex border border-zinc-800">
           <div class="h-full bg-emerald-500" style="width: 70%"></div>
           <div class="h-full bg-amber-400" style="width: 20%"></div>
@@ -342,13 +358,46 @@
         </div>
       </div>
 
-      <!-- CONTRACT ADDRESS -->
-      <div class="glass-card p-3 rounded-xl flex justify-between items-center text-xs">
-        <div class="truncate mr-2"><span class="text-zinc-500 font-bold">CA:</span> <code class="text-amber-300 font-mono">4MPMa8mdsrja...pump</code></div>
-        <button onclick="navigator.clipboard.writeText('4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump'); alert('Contract Address copiato!');" 
-                class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-amber-300 text-xs font-bold shrink-0">
-          Copia CA
-        </button>
+      <!-- SIMULATORE SOSTENIBILITÀ -->
+      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-sm">🧮</div>
+          <div>
+            <h3 class="text-xs font-bold text-white uppercase">SIMULATORE SOSTENIBILITÀ RICOMPENSE</h3>
+            <p class="text-[10px] text-zinc-400">Calcolo della Treasury Pool (100M $MEETO)</p>
+          </div>
+        </div>
+
+        <div class="p-3 bg-black/50 rounded-xl border border-zinc-800 space-y-3">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-zinc-300">Monumenti da visitare:</span>
+            <span id="sim-visits-val" class="font-black text-amber-400 font-mono text-sm">10 visite</span>
+          </div>
+
+          <input type="range" min="1" max="50" value="10" id="sim-slider" oninput="updateSimulator(this.value)"
+                 class="w-full accent-amber-400 bg-zinc-800 h-2 rounded-lg cursor-pointer" />
+
+          <div class="grid grid-cols-2 gap-2 text-center pt-1 border-t border-zinc-800">
+            <div>
+              <span class="text-[9px] text-zinc-400 uppercase font-mono">XP Guadagnati</span>
+              <div id="sim-xp-out" class="text-xs font-black text-white">+1000 XP</div>
+            </div>
+            <div>
+              <span class="text-[9px] text-zinc-400 uppercase font-mono">Stima Quota Token</span>
+              <div id="sim-token-out" class="text-xs font-black text-purple-400">~1000 $MEETO</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTRACT ADDRESS & TRASPARENZA -->
+      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-2 text-xs">
+        <div class="text-[10px] text-zinc-400 font-bold uppercase">Contract Address:</div>
+        <code class="block font-mono text-amber-300 break-all bg-black/60 p-2 rounded-lg border border-zinc-800">4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump</code>
+        <div class="flex gap-2 pt-1">
+          <button onclick="navigator.clipboard.writeText('4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump'); alert('Contract Address Copiato!');" class="flex-1 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-amber-300 font-bold">📋 Copia CA</button>
+          <a href="https://solscan.io/token/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" class="flex-1 py-1.5 rounded-lg bg-purple-900/40 border border-purple-500/40 text-purple-300 font-bold text-center">Solscan ↗</a>
+        </div>
       </div>
     </section>
 
@@ -432,7 +481,7 @@
     </button>
   </nav>
 
-  <!-- MOTORE JAVASCRIPT -->
+  <!-- MOTORE JAVASCRIPT ORIGINALE -->
   <script>
     const SUPABASE_URL = "https://vhezlswrjifsqhmensmb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_4N818y2Y7UgFeeHJx_u8HQ_oI675Qpg";
@@ -462,37 +511,24 @@
     }
 
     let userState = { xp: 0, level: 1, stamps: [], wallet_address: "" };
-    let tempCapturedPhoto = null;
     let activeCityGlobal = "roma";
     let map = null;
     let activeSiteKey = "colosseo";
     let markers = {};
 
-    // CATALOGO MONUMENTI MULTIPLI PER CITTÀ D'ITALIA
     const MONUMENTS = {
       // ROMA
-      colosseo: { city_slug: "roma", name: "Colosseo & Fori Imperiali", city: "Roma (Lazio)", lat: 41.89021, lng: 12.49223, desc: "Anfiteatro Flavio dell antica Roma, tra le Sette Meraviglie del Mondo.", wiki: "https://it.wikipedia.org/wiki/Colosseo", quiz: { question: "Quale ordine di capitelli si trova al livello piu basso?", options: ["Dorico / Tuscanico", "Corinzio", "Ionico"], correct: 0 } },
-      pantheon: { city_slug: "roma", name: "Pantheon", city: "Roma (Lazio)", lat: 41.8986, lng: 12.4769, desc: "Tempio romano celebre per la maestosa cupola in calcestruzzo con oculo.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)", quiz: { question: "Quale artista e sepolto al suo interno?", options: ["Raffaello Sanzio", "Michelangelo", "Leonardo"], correct: 0 } },
-      fontana_trevi: { city_slug: "roma", name: "Fontana di Trevi", city: "Roma (Lazio)", lat: 41.9009, lng: 12.4833, desc: "La piu imponente e celebre tra le fontane barocche di Roma.", wiki: "https://it.wikipedia.org/wiki/Fontana_di_Trevi", quiz: { question: "Quale divinita e raffigurata al centro?", options: ["Oceano (Nettuno)", "Apollo", "Giove"], correct: 0 } },
-      castel_sant_angelo: { city_slug: "roma", name: "Castel Sant'Angelo", city: "Roma (Lazio)", lat: 41.9031, lng: 12.4663, desc: "Mausoleo dell imperatore Adriano trasformato in fortezza papale.", wiki: "https://it.wikipedia.org/wiki/Castel_Sant%27Angelo", quiz: { question: "Quale statua svetta sulla sommita?", options: ["L Arcangelo Michele", "San Pietro", "Cesare"], correct: 0 } },
+      colosseo: { city_slug: "roma", name: "Colosseo & Fori Imperiali", era: "70–80 d.C. (Età Flavia)", city: "Roma (Lazio)", lat: 41.89021, lng: 12.49223, desc: "Anfiteatro Flavio dell antica Roma, tra le Sette Meraviglie del Mondo.", wiki: "https://it.wikipedia.org/wiki/Colosseo", quiz: { question: "Quale ordine di capitelli si trova al livello piu basso?", options: ["Dorico / Tuscanico", "Corinzio", "Ionico"], correct: 0 } },
+      pantheon: { city_slug: "roma", name: "Pantheon", era: "118–128 d.C. (Adriano)", city: "Roma (Lazio)", lat: 41.8986, lng: 12.4769, desc: "Tempio romano celebre per la maestosa cupola in calcestruzzo con oculo.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)", quiz: { question: "Quale artista e sepolto al suo interno?", options: ["Raffaello Sanzio", "Michelangelo", "Leonardo"], correct: 0 } },
+      fontana_trevi: { city_slug: "roma", name: "Fontana di Trevi", era: "1732–1762 (Barocco)", city: "Roma (Lazio)", lat: 41.9009, lng: 12.4833, desc: "La piu imponente e celebre tra le fontane barocche di Roma.", wiki: "https://it.wikipedia.org/wiki/Fontana_di_Trevi", quiz: { question: "Quale divinita e raffigurata al centro?", options: ["Oceano (Nettuno)", "Apollo", "Giove"], correct: 0 } },
+      castel_sant_angelo: { city_slug: "roma", name: "Castel Sant'Angelo", era: "135–139 d.C.", city: "Roma (Lazio)", lat: 41.9031, lng: 12.4663, desc: "Mausoleo dell imperatore Adriano trasformato in fortezza papale.", wiki: "https://it.wikipedia.org/wiki/Castel_Sant%27Angelo", quiz: { question: "Quale statua svetta sulla sommita?", options: ["L Arcangelo Michele", "San Pietro", "Cesare"], correct: 0 } },
 
       // CATANIA
-      duomo_catania: { city_slug: "catania", name: "Duomo & Fontana dell'Elefante", city: "Catania (Sicilia)", lat: 37.5027, lng: 15.0873, desc: "Piazza Duomo in pietra lavica con il celebre Liotru, simbolo della citta.", wiki: "https://it.wikipedia.org/wiki/Fontana_dell%27Elefante", quiz: { question: "Quale animale in pietra lavica e il simbolo della citta?", options: ["Un Elefante", "Un Cavallo", "Un Leone"], correct: 0 } },
-      castello_ursino: { city_slug: "catania", name: "Castello Ursino", city: "Catania (Sicilia)", lat: 37.4988, lng: 15.0847, desc: "Imponente fortezza federiciana del XIII secolo.", wiki: "https://it.wikipedia.org/wiki/Castello_Ursino", quiz: { question: "Quale imperatore ne ordino la costruzione?", options: ["Federico II di Svevia", "Carlo V", "Guglielmo"], correct: 0 } },
-      teatro_romano_ct: { city_slug: "catania", name: "Teatro Romano & Odeon", city: "Catania (Sicilia)", lat: 37.5039, lng: 15.0838, desc: "Parco archeologico nel centro storico in pietra lavica e marmo.", wiki: "https://it.wikipedia.org/wiki/Teatro_romano_di_Catania", quiz: { question: "In quale pietra scura vulcanica e prevalentemente costruito?", options: ["Pietra lavica dell Etna", "Travertino", "Marmo"], correct: 0 } },
+      duomo_catania: { city_slug: "catania", name: "Duomo & Fontana dell'Elefante", era: "Barocco Catanese", city: "Catania (Sicilia)", lat: 37.5027, lng: 15.0873, desc: "Piazza Duomo in pietra lavica con il celebre Liotru, simbolo della citta.", wiki: "https://it.wikipedia.org/wiki/Fontana_dell%27Elefante", quiz: { question: "Quale animale in pietra lavica e il simbolo della citta?", options: ["Un Elefante", "Un Cavallo", "Un Leone"], correct: 0 } },
+      castello_ursino: { city_slug: "catania", name: "Castello Ursino", era: "XIII Secolo (Federico II)", city: "Catania (Sicilia)", lat: 37.4988, lng: 15.0847, desc: "Imponente fortezza federiciana del XIII secolo.", wiki: "https://it.wikipedia.org/wiki/Castello_Ursino", quiz: { question: "Quale imperatore ne ordino la costruzione?", options: ["Federico II di Svevia", "Carlo V", "Guglielmo"], correct: 0 } },
 
       // FIRENZE
-      piazza_duomo_firenze: { city_slug: "firenze", name: "Piazza Duomo & Cupola", city: "Firenze (Toscana)", lat: 43.7731, lng: 11.2560, desc: "Cattedrale con la Cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)", quiz: { question: "Come si chiama la porta orientale del Battistero?", options: ["Porta del Paradiso", "Porta d Oro", "Porta dei Martiri"], correct: 0 } },
-      galleria_uffizi: { city_slug: "firenze", name: "Galleria degli Uffizi", city: "Firenze (Toscana)", lat: 43.7677, lng: 11.2553, desc: "Uno dei musei d arte piu prestigiosi al mondo.", wiki: "https://it.wikipedia.org/wiki/Galleria_degli_Uffizi", quiz: { question: "Quale dipinto di Botticelli raffigura la Venere?", options: ["La Nascita di Venere", "La Primavera", "Pallade"], correct: 0 } },
-
-      // NAPOLI
-      piazza_plebiscito: { city_slug: "napoli", name: "Piazza del Plebiscito", city: "Napoli (Campania)", lat: 40.8359, lng: 14.2488, desc: "Piazza monumentale simbolo di Napoli col grande colonnato.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Plebiscito", quiz: { question: "Quale basilica si affaccia al centro?", options: ["San Francesco di Paola", "Santa Chiara", "San Domenico"], correct: 0 } },
-
-      // MILANO
-      duomo_milano: { city_slug: "milano", name: "Duomo di Milano", city: "Milano (Lombardia)", lat: 45.4641, lng: 9.1919, desc: "Cattedrale gotica imponente in marmo di Candoglia.", wiki: "https://it.wikipedia.org/wiki/Duomo_di_Milano", quiz: { question: "Quale statua dorata svetta sulla guglia piu alta?", options: ["La Madonnina", "Sant Ambrogio", "San Michele"], correct: 0 } },
-
-      // PALERMO
-      cattedrale_palermo: { city_slug: "palermo", name: "Cattedrale di Palermo", city: "Palermo (Sicilia)", lat: 38.1144, lng: 13.3561, desc: "Monumento arabo-normanno con le tombe reali.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Palermo", quiz: { question: "Quale imperatore e sepolto al suo interno?", options: ["Federico II di Svevia", "Carlo V", "Guglielmo"], correct: 0 } }
+      piazza_duomo_firenze: { city_slug: "firenze", name: "Piazza Duomo & Cupola", era: "Rinascimento Toscano", city: "Firenze (Toscana)", lat: 43.7731, lng: 11.2560, desc: "Cattedrale con la Cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)", quiz: { question: "Come si chiama la porta orientale del Battistero?", options: ["Porta del Paradiso", "Porta d Oro", "Porta dei Martiri"], correct: 0 } }
     };
 
     const CITY_METADATA = {
@@ -532,7 +568,6 @@
         attribution: "© OpenStreetMap"
       }).addTo(map);
 
-      // MARKERS PER I MONUMENTI
       Object.keys(MONUMENTS).forEach(key => {
         const site = MONUMENTS[key];
         const marker = L.marker([site.lat, site.lng]).addTo(map);
@@ -593,15 +628,16 @@
       activeSiteKey = key;
       const site = MONUMENTS[key];
 
-      document.getElementById("sheet-title").innerText = `🏛️ ${site.name}`;
-      document.getElementById("sheet-city").innerText = site.city;
+      document.getElementById("sheet-title").innerText = site.name.toUpperCase();
+      document.getElementById("sheet-city").innerText = site.city.toUpperCase();
+      document.getElementById("sheet-era").innerText = site.era || "";
       document.getElementById("sheet-desc").innerText = site.desc;
       document.getElementById("sheet-wiki").href = site.wiki;
 
       // Genera Carosello della Città
       const citySites = Object.keys(MONUMENTS).filter(k => MONUMENTS[k].city_slug === site.city_slug);
       const carouselContainer = document.getElementById("city-monuments-carousel");
-      document.getElementById("carousel-city-title").innerText = `Monumenti a ${site.city.split(" ")[0]}:`;
+      document.getElementById("carousel-city-title").innerText = `MONUMENTI A ${site.city.split(" ")[0].toUpperCase()}:`;
       document.getElementById("carousel-count").innerText = `${citySites.length} monumenti`;
 
       carouselContainer.innerHTML = "";
@@ -642,12 +678,19 @@
       window.scrollTo(0, 0);
     }
 
+    function updateSimulator(visits) {
+      document.getElementById("sim-visits-val").innerText = `${visits} visite`;
+      document.getElementById("sim-xp-out").innerText = `+${visits * 100} XP`;
+      document.getElementById("sim-token-out").innerText = `~${visits * 100} $MEETO`;
+    }
+
     function loadLocalState() {
       const saved = localStorage.getItem("meeto_user_state");
       if (saved) {
         try { userState = JSON.parse(saved); } catch (e) {}
       }
       document.getElementById("user-xp-badge").innerText = `⭐ ${userState.xp || 0} XP`;
+      document.getElementById("pass-xp").innerText = userState.xp || 0;
     }
 
     async function syncUserWithCloud() {
@@ -663,6 +706,7 @@
           userState.xp = dbUser.total_xp || 0;
           userState.level = dbUser.level || 1;
           document.getElementById("user-xp-badge").innerText = `⭐ ${userState.xp} XP`;
+          document.getElementById("pass-xp").innerText = userState.xp;
         }
       } catch (err) {
         console.warn("Sync cloud:", err);
@@ -671,27 +715,14 @@
 
     async function fetchDexScreenerPrice() {
       const tokenAddress = "4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump";
-      const priceDisplay = document.getElementById("token-price-display");
-      const changeDisplay = document.getElementById("token-change");
-
       try {
         const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${tokenAddress}`);
         const data = await res.json();
         if (data.pairs && data.pairs.length > 0) {
           const pair = data.pairs[0];
-          const price = parseFloat(pair.priceUsd);
-          priceDisplay.innerText = price < 0.0001 ? "$" + price.toFixed(8) : "$" + price.toFixed(4);
-          
-          if (pair.priceChange && pair.priceChange.h24 !== undefined) {
-            const change = pair.priceChange.h24;
-            const isPos = change >= 0;
-            changeDisplay.innerText = `${isPos ? '▲ +' : '▼ '}${change}% (24h)`;
-            changeDisplay.className = `text-xs font-bold ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
-          }
+          document.getElementById("token-price-usd").innerText = "$" + parseFloat(pair.priceUsd).toFixed(6);
         }
-      } catch (err) {
-        console.warn("Errore DexScreener:", err);
-      }
+      } catch (err) {}
     }
   </script>
 </body>
@@ -705,4 +736,3 @@
       document.head.appendChild(script);
   })();
 </script>
-
