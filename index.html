@@ -63,23 +63,20 @@
 
     <!-- ==================== TAB 1: MAPPA ESPLORA ==================== -->
     <section id="tab-map" class="w-full relative">
-      <!-- Selettore Orizzontale Città -->
+      <!-- 1. BARRA ORIZZONTALE DELLE CITTÀ (IN ALTO) -->
       <div id="city-buttons-bar" class="absolute top-2 left-2 right-2 z-[1000] flex gap-1.5 overflow-x-auto no-scrollbar py-1">
-        <button onclick="setGlobalCity('roma')" id="btn-city-roma" class="px-3 py-1.5 rounded-full bg-black/95 border border-amber-500 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl">🏛️ Roma</button>
+        <button onclick="setGlobalCity('catania')" id="btn-city-catania" class="px-3 py-1.5 rounded-full bg-black/95 border border-amber-500 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl">🌋 Catania</button>
+        <button onclick="setGlobalCity('roma')" id="btn-city-roma" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏛️ Roma</button>
         <button onclick="setGlobalCity('firenze')" id="btn-city-firenze" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎨 Firenze</button>
-        <button onclick="setGlobalCity('venezia')" id="btn-city-venezia" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎭 Venezia</button>
         <button onclick="setGlobalCity('napoli')" id="btn-city-napoli" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🍕 Napoli</button>
         <button onclick="setGlobalCity('milano')" id="btn-city-milano" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Milano</button>
+        <button onclick="setGlobalCity('venezia')" id="btn-city-venezia" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎭 Venezia</button>
+        <button onclick="setGlobalCity('palermo')" id="btn-city-palermo" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌴 Palermo</button>
         <button onclick="setGlobalCity('torino')" id="btn-city-torino" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">👑 Torino</button>
         <button onclick="setGlobalCity('bologna')" id="btn-city-bologna" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🗼 Bologna</button>
         <button onclick="setGlobalCity('verona')" id="btn-city-verona" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">⚔️ Verona</button>
         <button onclick="setGlobalCity('pisa')" id="btn-city-pisa" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">📐 Pisa</button>
         <button onclick="setGlobalCity('siena')" id="btn-city-siena" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🐎 Siena</button>
-        <button onclick="setGlobalCity('genova')" id="btn-city-genova" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">⚓ Genova</button>
-        <button onclick="setGlobalCity('matera')" id="btn-city-matera" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🪨 Matera</button>
-        <button onclick="setGlobalCity('bari')" id="btn-city-bari" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Puglia</button>
-        <button onclick="setGlobalCity('palermo')" id="btn-city-palermo" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌴 Palermo</button>
-        <button onclick="setGlobalCity('catania')" id="btn-city-catania" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌋 Catania</button>
         <button onclick="setGlobalCity('agrigento')" id="btn-city-agrigento" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏺 Agrigento</button>
         <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full bg-amber-400 text-black text-xs font-extrabold whitespace-nowrap shadow-xl ml-auto">🎯 GPS</button>
       </div>
@@ -87,27 +84,41 @@
       <!-- Mappa Leaflet -->
       <div id="map"></div>
 
-      <!-- Scheda Monumento Selezionato -->
-      <div id="monument-sheet" class="absolute bottom-4 left-3 right-3 z-[1000] glass-card p-4 rounded-2xl max-w-lg mx-auto shadow-2xl">
-        <div class="flex justify-between items-start gap-2 mb-1.5">
-          <div>
-            <span class="text-[9px] text-amber-400 uppercase tracking-widest font-mono font-bold" id="sheet-city">Roma (Lazio)</span>
-            <h3 id="sheet-title" class="font-bold text-sm text-white">🏛️ Colosseo & Parco Archeologico</h3>
-          </div>
-          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0">+100 XP</span>
-        </div>
-        <p id="sheet-desc" class="text-xs text-zinc-300 line-clamp-2 mb-3 leading-relaxed">
-          Anfiteatro Flavio dell antica Roma, tra le Sette Meraviglie del Mondo Moderno.
-        </p>
+      <!-- 2. PANNELLO IN BASSO: CAROSELLO MONUMENTI MULTIPLI + SCHEDA -->
+      <div id="monument-sheet" class="absolute bottom-4 left-3 right-3 z-[1000] glass-card p-4 rounded-2xl max-w-lg mx-auto shadow-2xl space-y-3">
         
-        <div class="flex gap-2">
-          <a id="sheet-wiki" href="https://it.wikipedia.org" target="_blank" class="px-3 py-2.5 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center">
-            📖 Info
-          </a>
-          <button onclick="openQuizModal()" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-yellow-500 text-black shadow-lg shadow-amber-500/30 active:scale-95 transition flex items-center justify-center gap-1.5">
-            <span>🎯</span> Fai il Quiz & Check-In
-          </button>
+        <!-- CAROSELLO SITI DELLA CITTÀ ATTIVA -->
+        <div>
+          <div class="flex justify-between items-center mb-1.5">
+            <span class="text-[9px] uppercase tracking-widest text-amber-400 font-mono font-bold" id="carousel-city-title">Siti a Catania:</span>
+            <span class="text-[9px] text-zinc-400 font-mono" id="carousel-count">4 monumenti</span>
+          </div>
+          <div id="city-monuments-carousel" class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
         </div>
+
+        <!-- DETTAGLIO DEL MONUMENTO ATTIVO -->
+        <div class="pt-2 border-t border-zinc-800">
+          <div class="flex justify-between items-start gap-2 mb-1">
+            <div>
+              <span class="text-[9px] text-zinc-400 font-mono uppercase" id="sheet-city">Catania (Sicilia)</span>
+              <h3 id="sheet-title" class="font-bold text-sm text-white">🏛️ Duomo & Fontana dell'Elefante</h3>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0">+100 XP</span>
+          </div>
+          <p id="sheet-desc" class="text-xs text-zinc-300 line-clamp-2 mb-3 leading-relaxed">
+            Piazza Duomo in pietra lavica con il celebre Liotru, simbolo della citta.
+          </p>
+          
+          <div class="flex gap-2">
+            <a id="sheet-wiki" href="https://it.wikipedia.org" target="_blank" class="px-3 py-2.5 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center">
+              📖 Info
+            </a>
+            <button onclick="openQuizModal()" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-yellow-500 text-black shadow-lg shadow-amber-500/30 active:scale-95 transition flex items-center justify-center gap-1.5">
+              <span>🎯</span> Fai il Quiz & Check-In
+            </button>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -119,40 +130,35 @@
         <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1">Sincronizzato in tempo reale con i monumenti selezionati sulla mappa.</p>
       </div>
 
-      <!-- Selettore Destinazione -->
       <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-2">
         <label class="block text-[11px] font-bold uppercase tracking-wider text-amber-400">Destinazione Selezionata:</label>
         <select id="travel-city-select" onchange="setGlobalCity(this.value)" class="w-full bg-black/60 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-amber-400 font-bold">
+          <option value="catania">🌋 Catania (Sicilia)</option>
           <option value="roma">🏛️ Roma (Lazio)</option>
           <option value="firenze">🎨 Firenze (Toscana)</option>
-          <option value="venezia">🎭 Venezia (Veneto)</option>
           <option value="napoli">🍕 Napoli (Campania)</option>
           <option value="milano">🏰 Milano (Lombardia)</option>
+          <option value="venezia">🎭 Venezia (Veneto)</option>
+          <option value="palermo">🌴 Palermo (Sicilia)</option>
           <option value="torino">👑 Torino (Piemonte)</option>
           <option value="bologna">🗼 Bologna (Emilia-Romagna)</option>
           <option value="verona">⚔️ Verona (Veneto)</option>
           <option value="pisa">📐 Pisa (Toscana)</option>
           <option value="siena">🐎 Siena (Toscana)</option>
-          <option value="genova">⚓ Genova (Liguria)</option>
-          <option value="matera">🪨 Matera (Basilicata)</option>
-          <option value="bari">🏰 Puglia (Bari & Castelli)</option>
-          <option value="palermo">🌴 Palermo (Sicilia)</option>
-          <option value="catania">🌋 Catania (Sicilia)</option>
           <option value="agrigento">🏺 Agrigento (Sicilia)</option>
         </select>
-        <p class="text-[10px] text-zinc-500">Cambiando destinazione qui, la Mappa si sposta automaticamente sulla stessa citta.</p>
+        <p class="text-[10px] text-zinc-500">Cambiando destinazione qui, la Mappa si sposta automaticamente mostrando tutti i suoi monumenti.</p>
       </div>
 
-      <!-- Servizi di Prenotazione -->
       <div class="space-y-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">Prenota il Viaggio per <span id="travel-target-city-name" class="text-amber-400 font-bold">Roma</span></h3>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">Prenota il Viaggio per <span id="travel-target-city-name" class="text-amber-400 font-bold">Catania</span></h3>
 
         <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
           <div class="flex items-center gap-3">
             <span class="text-2xl p-2 bg-amber-500/10 rounded-xl border border-amber-500/20">🎟️</span>
             <div>
-              <h4 class="text-xs font-bold text-white">Biglietti Salta-Fila & Musei</h4>
-              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-ticket-desc">Ingressi prioritari ufficiali per i monumenti di Roma.</p>
+              <h4 class="text-xs font-bold text-white">Biglietti Salta-Fila & Tour</h4>
+              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-ticket-desc">Ingressi prioritari ufficiali per musei e siti.</p>
             </div>
           </div>
           <a id="btn-affiliate-tickets" href="#" target="_blank" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 hover:bg-amber-300 text-black shrink-0 active:scale-95 transition shadow-md">
@@ -165,7 +171,7 @@
             <span class="text-2xl p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20">🚆</span>
             <div>
               <h4 class="text-xs font-bold text-white">Treni & Trasporti Rapidi</h4>
-              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-train-desc">Treni Frecciarossa e Italo con destinazione Roma.</p>
+              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-train-desc">Treni e collegamenti per la stazione centrale.</p>
             </div>
           </div>
           <a id="btn-affiliate-trains" href="#" target="_blank" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-emerald-400 hover:bg-zinc-700 shrink-0 active:scale-95 transition">
@@ -178,7 +184,7 @@
             <span class="text-2xl p-2 bg-purple-500/10 rounded-xl border border-purple-500/20">🏨</span>
             <div>
               <h4 class="text-xs font-bold text-white">Alloggi nel Centro Storico</h4>
-              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-hotel-desc">Hotel e dimore d epoca nei pressi dei monumenti di Roma.</p>
+              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-hotel-desc">Hotel e dimore d epoca a pochi passi dai monumenti.</p>
             </div>
           </div>
           <a id="btn-affiliate-hotels" href="#" target="_blank" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-purple-300 hover:bg-zinc-700 shrink-0 active:scale-95 transition">
@@ -191,7 +197,7 @@
             <span class="text-2xl p-2 bg-blue-500/10 rounded-xl border border-blue-500/20">✈️</span>
             <div>
               <h4 class="text-xs font-bold text-white">Voli Nazionali & Internazionali</h4>
-              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-flight-desc">Voli aerei verso gli aeroporti piu vicini a Roma.</p>
+              <p class="text-[11px] text-zinc-400 mt-0.5" id="travel-flight-desc">Cerca voli verso l aeroporto piu vicino.</p>
             </div>
           </div>
           <a id="btn-affiliate-flights" href="#" target="_blank" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-blue-300 hover:bg-zinc-700 shrink-0 active:scale-95 transition">
@@ -223,7 +229,6 @@
           </div>
         </div>
 
-        <!-- Barra Riscatto -->
         <div class="mt-4 pt-3 border-t border-zinc-800/80 text-left space-y-1.5">
           <div class="flex justify-between text-[11px]">
             <span class="text-zinc-400">Soglia Idoneita Airdrop:</span>
@@ -240,7 +245,6 @@
         </button>
       </div>
 
-      <!-- Spiegazione Punti -->
       <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
         <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
           <span>🎁</span> Come Riscattare i tuoi Punti XP
@@ -264,7 +268,6 @@
           </div>
         </div>
 
-        <!-- Wallet Input -->
         <div class="pt-2 border-t border-zinc-800 space-y-2">
           <label class="block text-[11px] font-bold text-zinc-300">Wallet Solana per accredito ricompense:</label>
           <div class="flex gap-2">
@@ -278,7 +281,6 @@
         </div>
       </div>
 
-      <!-- Classifica Live -->
       <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
         <div class="flex justify-between items-center">
           <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
@@ -293,7 +295,6 @@
         </div>
       </div>
 
-      <!-- Timbri e Foto Ricordo -->
       <div class="space-y-2">
         <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">I Tuoi Timbri e Foto Ricordo</h3>
         <div id="stamps-gallery" class="grid grid-cols-2 gap-3"></div>
@@ -435,7 +436,7 @@
     </button>
   </nav>
 
-  <!-- MOTORE JAVASCRIPT: SUPABASE & MAPPA -->
+  <!-- MOTORE JAVASCRIPT: CAROSELLO MULTIPLO & GESTIONE SITI -->
   <script>
     const SUPABASE_URL = "https://vhezlswrjifsqhmensmb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_4N818y2Y7UgFeeHJx_u8HQ_oI675Qpg";
@@ -466,35 +467,68 @@
 
     let userState = { xp: 0, level: 1, stamps: [], wallet_address: "" };
     let tempCapturedPhoto = null;
-    let activeCityGlobal = "roma";
+    let activeCityGlobal = "catania"; // Parte da Catania per mostrarti subito i monumenti multipli
 
-    // MONUMENTI BASE (LOCALI)
+    // CATALOGO MONUMENTI LOCALI (COMPRENDE SITI MULTIPLI PER CITTÀ)
     const MONUMENTS = {
-      colosseo: { name: "Colosseo & Fori Imperiali", city: "Roma (Lazio)", lat: 41.89021, lng: 12.49223, radiusMeters: 200, desc: "Anfiteatro Flavio dell antica Roma, tra le Sette Meraviglie del Mondo.", wiki: "https://it.wikipedia.org/wiki/Colosseo", quiz: { question: "Quale ordine di capitelli si trova al livello piu basso degli archi esterni?", options: ["Dorico / Tuscanico", "Corinzio", "Ionico"], correct: 0 } },
-      pantheon: { name: "Pantheon", city: "Roma (Lazio)", lat: 41.8986, lng: 12.4769, radiusMeters: 150, desc: "Tempio romano celebre per la sua maestosa cupola in calcestruzzo con oculo centrale.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)", quiz: { question: "Quale celebre maestro del Rinascimento e sepolto all interno del Pantheon?", options: ["Raffaello Sanzio", "Michelangelo", "Leonardo da Vinci"], correct: 0 } },
-      piazza_duomo_firenze: { name: "Piazza del Duomo & Cupola", city: "Firenze (Toscana)", lat: 43.7731, lng: 11.2560, radiusMeters: 150, desc: "Cattedrale di Santa Maria del Fiore con la rivoluzionaria cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)", quiz: { question: "Come viene chiamata la celebre porta orientale in bronzo dorato del Battistero?", options: ["Porta del Paradiso", "Porta dei Martiri", "Porta d Oro"], correct: 0 } },
-      galleria_uffizi: { name: "Galleria degli Uffizi", city: "Firenze (Toscana)", lat: 43.7677, lng: 11.2553, radiusMeters: 150, desc: "Uno dei musei d arte piu prestigiosi e visitati al mondo.", wiki: "https://it.wikipedia.org/wiki/Galleria_degli_Uffizi", quiz: { question: "Quale dipinto di Botticelli raffigura la dea della bellezza su una conchiglia marina?", options: ["La Nascita di Venere", "La Primavera", "Pallade"], correct: 0 } },
-      piazza_san_marco: { name: "Piazza San Marco", city: "Venezia (Veneto)", lat: 45.4342, lng: 12.3385, radiusMeters: 180, desc: "Il salotto d Europa dominato dai mosaici dorati della Basilica e dal Campanile.", wiki: "https://it.wikipedia.org/wiki/Piazza_San_Marco", quiz: { question: "Quale animale alato svetta sulla colonna in piazza accanto a San Teodoro?", options: ["Il Leone di San Marco", "L Aquila Imperiale", "Il Grifone"], correct: 0 } },
-      duomo_milano: { name: "Duomo di Milano", city: "Milano (Lombardia)", lat: 45.4641, lng: 9.1919, radiusMeters: 200, desc: "Cattedrale gotica imponente rivestita in marmo di Candoglia con oltre 3.400 statue.", wiki: "https://it.wikipedia.org/wiki/Duomo_di_Milano", quiz: { question: "Quale statua dorata svetta sulla guglia piu alta del Duomo?", options: ["La Madonnina", "Sant Ambrogio", "San Michele Arcangelo"], correct: 0 } },
-      piazza_plebiscito: { name: "Piazza del Plebiscito", city: "Napoli (Campania)", lat: 40.8359, lng: 14.2488, radiusMeters: 180, desc: "La piazza monumentale simbolo di Napoli con il grande colonnato neoclassico.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Plebiscito", quiz: { question: "Quale basilica si affaccia al centro del colonnato?", options: ["San Francesco di Paola", "Santa Chiara", "San Domenico"], correct: 0 } },
-      mole_torino: { name: "Mole Antonelliana", city: "Torino (Piemonte)", lat: 45.0689, lng: 7.6930, radiusMeters: 150, desc: "Monumento simbolo di Torino, sede del Museo Nazionale del Cinema.", wiki: "https://it.wikipedia.org/wiki/Mole_Antonelliana", quiz: { question: "Su quale moneta italiana in euro e incisa la sagoma della Mole Antonelliana?", options: ["2 centesimi", "5 centesimi", "1 euro"], correct: 0 } },
-      due_torri_bo: { name: "Le Due Torri (Asinelli)", city: "Bologna (Emilia-Romagna)", lat: 44.4943, lng: 11.3468, radiusMeters: 120, desc: "Le torri pendenti medievali simbolo dell antica Bologna turrita.", wiki: "https://it.wikipedia.org/wiki/Torre_degli_Asinelli", quiz: { question: "Delle due torri affiancate, qual e quella notevolmente piu alta?", options: ["Torre degli Asinelli", "Torre Garisenda", "Hanno la stessa altezza"], correct: 0 } },
-      cattedrale_palermo: { name: "Cattedrale di Palermo", city: "Palermo (Sicilia)", lat: 38.1144, lng: 13.3561, radiusMeters: 150, desc: "Monumento arabo-normanno con le tombe reali normanne e sveve.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Palermo", quiz: { question: "Quale imperatore del Sacro Romano Impero e sepolto al suo interno?", options: ["Federico II di Svevia", "Carlo V", "Guglielmo II"], correct: 0 } }
+      // CATANIA (4 SITI COMPLETI)
+      duomo_catania: { city_slug: "catania", name: "Duomo & Fontana dell Elefante", city: "Catania (Sicilia)", lat: 37.5027, lng: 15.0873, radiusMeters: 150, desc: "Piazza Duomo in pietra lavica con il celebre Liotru, simbolo della citta.", wiki: "https://it.wikipedia.org/wiki/Fontana_dell%27Elefante", quiz: { question: "Quale animale in pietra lavica sorregge l obelisco al centro della piazza?", options: ["Un Elefante (Liotru)", "Un Cavallo", "Un Leone"], correct: 0 } },
+      castello_ursino: { city_slug: "catania", name: "Castello Ursino", city: "Catania (Sicilia)", lat: 37.4988, lng: 15.0847, radiusMeters: 150, desc: "Imponente fortezza federiciana del XIII secolo, oggi sede del Museo Civico.", wiki: "https://it.wikipedia.org/wiki/Castello_Ursino", quiz: { question: "Da quale imperatore fu fatto costruire il possente castello nel XIII secolo?", options: ["Federico II di Svevia", "Carlo V", "Guglielmo il Buono"], correct: 0 } },
+      teatro_romano_ct: { city_slug: "catania", name: "Teatro Romano & Odeon", city: "Catania (Sicilia)", lat: 37.5039, lng: 15.0838, radiusMeters: 150, desc: "Parco archeologico nel centro storico costruito in pietra lavica e marmo.", wiki: "https://it.wikipedia.org/wiki/Teatro_romano_di_Catania", quiz: { question: "In quale pietra scura vulcanica e prevalentemente costruito il teatro?", options: ["Pietra lavica dell Etna", "Travertino romano", "Pietra di Noto"], correct: 0 } },
+      monastero_benedettini: { city_slug: "catania", name: "Monastero dei Benedettini", city: "Catania (Sicilia)", lat: 37.5042, lng: 15.0801, radiusMeters: 180, desc: "Uno dei complessi benedettini piu grandi d Europa, capolavoro tardo barocco UNESCO.", wiki: "https://it.wikipedia.org/wiki/Monastero_di_San_Nicol%C3%B2_l%27Arena", quiz: { question: "Di quale prestigiosa istituzione e oggi sede lo storico monastero?", options: ["Dipartimento Universitario", "Municipio", "Tribunale"], correct: 0 } },
+
+      // ROMA (4 SITI)
+      colosseo: { city_slug: "roma", name: "Colosseo & Fori Imperiali", city: "Roma (Lazio)", lat: 41.89021, lng: 12.49223, radiusMeters: 200, desc: "Anfiteatro Flavio dell antica Roma, tra le Sette Meraviglie del Mondo.", wiki: "https://it.wikipedia.org/wiki/Colosseo", quiz: { question: "Quale ordine di capitelli si trova al livello piu basso degli archi esterni?", options: ["Dorico / Tuscanico", "Corinzio", "Ionico"], correct: 0 } },
+      pantheon: { city_slug: "roma", name: "Pantheon", city: "Roma (Lazio)", lat: 41.8986, lng: 12.4769, radiusMeters: 150, desc: "Tempio romano celebre per la maestosa cupola in calcestruzzo con oculo.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)", quiz: { question: "Quale celebre maestro del Rinascimento e sepolto all interno del Pantheon?", options: ["Raffaello Sanzio", "Michelangelo", "Leonardo da Vinci"], correct: 0 } },
+      fontana_trevi: { city_slug: "roma", name: "Fontana di Trevi", city: "Roma (Lazio)", lat: 41.9009, lng: 12.4833, radiusMeters: 120, desc: "La piu imponente e celebre tra le fontane barocche di Roma.", wiki: "https://it.wikipedia.org/wiki/Fontana_di_Trevi", quiz: { question: "Quale divinita mitologica troneggia al centro?", options: ["Oceano (Nettuno)", "Apollo", "Mercurio"], correct: 0 } },
+      castel_sant_angelo: { city_slug: "roma", name: "Castel Sant'Angelo", city: "Roma (Lazio)", lat: 41.9031, lng: 12.4663, radiusMeters: 150, desc: "Mausoleo dell imperatore Adriano trasformato in fortezza papale.", wiki: "https://it.wikipedia.org/wiki/Castel_Sant%27Angelo", quiz: { question: "Quale statua bronzea svetta sulla sommita del castello?", options: ["L Arcangelo Michele", "San Pietro", "Cesare Augusto"], correct: 0 } },
+
+      // FIRENZE (3 SITI)
+      piazza_duomo_firenze: { city_slug: "firenze", name: "Piazza Duomo & Cupola", city: "Firenze (Toscana)", lat: 43.7731, lng: 11.2560, radiusMeters: 150, desc: "Santa Maria del Fiore con la rivoluzionaria cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)", quiz: { question: "Come viene chiamata la porta orientale in bronzo dorato del Battistero?", options: ["Porta del Paradiso", "Porta dei Martiri", "Porta d Oro"], correct: 0 } },
+      galleria_uffizi: { city_slug: "firenze", name: "Galleria degli Uffizi", city: "Firenze (Toscana)", lat: 43.7677, lng: 11.2553, radiusMeters: 150, desc: "Uno dei musei d arte piu prestigiosi e visitati al mondo.", wiki: "https://it.wikipedia.org/wiki/Galleria_degli_Uffizi", quiz: { question: "Quale dipinto di Botticelli raffigura la dea della bellezza su una conchiglia?", options: ["La Nascita di Venere", "La Primavera", "Pallade"], correct: 0 } },
+      ponte_vecchio: { city_slug: "firenze", name: "Ponte Vecchio", city: "Firenze (Toscana)", lat: 43.7680, lng: 11.2531, radiusMeters: 120, desc: "Il ponte medievale simbolo di Firenze con le botteghe orafe.", wiki: "https://it.wikipedia.org/wiki/Ponte_Vecchio", quiz: { question: "Quale corridoio sopraelevato attraversa il ponte collegando a Palazzo Pitti?", options: ["Corridoio Vasariano", "Corridoio Mediceo", "Passetto Borbonico"], correct: 0 } },
+
+      // NAPOLI (3 SITI)
+      piazza_plebiscito: { city_slug: "napoli", name: "Piazza del Plebiscito", city: "Napoli (Campania)", lat: 40.8359, lng: 14.2488, radiusMeters: 180, desc: "Piazza monumentale simbolo di Napoli con il grande colonnato neoclassico.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Plebiscito", quiz: { question: "Quale basilica si affaccia al centro del colonnato?", options: ["San Francesco di Paola", "Santa Chiara", "San Domenico"], correct: 0 } },
+      spaccanapoli: { city_slug: "napoli", name: "Spaccanapoli & Cristo Velato", city: "Napoli (Campania)", lat: 40.8493, lng: 14.2549, radiusMeters: 150, desc: "Il decumano del centro storico con la Cappella Sansevero.", wiki: "https://it.wikipedia.org/wiki/Spaccanapoli", quiz: { question: "Quale celebre scultura marmorea settecentesca e custodita a Sansevero?", options: ["Il Cristo Velato", "La Pieta", "Il David"], correct: 0 } },
+      pompei: { city_slug: "napoli", name: "Scavi Archeologici di Pompei", city: "Pompei (Campania)", lat: 40.7509, lng: 14.4870, radiusMeters: 300, desc: "L antica citta romana preservata dalle ceneri del Vesuvio nel 79 d.C.", wiki: "https://it.wikipedia.org/wiki/Scavi_archeologici_di_Pompei", quiz: { question: "Quale vulcano incombe alle spalle dell antico Foro?", options: ["Il Vesuvio", "L Etna", "I Campi Flegrei"], correct: 0 } },
+
+      // MILANO (2 SITI)
+      duomo_milano: { city_slug: "milano", name: "Duomo di Milano", city: "Milano (Lombardia)", lat: 45.4641, lng: 9.1919, radiusMeters: 200, desc: "Cattedrale gotica imponente rivestita in marmo di Candoglia.", wiki: "https://it.wikipedia.org/wiki/Duomo_di_Milano", quiz: { question: "Quale statua dorata svetta sulla guglia piu alta del Duomo?", options: ["La Madonnina", "Sant Ambrogio", "San Michele Arcangelo"], correct: 0 } },
+      castello_sforzesco: { city_slug: "milano", name: "Castello Sforzesco", city: "Milano (Lombardia)", lat: 45.4705, lng: 9.1793, radiusMeters: 200, desc: "Grande fortezza rinascimentale dei duchi di Milano, oggi polo museale.", wiki: "https://it.wikipedia.org/wiki/Castello_Sforzesco", quiz: { question: "Come si chiama la torre d ingresso monumentale del castello?", options: ["Torre del Filarete", "Torre Falconiera", "Torre del Parco"], correct: 0 } },
+
+      // VENEZIA (2 SITI)
+      piazza_san_marco: { city_slug: "venezia", name: "Piazza San Marco", city: "Venezia (Veneto)", lat: 45.4342, lng: 12.3385, radiusMeters: 180, desc: "Il salotto d Europa con i mosaici d oro e il Campanile.", wiki: "https://it.wikipedia.org/wiki/Piazza_San_Marco", quiz: { question: "Quale animale alato svetta sulla colonna in piazza?", options: ["Il Leone di San Marco", "L Aquila Imperiale", "Il Grifone"], correct: 0 } },
+      ponte_rialto: { city_slug: "venezia", name: "Ponte di Rialto", city: "Venezia (Veneto)", lat: 45.4380, lng: 12.3359, radiusMeters: 100, desc: "Il ponte piu antico che scavalca il Canal Grande.", wiki: "https://it.wikipedia.org/wiki/Ponte_di_Rialto", quiz: { question: "In quale pietra bianca tipica della costa adriatica e costruito?", options: ["Pietra d Istria", "Marmo di Carrara", "Travertino"], correct: 0 } },
+
+      // ALTRE CITTÀ
+      cattedrale_palermo: { city_slug: "palermo", name: "Cattedrale di Palermo", city: "Palermo (Sicilia)", lat: 38.1144, lng: 13.3561, radiusMeters: 150, desc: "Monumento arabo-normanno con le tombe reali normanne e sveve.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Palermo", quiz: { question: "Quale imperatore del Sacro Romano Impero e sepolto al suo interno?", options: ["Federico II di Svevia", "Carlo V", "Guglielmo II"], correct: 0 } },
+      mole_torino: { city_slug: "torino", name: "Mole Antonelliana", city: "Torino (Piemonte)", lat: 45.0689, lng: 7.6930, radiusMeters: 150, desc: "Monumento simbolo di Torino, sede del Museo Nazionale del Cinema.", wiki: "https://it.wikipedia.org/wiki/Mole_Antonelliana", quiz: { question: "Su quale moneta italiana in euro e incisa la Mole?", options: ["2 centesimi", "5 centesimi", "1 euro"], correct: 0 } },
+      due_torri_bo: { city_slug: "bologna", name: "Le Due Torri (Asinelli)", city: "Bologna (Emilia-Romagna)", lat: 44.4943, lng: 11.3468, radiusMeters: 120, desc: "Le torri pendenti medievali simbolo dell antica Bologna turrita.", wiki: "https://it.wikipedia.org/wiki/Torre_degli_Asinelli", quiz: { question: "Delle due torri affiancate, qual e quella piu alta?", options: ["Torre degli Asinelli", "Torre Garisenda", "Uguali"], correct: 0 } },
+      arena_verona: { city_slug: "verona", name: "Arena di Verona", city: "Verona (Veneto)", lat: 45.4384, lng: 10.9916, radiusMeters: 150, desc: "Anfiteatro romano perfettamente conservato, capitale dell opera lirica.", wiki: "https://it.wikipedia.org/wiki/Arena_di_Verona", quiz: { question: "In quale piazza sorge l Arena?", options: ["Piazza Bra", "Piazza delle Erbe", "Piazza Signori"], correct: 0 } },
+      piazza_miracoli_pisa: { city_slug: "pisa", name: "Piazza dei Miracoli", city: "Pisa (Toscana)", lat: 43.7230, lng: 10.3966, radiusMeters: 180, desc: "Patrimonio UNESCO con la Torre Pendente.", wiki: "https://it.wikipedia.org/wiki/Torre_di_Pisa", quiz: { question: "Qual e la funzione originaria della Torre?", options: ["Campanile", "Torre di guardia", "Faro"], correct: 0 } },
+      piazza_campo_siena: { city_slug: "siena", name: "Piazza del Campo", city: "Siena (Toscana)", lat: 43.3184, lng: 11.3316, radiusMeters: 150, desc: "Piazza a conchiglia teatro del celebre Palio.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Campo", quiz: { question: "In quanti spicchi e suddivisa la pavimentazione?", options: ["9 spicchi", "7 spicchi", "12 spicchi"], correct: 0 } },
+      valle_templi: { city_slug: "agrigento", name: "Valle dei Templi", city: "Agrigento (Sicilia)", lat: 37.2905, lng: 13.5866, radiusMeters: 250, desc: "Parco archeologico monumentale greco.", wiki: "https://it.wikipedia.org/wiki/Valle_dei_Templi", quiz: { question: "In quale ordine architettonico classico sono costruiti?", options: ["Dorico", "Ionico", "Corinzio"], correct: 0 } }
     };
 
     const CITY_METADATA = {
-      roma: { name: "Roma", siteKey: "colosseo", iata: "FCO", ticketsQuery: "Roma", trainQuery: "roma" },
-      firenze: { name: "Firenze", siteKey: "piazza_duomo_firenze", iata: "FLR", ticketsQuery: "Firenze", trainQuery: "firenze" },
-      venezia: { name: "Venezia", siteKey: "piazza_san_marco", iata: "VCE", ticketsQuery: "Venezia", trainQuery: "venezia" },
-      napoli: { name: "Napoli", siteKey: "piazza_plebiscito", iata: "NAP", ticketsQuery: "Napoli", trainQuery: "napoli" },
-      milano: { name: "Milano", siteKey: "duomo_milano", iata: "MIL", ticketsQuery: "Milano", trainQuery: "milano" },
-      torino: { name: "Torino", siteKey: "mole_torino", iata: "TRN", ticketsQuery: "Torino", trainQuery: "torino" },
-      bologna: { name: "Bologna", siteKey: "due_torri_bo", iata: "BLQ", ticketsQuery: "Bologna", trainQuery: "bologna" },
-      palermo: { name: "Palermo", siteKey: "cattedrale_palermo", iata: "PMO", ticketsQuery: "Palermo", trainQuery: "palermo" }
+      catania: { name: "Catania", iata: "CTA", ticketsQuery: "Catania", trainQuery: "catania" },
+      roma: { name: "Roma", iata: "FCO", ticketsQuery: "Roma", trainQuery: "roma" },
+      firenze: { name: "Firenze", iata: "FLR", ticketsQuery: "Firenze", trainQuery: "firenze" },
+      venezia: { name: "Venezia", iata: "VCE", ticketsQuery: "Venezia", trainQuery: "venezia" },
+      napoli: { name: "Napoli", iata: "NAP", ticketsQuery: "Napoli", trainQuery: "napoli" },
+      milano: { name: "Milano", iata: "MIL", ticketsQuery: "Milano", trainQuery: "milano" },
+      palermo: { name: "Palermo", iata: "PMO", ticketsQuery: "Palermo", trainQuery: "palermo" },
+      torino: { name: "Torino", iata: "TRN", ticketsQuery: "Torino", trainQuery: "torino" },
+      bologna: { name: "Bologna", iata: "BLQ", ticketsQuery: "Bologna", trainQuery: "bologna" },
+      verona: { name: "Verona", iata: "VRN", ticketsQuery: "Verona", trainQuery: "verona" },
+      pisa: { name: "Pisa", iata: "PSA", ticketsQuery: "Pisa", trainQuery: "pisa" },
+      siena: { name: "Siena", iata: "FLR", ticketsQuery: "Siena", trainQuery: "siena" },
+      agrigento: { name: "Agrigento", iata: "CTA", ticketsQuery: "Agrigento", trainQuery: "agrigento" }
     };
 
     let map = null;
-    let activeSiteKey = "colosseo";
+    let activeSiteKey = "duomo_catania";
     let markers = {};
 
     window.addEventListener("DOMContentLoaded", () => {
@@ -505,13 +539,13 @@
         console.error("Mappa errore:", e);
       }
       fetchDexScreenerPrice();
-      setGlobalCity("roma");
+      setGlobalCity("catania"); // Avvia con Catania e i suoi 4 monumenti
       setTimeout(syncUserWithCloud, 600);
       setTimeout(loadLeaderboard, 800);
-      setTimeout(loadCloudMonuments, 1200); // CARICA SILENZIOSAMENTE I MONUMENTI DA SUPABASE
+      setTimeout(loadCloudMonuments, 1200); // Scarica monumenti extra da Supabase
     });
 
-    // CARICA MONUMENTI DINAMICI DA SUPABASE
+    // CARICA MONUMENTI EXTRA DA SUPABASE
     async function loadCloudMonuments() {
       if (!sbClient) return;
       try {
@@ -521,6 +555,7 @@
             const key = "cloud_" + s.id;
             if (!MONUMENTS[key]) {
               MONUMENTS[key] = {
+                city_slug: s.city_slug,
                 name: s.name,
                 city: `${s.city_name} (${s.region})`,
                 lat: s.lat,
@@ -538,7 +573,6 @@
               if (!CITY_METADATA[s.city_slug]) {
                 CITY_METADATA[s.city_slug] = {
                   name: s.city_name,
-                  siteKey: key,
                   iata: "IT",
                   ticketsQuery: s.city_name,
                   trainQuery: s.city_name.toLowerCase()
@@ -552,9 +586,11 @@
               }
             }
           });
+          // Ricarica il carosello della città attiva con i nuovi siti
+          renderCityMonumentsCarousel(activeCityGlobal);
         }
       } catch (err) {
-        console.warn("Caricamento monumenti cloud in secondo piano:", err);
+        console.warn("Caricamento monumenti cloud:", err);
       }
     }
 
@@ -564,13 +600,7 @@
       activeCityGlobal = cityKey;
       const meta = CITY_METADATA[cityKey];
 
-      if (MONUMENTS[meta.siteKey] && map) {
-        const site = MONUMENTS[meta.siteKey];
-        map.setView([site.lat, site.lng], 14);
-        selectMonument(meta.siteKey);
-        setTimeout(() => { map.invalidateSize(); }, 150);
-      }
-
+      // 1. Evidenzia il pulsante città in alto
       document.querySelectorAll("#city-buttons-bar button").forEach(btn => {
         btn.className = "px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl";
       });
@@ -579,6 +609,10 @@
         activeBtn.className = "px-3 py-1.5 rounded-full bg-black/95 border border-amber-500 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl";
       }
 
+      // 2. Popola il Carosello con TUTTI i monumenti di quella città
+      renderCityMonumentsCarousel(cityKey);
+
+      // 3. Sincronizza il selettore e i link nella scheda Viaggi
       const travelSelect = document.getElementById("travel-city-select");
       if (travelSelect) travelSelect.value = cityKey;
 
@@ -592,6 +626,78 @@
       document.getElementById("btn-affiliate-trains").href = `https://www.thetrainline.com/it/treni-per/${encodeURIComponent(meta.trainQuery)}`;
       document.getElementById("btn-affiliate-hotels").href = `https://www.booking.com/searchresults.it.html?ss=${encodeURIComponent(meta.name)}`;
       document.getElementById("btn-affiliate-flights").href = `https://www.skyscanner.it/trasporti/voli-verso/${meta.iata.toLowerCase()}/`;
+    }
+
+    // CAROSELLO DEI MONUMENTI MULTIPLI DELLA CITTÀ
+    function renderCityMonumentsCarousel(cityKey) {
+      const carousel = document.getElementById("city-monuments-carousel");
+      if (!carousel) return;
+      carousel.innerHTML = "";
+
+      // Filtra tutti i monumenti appartenenti a questa città
+      const cityMonumentsKeys = Object.keys(MONUMENTS).filter(k => MONUMENTS[k].city_slug === cityKey);
+
+      document.getElementById("carousel-city-title").innerText = `Siti a ${CITY_METADATA[cityKey].name}:`;
+      document.getElementById("carousel-count").innerText = `${cityMonumentsKeys.length} monumenti`;
+
+      if (cityMonumentsKeys.length > 0) {
+        // Seleziona il primo monumento della città se l'attuale non appartiene a questa città
+        if (!MONUMENTS[activeSiteKey] || MONUMENTS[activeSiteKey].city_slug !== cityKey) {
+          selectMonument(cityMonumentsKeys[0]);
+        }
+
+        cityMonumentsKeys.forEach(key => {
+          const site = MONUMENTS[key];
+          const isSelected = key === activeSiteKey;
+
+          const btn = document.createElement("button");
+          btn.className = `px-2.5 py-1 rounded-xl text-[11px] whitespace-nowrap font-bold transition shrink-0 ${
+            isSelected 
+              ? "bg-amber-400 text-black shadow-md" 
+              : "bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700"
+          }`;
+          btn.innerText = `🏛️ ${site.name.split("&")[0].trim()}`;
+          btn.onclick = () => selectMonument(key);
+          carousel.appendChild(btn);
+        });
+
+        // Posiziona la mappa sul monumento attivo
+        const cur = MONUMENTS[activeSiteKey];
+        if (map && cur) {
+          map.setView([cur.lat, cur.lng], 14);
+          setTimeout(() => { map.invalidateSize(); }, 100);
+        }
+      }
+    }
+
+    function selectMonument(key) {
+      if (!MONUMENTS[key]) return;
+      activeSiteKey = key;
+      const site = MONUMENTS[key];
+
+      document.getElementById("sheet-title").innerText = `🏛️ ${site.name}`;
+      document.getElementById("sheet-city").innerText = site.city;
+      document.getElementById("sheet-desc").innerText = site.desc;
+      document.getElementById("sheet-wiki").href = site.wiki;
+
+      if (map) {
+        map.panTo([site.lat, site.lng]);
+        if (markers[key]) markers[key].openPopup();
+      }
+
+      // Ridisegna il carosello per evidenziare il bottone selezionato
+      if (site.city_slug) {
+        const carousel = document.getElementById("city-monuments-carousel");
+        if (carousel) {
+          carousel.querySelectorAll("button").forEach(b => {
+            if (b.innerText.includes(site.name.split("&")[0].trim())) {
+              b.className = "px-2.5 py-1 rounded-xl text-[11px] whitespace-nowrap font-bold bg-amber-400 text-black shadow-md shrink-0";
+            } else {
+              b.className = "px-2.5 py-1 rounded-xl text-[11px] whitespace-nowrap font-bold bg-zinc-800 text-zinc-300 border border-zinc-700 hover:bg-zinc-700 shrink-0";
+            }
+          });
+        }
+      }
     }
 
     function loadLocalState() {
@@ -779,7 +885,7 @@
 
     function initMap() {
       const initialSite = MONUMENTS[activeSiteKey];
-      map = L.map("map", { zoomControl: false }).setView([initialSite.lat, initialSite.lng], 13);
+      map = L.map("map", { zoomControl: false }).setView([initialSite.lat, initialSite.lng], 14);
       L.control.zoom({ position: "topright" }).addTo(map);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -796,15 +902,6 @@
 
       selectMonument(activeSiteKey);
       setTimeout(() => { map.invalidateSize(); }, 200);
-    }
-
-    function selectMonument(key) {
-      activeSiteKey = key;
-      const site = MONUMENTS[key];
-      document.getElementById("sheet-title").innerText = `🏛️ ${site.name}`;
-      document.getElementById("sheet-city").innerText = site.city;
-      document.getElementById("sheet-desc").innerText = site.desc;
-      document.getElementById("sheet-wiki").href = site.wiki;
     }
 
     function getUserLocation() {
@@ -1022,12 +1119,3 @@
   </script>
 </body>
 </html>
-<script nowprocket data-noptimize="1" data-cfasync="false" data-wpfc-render="false" seraph-accel-crit="1" data-no-defer="1" data-cmp-ab="2">
-  (function () {
-      var script = document.createElement("script");
-      script.async = 1;
-      script.setAttribute("data-cmp-ab","2");
-      script.src = 'https://tp-em.com/NTg5MDMw.js?t=589030';
-      document.head.appendChild(script);
-  })();
-</script>
