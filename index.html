@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>$MEETO — Passaporto & Travel Planner</title>
+  <title>$MEETO — Passaporto & Token Hub</title>
   
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -16,11 +16,8 @@
   <style>
     * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
     html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #07090E;
-      color: #E2E8F0;
+      width: 100%; height: 100%; overflow: hidden;
+      background-color: #07090E; color: #E2E8F0;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
     .glass-card {
@@ -30,33 +27,19 @@
     }
     .gold-gradient-text {
       background: linear-gradient(135deg, #FFF5C0 0%, #D4AF37 50%, #AA7C11 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    #map {
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-    .leaflet-tile-pane { 
-      filter: brightness(0.65) invert(1) contrast(2.6) hue-rotate(200deg) saturate(0.3); 
-    }
+    #map { width: 100%; height: 100%; z-index: 1; }
+    .leaflet-tile-pane { filter: brightness(0.65) invert(1) contrast(2.6) hue-rotate(200deg) saturate(0.3); }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    
-    .sheet-transition {
-      transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .sheet-hidden {
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(24px);
-    }
+    .sheet-transition { transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+    .sheet-hidden { opacity: 0; pointer-events: none; transform: translateY(24px); }
   </style>
 </head>
 <body class="h-full w-full relative overflow-hidden select-none">
 
-  <!-- TOP HEADER FISSO Z-INDEX ELEVATO -->
+  <!-- HEADER FISSO -->
   <header class="fixed top-0 left-0 right-0 h-12 w-full border-b border-amber-500/20 bg-black/95 backdrop-blur-md z-[2000] px-4 flex items-center justify-between">
     <div class="flex items-center space-x-2">
       <div class="w-6 h-6 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-xs">🏛️</div>
@@ -65,46 +48,36 @@
     </div>
     <div class="flex items-center gap-2">
       <span id="user-xp-badge" class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-zinc-900 border border-amber-500/40 text-amber-300">
-        ✨ 0 XP
+        ✨ 150 XP
       </span>
       <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-zinc-800 text-zinc-300 border border-zinc-700">🌐 IT</span>
     </div>
   </header>
 
-  <!-- VISTE PRINCIPALI (MAPPA + SEZIONI SCROLLABILI INTERNE) -->
+  <!-- CONTENUTO PRINCIPALE -->
   <main class="w-full h-full pt-12 pb-16 relative">
 
-    <!-- ==================== TAB 1: MAPPA ESPLORA ==================== -->
+    <!-- TAB 1: MAPPA -->
     <section id="tab-map" class="w-full h-full relative">
-      
-      <!-- BARRA CITTÀ SCORREVOLE ANCORATA SUBITO SOTTO HEADER -->
       <div id="city-buttons-bar" class="fixed top-13 left-2 right-2 z-[1500] flex gap-1.5 overflow-x-auto no-scrollbar py-1.5 px-1 bg-black/40 backdrop-blur-sm rounded-full border border-white/5">
         <button onclick="setGlobalCity('roma')" id="btn-city-roma" class="px-3.5 py-1 rounded-full bg-black/90 border border-amber-500 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl">🏛️ Roma</button>
         <button onclick="setGlobalCity('catania')" id="btn-city-catania" class="px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌋 Catania</button>
         <button onclick="setGlobalCity('firenze')" id="btn-city-firenze" class="px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎨 Firenze</button>
-        <button onclick="setGlobalCity('venezia')" id="btn-city-venezia" class="px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎭 Venezia</button>
-        <button onclick="setGlobalCity('napoli')" id="btn-city-napoli" class="px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🍕 Napoli</button>
-        <button onclick="setGlobalCity('milano')" id="btn-city-milano" class="px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Milano</button>
-        <button onclick="setGlobalCity('palermo')" id="btn-city-palermo" class="px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌴 Palermo</button>
         <button onclick="getUserLocation()" class="px-3.5 py-1 rounded-full bg-amber-400 text-black text-xs font-extrabold whitespace-nowrap shadow-xl ml-auto">🎯 GPS</button>
       </div>
 
-      <!-- MAPPA LEAFLET FULLSCREEN -->
       <div id="map"></div>
 
-      <!-- SCHEDA MONUMENTO ANCORATA SOPRA LA NAVBAR (STILE AI STUDIO) -->
+      <!-- SCHEDA MONUMENTO -->
       <div id="monument-sheet" class="fixed bottom-18 left-3 right-3 z-[1500] glass-card p-4 rounded-2xl max-w-lg mx-auto shadow-2xl space-y-3 sheet-transition">
-        
-        <!-- CAROSELLO MONUMENTI -->
         <div>
           <div class="flex justify-between items-center mb-1">
             <span class="text-[10px] uppercase tracking-wider text-amber-400 font-mono font-bold" id="carousel-city-title">MONUMENTI A ROMA:</span>
-            <span class="text-[10px] text-zinc-400 font-mono" id="carousel-count">4 monumenti</span>
+            <span class="text-[10px] text-zinc-400 font-mono" id="carousel-count">3 monumenti</span>
           </div>
           <div id="city-monuments-carousel" class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
         </div>
 
-        <!-- DETTAGLIO MONUMENTO -->
         <div class="pt-2 border-t border-zinc-800 space-y-2">
           <div class="flex justify-between items-start gap-2">
             <div>
@@ -112,37 +85,28 @@
               <h3 id="sheet-title" class="font-black text-base text-white leading-tight uppercase">COLOSSEO</h3>
               <p id="sheet-era" class="text-[11px] text-zinc-400">70–80 d.C. (Età Flavia)</p>
             </div>
-            <span class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0">+100 XP</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0">+150 XP</span>
           </div>
-          
           <p id="sheet-desc" class="text-xs text-zinc-300 leading-relaxed line-clamp-2">
             Il più grande anfiteatro dell’Impero Romano, simbolo immortale della Città Eterna.
           </p>
-
-          <!-- DISTANZA STIMATA GPS -->
           <div class="p-2 bg-black/50 rounded-xl border border-zinc-800 flex justify-between items-center text-xs">
             <div class="flex items-center gap-1.5">
               <span>📍</span>
               <span class="text-zinc-400">Distanza stimata:</span>
-              <span class="font-bold text-white" id="sheet-distance">In calcolo...</span>
+              <span class="font-bold text-white">39 metri</span>
             </div>
-            <span id="sheet-radius-badge" class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">🎯 Nel raggio!</span>
+            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">🎯 Nel raggio!</span>
           </div>
-          
-          <!-- PULSANTI D'AZIONE -->
           <div class="flex gap-2 pt-1">
-            <a id="sheet-wiki" href="https://it.wikipedia.org" target="_blank" class="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 flex items-center justify-center shrink-0 active:scale-95 transition">
-              📖 Guida & Storia ↗
-            </a>
-            <button onclick="openQuizModal()" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black shadow-lg shadow-amber-500/25 active:scale-95 transition flex items-center justify-center gap-1.5">
-              <span>🎯</span> Fai il Quiz & Check-In
-            </button>
+            <a id="sheet-wiki" href="https://it.wikipedia.org" target="_blank" class="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 flex items-center justify-center shrink-0">📖 Guida ↗</a>
+            <button onclick="openQuizModal()" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-yellow-500 text-black shadow-lg">🎯 Quiz & Check-In</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ==================== TAB 2: PASSAPORTO CULTURALE (STILE AI STUDIO) ==================== -->
+    <!-- TAB 2: PASSAPORTO -->
     <section id="tab-passport" class="w-full h-full px-4 py-4 overflow-y-auto space-y-4 hidden no-scrollbar">
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 space-y-3">
         <div class="flex justify-between items-start">
@@ -150,247 +114,222 @@
             <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-2xl">🏛️</div>
             <div>
               <span class="text-[10px] text-amber-400 uppercase tracking-widest font-mono font-bold">PASSAPORTO CULTURALE UFFICIALE</span>
-              <h2 class="text-base font-black text-white uppercase" id="pass-user-name">ESPLORATORE</h2>
-              <p class="text-[11px] text-amber-300 font-semibold" id="pass-user-role">Lv.1 · Novizio della Storia</p>
+              <h2 class="text-base font-black text-white uppercase">MARCO (@VIATOR_ROMA)</h2>
+              <p class="text-[11px] text-amber-300 font-semibold">Lv.1 · Novizio della Storia</p>
             </div>
           </div>
           <span class="px-2 py-1 rounded-lg text-[9px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">Solana Verified</span>
         </div>
 
-        <!-- PROGRESS BAR LEVEL -->
+        <div class="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-between text-xs">
+          <span class="text-amber-300 font-bold flex items-center gap-1.5">🔥 3 Giorni Streak</span>
+          <span class="text-[10px] text-zinc-400">+10% Bonus XP Attivo</span>
+        </div>
+
         <div class="space-y-1 pt-1">
           <div class="flex justify-between text-[10px] font-bold">
-            <span class="text-zinc-400">Avanzamento Livello</span>
-            <span id="level-progress-text" class="text-amber-300">0 / 200 XP</span>
+            <span class="text-zinc-400">Avanzamento Livello (75%)</span>
+            <span class="text-amber-300">150 / 200 XP</span>
           </div>
           <div class="w-full h-2 bg-black/60 rounded-full overflow-hidden border border-zinc-800">
-            <div id="level-progress-bar" class="h-full bg-gradient-to-r from-amber-400 to-yellow-500 transition-all duration-500" style="width: 0%"></div>
+            <div class="h-full bg-gradient-to-r from-amber-400 to-yellow-500" style="width: 75%"></div>
           </div>
         </div>
 
-        <!-- CONTATORI STATISTICHE -->
         <div class="grid grid-cols-4 gap-2 pt-2 text-center">
-          <div class="p-2 bg-black/40 rounded-xl border border-zinc-800">
-            <div class="text-[9px] text-zinc-400 uppercase font-semibold">TIMBRI</div>
-            <div id="stat-stamps" class="text-base font-black text-white">0</div>
-          </div>
-          <div class="p-2 bg-black/40 rounded-xl border border-zinc-800">
-            <div class="text-[9px] text-zinc-400 uppercase font-semibold">CITTÀ</div>
-            <div id="stat-cities" class="text-base font-black text-white">0</div>
-          </div>
-          <div class="p-2 bg-black/40 rounded-xl border border-zinc-800">
-            <div class="text-[9px] text-zinc-400 uppercase font-semibold">BADGE</div>
-            <div id="stat-badges" class="text-base font-black text-white">0</div>
-          </div>
-          <div class="p-2 bg-black/40 rounded-xl border border-zinc-800">
-            <div class="text-[9px] text-zinc-400 uppercase font-semibold">XP TOTALI</div>
-            <div id="stat-xp" class="text-base font-black text-amber-400">0</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- WALLET SOLANA -->
-      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-2">
-        <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-          <span>👛</span> Solana Wallet Collegato
-        </h3>
-        <p class="text-[10px] text-zinc-400">Gli XP del passaporto convertono in quote del Fondo Ricompense (100M $MEETO).</p>
-        <div class="flex gap-2 pt-1">
-          <input type="text" id="wallet-input" placeholder="Incolla indirizzo Phantom o Solflare..." 
-                 class="flex-1 bg-black/60 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-amber-400 font-mono" />
-          <button onclick="saveUserWallet()" class="px-4 py-2 bg-amber-400 text-black text-xs font-bold rounded-xl active:scale-95 transition">
-            Salva
-          </button>
-        </div>
-      </div>
-
-      <!-- COLLEZIONE TIMBRI -->
-      <div class="space-y-2">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">Collezione Timbri Raggiunti</h3>
-        <div id="stamps-gallery" class="space-y-2">
-          <div class="p-4 bg-black/40 rounded-2xl border border-zinc-800 text-center text-xs text-zinc-500">
-            Nessun timbro ancora raccolto. Esplora la mappa per fare il tuo primo Check-In!
-          </div>
+          <div class="p-2 bg-black/40 rounded-xl border border-zinc-800"><div class="text-[9px] text-zinc-400 uppercase">TIMBRI</div><div class="text-base font-black text-white">1</div></div>
+          <div class="p-2 bg-black/40 rounded-xl border border-zinc-800"><div class="text-[9px] text-zinc-400 uppercase">CITTÀ</div><div class="text-base font-black text-white">1</div></div>
+          <div class="p-2 bg-black/40 rounded-xl border border-zinc-800"><div class="text-[9px] text-zinc-400 uppercase">BADGE</div><div class="text-base font-black text-white">1</div></div>
+          <div class="p-2 bg-black/40 rounded-xl border border-zinc-800"><div class="text-[9px] text-zinc-400 uppercase">XP TOTALI</div><div class="text-base font-black text-amber-400">150</div></div>
         </div>
       </div>
     </section>
 
-    <!-- ==================== TAB 3: VIAGGI & PIANIFICATORE ==================== -->
+    <!-- TAB 3: VIAGGI -->
     <section id="tab-travel" class="w-full h-full px-4 py-4 overflow-y-auto space-y-4 hidden no-scrollbar">
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center">
         <div class="text-3xl mb-1">🧭</div>
         <h2 class="text-base font-black text-white gold-gradient-text uppercase">Pianificatore di Viaggi Culturali</h2>
         <p class="text-xs text-zinc-400 mt-1">Prenota voli, trasporti e hotel per raggiungere i monumenti.</p>
       </div>
-
       <div class="space-y-3">
-        <!-- TIQETS -->
         <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl p-2 bg-amber-500/10 rounded-xl border border-amber-500/20">🎟️</span>
-            <div>
-              <h4 class="text-xs font-bold text-white">Biglietti Musei & Tour</h4>
-              <p class="text-[10px] text-zinc-400 mt-0.5">Ingressi salta-fila ufficiali in tutta Italia.</p>
-            </div>
-          </div>
-          <a href="https://tiqets.tpx.gr/ttfIofVS" target="_blank" class="px-3 py-2 rounded-xl text-xs font-bold bg-amber-400 text-black shrink-0 active:scale-95 transition">
-            Apri ↗
-          </a>
+          <div class="flex items-center gap-3"><span class="text-2xl p-2 bg-amber-500/10 rounded-xl">🎟️</span><div><h4 class="text-xs font-bold text-white">Biglietti Musei & Tour</h4><p class="text-[10px] text-zinc-400">Ingressi salta-fila ufficiali.</p></div></div>
+          <a href="https://tiqets.tpx.gr/ttfIofVS" target="_blank" class="px-3 py-2 rounded-xl text-xs font-bold bg-amber-400 text-black">Apri ↗</a>
         </div>
-
-        <!-- AVIASALES -->
         <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl p-2 bg-blue-500/10 rounded-xl border border-blue-500/20">✈️</span>
-            <div>
-              <h4 class="text-xs font-bold text-white">Voli Nazionali & Economici</h4>
-              <p class="text-[10px] text-zinc-400 mt-0.5">Trova le tariffe aeree piu convenienti.</p>
-            </div>
-          </div>
-          <a href="https://aviasales.tpx.gr/Nde5oFmC" target="_blank" class="px-3 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-blue-300 shrink-0 active:scale-95 transition">
-            Voli ↗
-          </a>
-        </div>
-
-        <!-- RADICAL STORAGE -->
-        <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20">🎒</span>
-            <div>
-              <h4 class="text-xs font-bold text-white">Deposito Bagagli in Centro</h4>
-              <p class="text-[10px] text-zinc-400 mt-0.5">Lascia i bagagli ed esplora a piedi.</p>
-            </div>
-          </div>
-          <a href="https://radicalstorage.tpx.gr/XR76jrDS" target="_blank" class="px-3 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-emerald-400 shrink-0 active:scale-95 transition">
-            Deposito ↗
-          </a>
-        </div>
-
-        <!-- KLOOK -->
-        <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl p-2 bg-purple-500/10 rounded-xl border border-purple-500/20">🏨</span>
-            <div>
-              <h4 class="text-xs font-bold text-white">Hotel & Alloggi Vicini</h4>
-              <p class="text-[10px] text-zinc-400 mt-0.5">Soggiorna nei centri storici delle citta.</p>
-            </div>
-          </div>
-          <a href="https://klook.tpx.gr/rABqVRyF" target="_blank" class="px-3 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-purple-300 shrink-0 active:scale-95 transition">
-            Hotel ↗
-          </a>
+          <div class="flex items-center gap-3"><span class="text-2xl p-2 bg-blue-500/10 rounded-xl">✈️</span><div><h4 class="text-xs font-bold text-white">Voli Nazionali</h4><p class="text-[10px] text-zinc-400">Trova tariffe convenienti.</p></div></div>
+          <a href="https://aviasales.tpx.gr/Nde5oFmC" target="_blank" class="px-3 py-2 rounded-xl text-xs font-bold bg-zinc-800 text-blue-300">Voli ↗</a>
         </div>
       </div>
     </section>
 
-    <!-- ==================== TAB 4: MEETUP & VETRINA EVENTI DINAMICA ==================== -->
+    <!-- TAB 4: MEETUP -->
     <section id="tab-meetup" class="w-full h-full px-4 py-4 overflow-y-auto space-y-4 hidden no-scrollbar">
       <div class="glass-card rounded-2xl p-4 border border-amber-500/30 space-y-2">
-        <span class="text-[10px] text-amber-400 font-mono font-bold uppercase">COMMUNITY & ESPERIENZE CULTURALI</span>
+        <span class="text-[10px] text-amber-400 font-mono font-bold uppercase">COMMUNITY & ESPERIENZE</span>
         <h2 class="text-base font-black text-white uppercase">MEETUP, TOUR & MOSTRE</h2>
-        <p class="text-xs text-zinc-300">Partecipa a tour culturali guidati o passeggiate di gruppo per esplorare i monumenti insieme e moltiplicare i punti XP.</p>
-        
         <div class="flex gap-2 pt-2">
-          <a href="https://wegotrip.tpx.gr/IT3NT6uL" target="_blank" class="flex-1 py-2 rounded-xl text-xs font-bold bg-amber-400 text-black text-center shadow-md">
-            🚶‍♂️ Audio Tour
-          </a>
-          <a href="https://gocity.tpx.gr/mEFdKLO8" target="_blank" class="flex-1 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-amber-300 text-center">
-            🎟️ Pass Mostre
-          </a>
-        </div>
-      </div>
-
-      <!-- VETRINA EVENTI CITTÀ SELEZIONATA -->
-      <div class="space-y-3">
-        <div class="flex justify-between items-center px-1">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Eventi & Meetup a <span id="meetup-city-name" class="text-amber-400 font-bold">Roma</span></h3>
-          <span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono font-bold">Aggiornati Live</span>
-        </div>
-
-        <div id="meetup-events-container" class="space-y-3">
-          <!-- Verrà popolato dinamicamente da JS -->
+          <a href="https://wegotrip.tpx.gr/IT3NT6uL" target="_blank" class="flex-1 py-2 rounded-xl text-xs font-bold bg-amber-400 text-black text-center">🚶‍♂️ Audio Tour</a>
+          <a href="https://gocity.tpx.gr/mEFdKLO8" target="_blank" class="flex-1 py-2 rounded-xl text-xs font-bold bg-zinc-800 text-amber-300 text-center">🎟️ Pass Mostre</a>
         </div>
       </div>
     </section>
 
-    <!-- ==================== TAB 5: TOKEN & MERCATO ==================== -->
+    <!-- TAB 5: TOKEN & TOKENOMICS COMPLETA (STILE SCREENSHOT) -->
     <section id="tab-token" class="w-full h-full px-4 py-4 overflow-y-auto space-y-4 hidden no-scrollbar">
+      
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 space-y-3">
         <div class="flex justify-between items-start">
           <div>
-            <span class="text-[10px] text-zinc-400 uppercase tracking-widest font-mono font-bold">Stato Token ($MEETO)</span>
-            <div id="token-price-display" class="text-2xl font-black gold-gradient-text">Solana Mainnet</div>
-            <span id="token-change" class="text-xs font-bold text-emerald-400">🟢 Rete Attiva</span>
+            <span class="text-[10px] text-amber-400 uppercase font-mono font-bold">ECOSISTEMA TOKEN SOLANA</span>
+            <h2 class="text-lg font-black text-white gold-gradient-text uppercase leading-tight">$MEETO TOKENOMICS & DATI LIVE</h2>
           </div>
-          <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
-            Pump.fun / Solana
-          </span>
+          <button onclick="fetchDexScreenerPrice()" class="px-3 py-1.5 rounded-xl bg-zinc-800 border border-zinc-700 text-xs text-amber-300 font-bold flex items-center gap-1">
+            🔄 Aggiorna Dati
+          </button>
         </div>
 
+        <!-- GRIGLIA METRICHE LIVE (SCREENSHOT 13) -->
         <div class="grid grid-cols-2 gap-2.5 pt-2">
-          <a href="https://pump.fun/coin/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" 
-             class="py-3 px-3 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-yellow-500 text-black flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/20 active:scale-95 transition">
-            <span>🚀</span> Vai su Pump.fun
-          </a>
-          <a href="https://dexscreener.com/solana/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" 
-             class="py-3 px-3 rounded-xl text-xs font-black bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 flex items-center justify-center gap-1.5 active:scale-95 transition">
-            <span>📊</span> DexScreener
-          </a>
+          <div class="p-3 bg-black/50 rounded-xl border border-zinc-800">
+            <span class="text-[9px] text-zinc-400 uppercase font-mono font-bold block">PREZZO LIVE USD</span>
+            <div id="token-price-usd" class="text-base font-black text-emerald-400 mt-0.5">$0.000004</div>
+            <span id="token-price-sol" class="text-[10px] text-zinc-500 font-mono">0.00000028 SOL</span>
+          </div>
+          <div class="p-3 bg-black/50 rounded-xl border border-zinc-800">
+            <span class="text-[9px] text-zinc-400 uppercase font-mono font-bold block">MARKET CAP</span>
+            <div class="text-base font-black text-white mt-0.5">$4,200</div>
+            <span class="text-[10px] text-zinc-500 font-mono">FDV: $4,200</span>
+          </div>
+          <div class="p-3 bg-black/50 rounded-xl border border-zinc-800">
+            <span class="text-[9px] text-zinc-400 uppercase font-mono font-bold block">TOTAL SUPPLY</span>
+            <div class="text-base font-black text-amber-400 mt-0.5">1.000.000.000</div>
+            <span class="text-[10px] text-zinc-500 font-mono">100% Fixed Supply</span>
+          </div>
+          <div class="p-3 bg-black/50 rounded-xl border border-zinc-800">
+            <span class="text-[9px] text-zinc-400 uppercase font-mono font-bold block">TREASURY POOL</span>
+            <div class="text-base font-black text-purple-400 mt-0.5">100.000.000</div>
+            <span class="text-[10px] text-zinc-500 font-mono">10% Riservato Rewards</span>
+          </div>
         </div>
       </div>
 
+      <!-- RIPARTIZIONE UFFICIALE OFFERTA (SCREENSHOT 14) -->
       <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
-        <h3 class="text-xs font-bold text-white uppercase tracking-wider">Tokenomics Ufficiale (1B Supply)</h3>
-        <div class="w-full h-3 bg-black/60 rounded-full overflow-hidden flex border border-zinc-800">
+        <div>
+          <h3 class="text-xs font-bold text-white uppercase tracking-wider">RIPARTIZIONE UFFICIALE DELL'OFFERTA</h3>
+          <p class="text-[10px] text-amber-400 font-mono">Struttura 70% Mercato / 20% Team / 10% Rewards</p>
+        </div>
+
+        <div class="w-full h-3.5 bg-black/60 rounded-full overflow-hidden flex border border-zinc-800">
           <div class="h-full bg-emerald-500" style="width: 70%"></div>
           <div class="h-full bg-amber-400" style="width: 20%"></div>
           <div class="h-full bg-purple-500" style="width: 10%"></div>
         </div>
-        <div class="grid grid-cols-3 gap-2 text-[10px] text-center pt-1">
-          <div><span class="text-emerald-400 font-bold block">70%</span> Mercato Pubblico</div>
-          <div><span class="text-amber-400 font-bold block">20%</span> Team & Dev</div>
-          <div><span class="text-purple-400 font-bold block">10%</span> Treasury & Rewards</div>
+
+        <div class="space-y-2 pt-1 text-xs">
+          <div class="p-3 bg-black/40 rounded-xl border border-zinc-800/80">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-emerald-400 flex items-center gap-1.5">🟢 70% Mercato Pubblico</span>
+              <span class="font-black text-white font-mono">700.000.000</span>
+            </div>
+            <p class="text-[10px] text-zinc-400 mt-1">Liquidità decentralizzata e circolante su DEX Solana.</p>
+          </div>
+
+          <div class="p-3 bg-black/40 rounded-xl border border-zinc-800/80">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-amber-400 flex items-center gap-1.5">🟡 20% Team & Sviluppo</span>
+              <span class="font-black text-white font-mono">200.000.000</span>
+            </div>
+            <p class="text-[10px] text-zinc-400 mt-1">Allocati per l'infrastruttura, bot e mantenimento tecnico.</p>
+          </div>
+
+          <div class="p-3 bg-black/40 rounded-xl border border-zinc-800/80">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-purple-400 flex items-center gap-1.5">🟣 10% Treasury & Rewards</span>
+              <span class="font-black text-white font-mono">100.000.000</span>
+            </div>
+            <p class="text-[10px] text-zinc-400 mt-1">Fondo per i premi degli esploratori e il programma Visit-to-Earn.</p>
+          </div>
         </div>
       </div>
 
-      <div class="glass-card p-3 rounded-xl flex justify-between items-center text-xs">
-        <div class="truncate mr-2"><span class="text-zinc-500 font-bold">CA:</span> <code class="text-amber-300 font-mono">4MPMa8mdsrja...pump</code></div>
-        <button onclick="navigator.clipboard.writeText('4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump'); alert('Contract Address copiato!');" 
-                class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-amber-300 text-xs font-bold shrink-0">
-          Copia CA
-        </button>
+      <!-- SIMULATORE SOSTENIBILITÀ (SCREENSHOT 15) -->
+      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-sm">🧮</div>
+          <div>
+            <h3 class="text-xs font-bold text-white uppercase">SIMULATORE SOSTENIBILITÀ RICOMPENSE</h3>
+            <p class="text-[10px] text-zinc-400">La matematica dietro i 100.000.000 $MEETO della Treasury</p>
+          </div>
+        </div>
+
+        <div class="p-3 bg-black/50 rounded-xl border border-zinc-800 space-y-3">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-zinc-300">Monumenti da visitare nell'itinerario:</span>
+            <span id="sim-visits-val" class="font-black text-amber-400 font-mono text-sm">10 visite</span>
+          </div>
+
+          <input type="range" min="1" max="50" value="10" id="sim-slider" oninput="updateSimulator(this.value)"
+                 class="w-full accent-amber-400 bg-zinc-800 h-2 rounded-lg cursor-pointer" />
+
+          <div class="grid grid-cols-2 gap-2 text-center pt-1 border-t border-zinc-800">
+            <div>
+              <span class="text-[9px] text-zinc-400 uppercase font-mono">XP Guadagnati</span>
+              <div id="sim-xp-out" class="text-xs font-black text-white">+1000 XP</div>
+            </div>
+            <div>
+              <span class="text-[9px] text-zinc-400 uppercase font-mono">Stima Quota Token</span>
+              <div id="sim-token-out" class="text-xs font-black text-purple-400">~1000 $MEETO</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-[10px] text-amber-300 space-y-1">
+          <p class="font-bold flex items-center gap-1">💡 Sostenibilità Pluriennale:</p>
+          <p class="text-zinc-300 leading-relaxed">Con 100M token e una media di 100 token/visita, la pool può sostenere 1 milione di visite senza alcuna inflazione o emissione aggiuntiva.</p>
+        </div>
       </div>
+
+      <!-- TRASPARENZA ON-CHAIN (SCREENSHOT 16) -->
+      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold text-white uppercase tracking-wider">TRASPARENZA ON-CHAIN & CONTRATTI</h3>
+          <span class="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Solana Mainnet</span>
+        </div>
+
+        <!-- CONTRACT ADDRESS -->
+        <div class="p-3 bg-black/50 rounded-xl border border-zinc-800 space-y-2">
+          <div class="text-[10px] text-zinc-400 font-bold">Contract Address:</div>
+          <code class="block text-xs font-mono text-amber-300 break-all bg-black/60 p-2 rounded-lg border border-zinc-800">
+            4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump
+          </code>
+          <div class="flex gap-2 pt-1">
+            <button onclick="navigator.clipboard.writeText('4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump'); alert('Contract Address Copiato!');" class="flex-1 py-1.5 rounded-lg bg-zinc-800 text-xs font-bold text-white">📋 Copia CA</button>
+            <a href="https://solscan.io/token/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" class="flex-1 py-1.5 rounded-lg bg-purple-900/40 border border-purple-500/40 text-xs font-bold text-purple-300 text-center">Solscan ↗</a>
+            <a href="https://dexscreener.com/solana/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" class="flex-1 py-1.5 rounded-lg bg-zinc-800 text-xs font-bold text-amber-300 text-center">DEX ↗</a>
+          </div>
+        </div>
+
+        <!-- TREASURY WALLET -->
+        <div class="p-3 bg-black/50 rounded-xl border border-zinc-800 space-y-2">
+          <div class="text-[10px] text-zinc-400 font-bold">Treasury Wallet:</div>
+          <code class="block text-xs font-mono text-purple-300 break-all bg-black/60 p-2 rounded-lg border border-zinc-800">
+            V8PKJ8vAPncNKYgNsX7u4TgfdJuyA8bLUbLwKjFuyV
+          </code>
+          <div class="flex gap-2 pt-1">
+            <button onclick="navigator.clipboard.writeText('V8PKJ8vAPncNKYgNsX7u4TgfdJuyA8bLUbLwKjFuyV'); alert('Treasury Wallet Copiato!');" class="flex-1 py-1.5 rounded-lg bg-zinc-800 text-xs font-bold text-white">📋 Copia Treasury</button>
+            <a href="https://solscan.io/account/V8PKJ8vAPncNKYgNsX7u4TgfdJuyA8bLUbLwKjFuyV" target="_blank" class="flex-1 py-1.5 rounded-lg bg-emerald-900/40 border border-emerald-500/40 text-xs font-bold text-emerald-300 text-center">Solscan ↗</a>
+          </div>
+        </div>
+      </div>
+
     </section>
 
   </main>
 
-  <!-- ================= MODALE QUIZ & CHECK-IN ================= -->
-  <div id="checkin-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[3000] hidden flex items-center justify-center p-4">
-    <div class="glass-card w-full max-w-sm rounded-2xl p-5 border border-amber-500/40 space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
-        <h3 class="font-bold text-sm text-white truncate" id="modal-monument-name">Quiz & Check-in</h3>
-        <button onclick="closeQuizModal()" class="text-zinc-400 hover:text-white font-bold text-base px-1">✕</button>
-      </div>
-
-      <div id="step-quiz" class="space-y-3">
-        <div class="text-left py-1">
-          <span class="text-[10px] text-amber-400 font-mono uppercase font-bold">🎯 Domanda sul monumento</span>
-          <p id="quiz-question-text" class="text-xs font-bold text-white mt-1 leading-snug">Caricamento domanda...</p>
-        </div>
-        <div id="quiz-options-container" class="space-y-2"></div>
-      </div>
-
-      <div id="step-success" class="space-y-3 text-center py-4 hidden">
-        <div class="text-5xl animate-bounce">🎉</div>
-        <h4 class="font-black text-base text-emerald-400">Visita Convalidata!</h4>
-        <p class="text-xs text-zinc-300">Hai guadagnato <b class="text-amber-400">+100 XP</b> e salvato il timbro nel passaporto.</p>
-        <button onclick="finishCheckIn()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-emerald-500 text-black mt-2">
-          Guarda nel Passaporto
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- BOTTOM BAR DI NAVIGAZIONE NATIVA FISSA (5 TABS) -->
+  <!-- NAVBAR FISSA IN BASSO (5 TABS) -->
   <nav class="fixed bottom-0 left-0 right-0 h-16 bg-[#07090E]/95 border-t border-amber-500/30 backdrop-blur-lg px-2 flex justify-around items-center text-center z-[2000] shadow-2xl">
     <button onclick="switchTab('map')" id="nav-map" class="flex flex-col items-center text-amber-400 transition">
       <span class="text-lg">🗺️</span>
@@ -414,177 +353,15 @@
     </button>
   </nav>
 
-  <!-- JAVASCRIPT PRINCIPALE -->
   <script>
-    const tg = window.Telegram ? window.Telegram.WebApp : null;
-    let currentUser = { telegram_id: 999999999, username: "Esploratore" };
-
-    if (tg) {
-      try {
-        tg.ready();
-        tg.expand();
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-          currentUser.telegram_id = tg.initDataUnsafe.user.id;
-          currentUser.username = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "Esploratore";
-        }
-      } catch (e) {}
-    }
-
-    let userState = { xp: 0, level: 1, stamps: [], wallet_address: "" };
-    let activeCityGlobal = "roma";
     let map = null;
-    let activeSiteKey = "colosseo";
-    let markers = {};
-
-    const MONUMENTS = {
-      // ROMA
-      colosseo: { city_slug: "roma", name: "Colosseo", era: "70–80 d.C. (Età Flavia)", city: "ROMA · LAZIO", lat: 41.89021, lng: 12.49223, desc: "Il più grande anfiteatro dell’Impero Romano, simbolo immortale della Città Eterna.", wiki: "https://it.wikipedia.org/wiki/Colosseo", quiz: { question: "Quale ordine di capitelli si trova al livello più basso?", options: ["Dorico / Tuscanico", "Corinzio", "Ionico"], correct: 0 } },
-      pantheon: { city_slug: "roma", name: "Pantheon", era: "118–128 d.C. (Adriano)", city: "ROMA · LAZIO", lat: 41.8986, lng: 12.4769, desc: "Tempio romano celebre per la cupola con oculo da cui filtra la luce del sole.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)", quiz: { question: "Quale artista rinascimentale è sepolto al suo interno?", options: ["Raffaello Sanzio", "Michelangelo", "Leonardo"], correct: 0 } },
-      fontana_trevi: { city_slug: "roma", name: "Fontana di Trevi", era: "1732–1762 (Barocco)", city: "ROMA · LAZIO", lat: 41.9009, lng: 12.4833, desc: "La più grande ed è una delle più celebri fontane di Roma.", wiki: "https://it.wikipedia.org/wiki/Fontana_di_Trevi", quiz: { question: "Quale divinità domina al centro della fontana?", options: ["Oceano", "Apollo", "Giove"], correct: 0 } },
-      
-      // CATANIA
-      duomo_catania: { city_slug: "catania", name: "Duomo & Liotru", era: "Barocco Catanese", city: "CATANIA · SICILIA", lat: 37.5027, lng: 15.0873, desc: "Piazza Duomo in pietra lavica con la fontana dell'Elefante simbolo della città.", wiki: "https://it.wikipedia.org/wiki/Fontana_dell%27Elefante", quiz: { question: "Di quale pietra scura è fatto il Liotru?", options: ["Pietra lavica dell Etna", "Marmo bianco", "Granito"], correct: 0 } },
-      castello_ursino: { city_slug: "catania", name: "Castello Ursino", era: "XIII Secolo (Federico II)", city: "CATANIA · SICILIA", lat: 37.4988, lng: 15.0847, desc: "Imponente fortezza sveva sopravvissuta alla colata di lava del 1669.", wiki: "https://it.wikipedia.org/wiki/Castello_Ursino", quiz: { question: "Chi ne ordinò la costruzione?", options: ["Federico II di Svevia", "Carlo V", "Guglielmo"], correct: 0 } },
-
-      // FIRENZE
-      piazza_duomo_firenze: { city_slug: "firenze", name: "Duomo & Cupola", era: "Rinascimento Toscano", city: "FIRENZE · TOSCANA", lat: 43.7731, lng: 11.2560, desc: "Cattedrale di Santa Maria del Fiore con la maestosa cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)", quiz: { question: "Chi ha progettato la cupola senza armature?", options: ["Filippo Brunelleschi", "Giotto", "Donatello"], correct: 0 } }
-    };
-
-    // DATABASE EVENTI VETRINA PER CITTÀ
-    const CITY_EVENTS = {
-      roma: [
-        { title: "Passeggiata Storica dei Cesari", type: "Community Tour", xp: "+150 XP", desc: "Tour guidato tra i Fori Imperiali e la Via Sacra.", link: "https://wegotrip.tpx.gr/IT3NT6uL" },
-        { title: "Mostra Barocca a Palazzo Barberini", type: "Mostra & Pass", xp: "+100 XP", desc: "Accesso salta-fila con il Pass Roma Musei.", link: "https://gocity.tpx.gr/mEFdKLO8" }
-      ],
-      catania: [
-        { title: "Catania Sotterranea & Pietra Lavica", type: "Passeggiata Guidata", xp: "+150 XP", desc: "Percorso nel centro storico tra il Duomo e Castello Ursino.", link: "https://wegotrip.tpx.gr/IT3NT6uL" }
-      ],
-      firenze: [
-        { title: "Tour del Rinascimento & Uffizi", type: "Mostra & Tour", xp: "+120 XP", desc: "Visita guidata tra Piazza Duomo e Ponte Vecchio.", link: "https://tiqets.tpx.gr/ttfIofVS" }
-      ]
-    };
-
     window.addEventListener("DOMContentLoaded", () => {
-      loadLocalState();
       initMap();
-      setGlobalCity("roma");
     });
 
     function initMap() {
-      const initialSite = MONUMENTS[activeSiteKey];
-      map = L.map("map", { zoomControl: false }).setView([initialSite.lat, initialSite.lng], 14);
-      L.control.zoom({ position: "topright" }).addTo(map);
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "© OpenStreetMap"
-      }).addTo(map);
-
-      Object.keys(MONUMENTS).forEach(key => {
-        const site = MONUMENTS[key];
-        const marker = L.marker([site.lat, site.lng]).addTo(map);
-        marker.on("click", () => {
-          selectMonument(key);
-          showSheet();
-        });
-        markers[key] = marker;
-      });
-
-      map.on("dragstart zoomstart", () => { hideSheet(); });
-      selectMonument(activeSiteKey);
-    }
-
-    function showSheet() { document.getElementById("monument-sheet").classList.remove("sheet-hidden"); }
-    function hideSheet() { document.getElementById("monument-sheet").classList.add("sheet-hidden"); }
-
-    function setGlobalCity(cityKey) {
-      activeCityGlobal = cityKey;
-      const citySites = Object.keys(MONUMENTS).filter(k => MONUMENTS[k].city_slug === cityKey);
-
-      if (citySites.length > 0 && map) {
-        const site = MONUMENTS[citySites[0]];
-        map.setView([site.lat, site.lng], 14);
-        selectMonument(citySites[0]);
-        showSheet();
-      }
-
-      // Aggiorna Pulsanti Città
-      document.querySelectorAll("#city-buttons-bar button").forEach(btn => {
-        btn.className = "px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl";
-      });
-      const activeBtn = document.getElementById(`btn-city-${cityKey}`);
-      if (activeBtn) activeBtn.className = "px-3.5 py-1 rounded-full bg-black/90 border border-amber-500 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl";
-
-      // AGGIORNA VETRINA EVENTI DEDICATA PER CITTÀ
-      renderCityEvents(cityKey);
-    }
-
-    function selectMonument(key) {
-      activeSiteKey = key;
-      const site = MONUMENTS[key];
-
-      document.getElementById("sheet-title").innerText = site.name;
-      document.getElementById("sheet-city").innerText = site.city;
-      document.getElementById("sheet-era").innerText = site.era;
-      document.getElementById("sheet-desc").innerText = site.desc;
-      document.getElementById("sheet-wiki").href = site.wiki;
-      document.getElementById("sheet-distance").innerText = "39 metri";
-
-      // Carosello Città
-      const citySites = Object.keys(MONUMENTS).filter(k => MONUMENTS[k].city_slug === site.city_slug);
-      const carouselContainer = document.getElementById("city-monuments-carousel");
-      document.getElementById("carousel-city-title").innerText = `MONUMENTI A ${site.city.split(" ")[0]}:`;
-      document.getElementById("carousel-count").innerText = `${citySites.length} monumenti`;
-
-      carouselContainer.innerHTML = "";
-      citySites.forEach(k => {
-        const s = MONUMENTS[k];
-        const btn = document.createElement("button");
-        const isActive = k === key;
-        btn.className = `px-3 py-1 rounded-xl text-xs font-bold whitespace-nowrap transition ${
-          isActive ? "bg-amber-400 text-black shadow-md" : "bg-zinc-800/90 text-zinc-300 border border-zinc-700/80"
-        }`;
-        btn.innerText = s.name;
-        btn.onclick = () => {
-          map.setView([s.lat, s.lng], 15);
-          selectMonument(k);
-          showSheet();
-        };
-        carouselContainer.appendChild(btn);
-      });
-    }
-
-    function renderCityEvents(cityKey) {
-      const container = document.getElementById("meetup-events-container");
-      const cityNameEl = document.getElementById("meetup-city-name");
-      if (!container) return;
-
-      const cityNameMap = { roma: "Roma", catania: "Catania", firenze: "Firenze" };
-      cityNameEl.innerText = cityNameMap[cityKey] || "Italia";
-
-      const events = CITY_EVENTS[cityKey] || [
-        { title: "Tour Culturale & Passeggiata Guida", type: "Passeggiata", xp: "+100 XP", desc: "Esplora i monumenti storici con la community.", link: "https://wegotrip.tpx.gr/IT3NT6uL" }
-      ];
-
-      container.innerHTML = "";
-      events.forEach(ev => {
-        const card = document.createElement("div");
-        card.className = "glass-card p-4 rounded-2xl border border-zinc-800 space-y-2";
-        card.innerHTML = `
-          <div class="flex justify-between items-start">
-            <div>
-              <span class="text-[9px] px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 font-mono font-bold">${ev.type}</span>
-              <h4 class="text-sm font-bold text-white mt-1">${ev.title}</h4>
-            </div>
-            <span class="text-xs font-bold text-emerald-400 font-mono">${ev.xp}</span>
-          </div>
-          <p class="text-xs text-zinc-400">${ev.desc}</p>
-          <a href="${ev.link}" target="_blank" class="block w-full py-2 rounded-xl text-xs font-bold bg-amber-400 hover:bg-amber-300 text-black text-center shadow-md active:scale-95 transition">
-            Prenota / Partecipa ↗
-          </a>
-        `;
-        container.appendChild(card);
-      });
+      map = L.map("map", { zoomControl: false }).setView([41.89021, 12.49223], 14);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
     }
 
     function switchTab(tabId) {
@@ -600,41 +377,23 @@
       window.scrollTo(0, 0);
     }
 
-    function loadLocalState() {
-      document.getElementById("user-xp-badge").innerText = `✨ ${userState.xp} XP`;
-      document.getElementById("stat-xp").innerText = userState.xp;
-      document.getElementById("pass-user-name").innerText = currentUser.username;
+    function updateSimulator(visits) {
+      document.getElementById("sim-visits-val").innerText = `${visits} visite`;
+      document.getElementById("sim-xp-out").innerText = `+${visits * 100} XP`;
+      document.getElementById("sim-token-out").innerText = `~${visits * 100} $MEETO`;
     }
 
-    function openQuizModal() {
-      const site = MONUMENTS[activeSiteKey];
-      document.getElementById("modal-monument-name").innerText = site.name;
-      document.getElementById("quiz-question-text").innerText = site.quiz.question;
-      
-      const container = document.getElementById("quiz-options-container");
-      container.innerHTML = "";
-      site.quiz.options.forEach((opt, idx) => {
-        const btn = document.createElement("button");
-        btn.className = "w-full py-2.5 px-3 rounded-xl text-xs font-bold bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 text-left";
-        btn.innerText = opt;
-        btn.onclick = () => {
-          if (idx === site.quiz.correct) {
-            userState.xp += 100;
-            loadLocalState();
-            document.getElementById("step-quiz").classList.add("hidden");
-            document.getElementById("step-success").classList.remove("hidden");
-          } else {
-            alert("Risposta errata, riprova!");
-          }
-        };
-        container.appendChild(btn);
-      });
-
-      document.getElementById("checkin-modal").classList.remove("hidden");
+    async function fetchDexScreenerPrice() {
+      const tokenAddress = "4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump";
+      try {
+        const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${tokenAddress}`);
+        const data = await res.json();
+        if (data.pairs && data.pairs.length > 0) {
+          const pair = data.pairs[0];
+          document.getElementById("token-price-usd").innerText = "$" + parseFloat(pair.priceUsd).toFixed(6);
+        }
+      } catch (err) {}
     }
-
-    function closeQuizModal() { document.getElementById("checkin-modal").classList.add("hidden"); }
-    function finishCheckIn() { closeQuizModal(); switchTab("passport"); }
   </script>
 </body>
 </html>
