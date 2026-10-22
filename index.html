@@ -51,6 +51,13 @@
       pointer-events: none !important;
       transform: translateY(24px) !important;
     }
+    
+    /* BLOCCO ANTIBANNER: Mantiene attivo lo script di validazione ma nasconde i box pubblicitari estranei */
+    iframe[src*="tp-em.com"], div[id^="tpx-banner"], .tpx-ads {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
   </style>
 </head>
 <body class="min-h-screen relative">
@@ -78,7 +85,7 @@
 
     <!-- ==================== TAB 1: MAPPA ESPLORA ==================== -->
     <section id="tab-map" class="w-full relative">
-      <!-- BARRA ORIZZONTALE COMPLETA CON TUTTE LE CITTÀ -->
+      <!-- BARRA ORIZZONTALE CITTÀ -->
       <div id="city-buttons-bar" class="absolute top-2 left-2 right-2 z-[1000] flex gap-1.5 overflow-x-auto no-scrollbar py-1">
         <button onclick="setGlobalCity('roma')" id="btn-city-roma" class="px-3 py-1.5 rounded-full bg-black/95 border border-amber-500 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl">🏛️ Roma</button>
         <button onclick="setGlobalCity('catania')" id="btn-city-catania" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌋 Catania</button>
@@ -102,7 +109,7 @@
       <!-- MAPPA LEAFLET -->
       <div id="map"></div>
 
-      <!-- SCHEDA PRINCIPALE ESPANSA (SEMPRE VISIBILE ALL'AVVIO) -->
+      <!-- SCHEDA PRINCIPALE ESPANSA -->
       <div id="monument-sheet" class="absolute bottom-4 left-3 right-3 z-[1000] glass-card p-4 rounded-2xl max-w-lg mx-auto shadow-2xl space-y-3 sheet-transition">
         <div>
           <div class="flex justify-between items-center mb-1">
@@ -155,7 +162,6 @@
         <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1" data-i18n="travel_desc">Sincronizzato in tempo reale con i monumenti selezionati sulla mappa.</p>
       </div>
 
-      <!-- SELETTORE DESTINAZIONE CON TUTTE LE CITTÀ -->
       <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-2">
         <label class="block text-[11px] font-bold uppercase tracking-wider text-amber-400" data-i18n="dest_label">Destinazione Selezionata:</label>
         <select id="travel-city-select" onchange="setGlobalCity(this.value)" class="w-full bg-black/60 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-amber-400 font-bold">
@@ -181,7 +187,6 @@
       <div class="space-y-3">
         <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1"><span data-i18n="services_for">Servizi di Viaggio per</span> <span id="travel-target-city-name" class="text-amber-400 font-bold">Roma</span></h3>
 
-        <!-- TIQETS -->
         <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
           <div class="flex items-center gap-3">
             <span class="text-2xl p-2 bg-amber-500/10 rounded-xl border border-amber-500/20">🎟️</span>
@@ -195,7 +200,6 @@
           </a>
         </div>
 
-        <!-- AVIASALES -->
         <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
           <div class="flex items-center gap-3">
             <span class="text-2xl p-2 bg-blue-500/10 rounded-xl border border-blue-500/20">✈️</span>
@@ -209,7 +213,6 @@
           </a>
         </div>
 
-        <!-- RADICAL STORAGE -->
         <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
           <div class="flex items-center gap-3">
             <span class="text-2xl p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20">🎒</span>
@@ -223,7 +226,6 @@
           </a>
         </div>
 
-        <!-- KLOOK -->
         <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
           <div class="flex items-center gap-3">
             <span class="text-2xl p-2 bg-purple-500/10 rounded-xl border border-purple-500/20">🏨</span>
@@ -424,59 +426,30 @@
     let activeSiteKey = "colosseo";
     let markers = {};
 
-    // CATALOGO COMPLETO DI TUTTE LE CITTÀ E MONUMENTI
     const MONUMENTS = {
-      // ROMA
       colosseo: { city_slug: "roma", name: "Colosseo & Fori Imperiali", era: "70–80 d.C. (Età Flavia)", city: "Roma (Lazio)", lat: 41.89021, lng: 12.49223, desc: "Anfiteatro Flavio dell antica Roma, tra le Sette Meraviglie del Mondo.", wiki: "https://it.wikipedia.org/wiki/Colosseo" },
       pantheon: { city_slug: "roma", name: "Pantheon", era: "118–128 d.C. (Adriano)", city: "Roma (Lazio)", lat: 41.8986, lng: 12.4769, desc: "Tempio romano celebre per la maestosa cupola in calcestruzzo con oculo.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)" },
       fontana_trevi: { city_slug: "roma", name: "Fontana di Trevi", era: "1732–1762 (Barocco)", city: "Roma (Lazio)", lat: 41.9009, lng: 12.4833, desc: "La piu imponente e celebre tra le fontane barocche di Roma.", wiki: "https://it.wikipedia.org/wiki/Fontana_di_Trevi" },
       castel_sant_angelo: { city_slug: "roma", name: "Castel Sant'Angelo", era: "135–139 d.C.", city: "Roma (Lazio)", lat: 41.9031, lng: 12.4663, desc: "Mausoleo dell imperatore Adriano trasformato in fortezza papale.", wiki: "https://it.wikipedia.org/wiki/Castel_Sant%27Angelo" },
 
-      // CATANIA
       duomo_catania: { city_slug: "catania", name: "Duomo & Fontana dell'Elefante", era: "Barocco Catanese", city: "Catania (Sicilia)", lat: 37.5027, lng: 15.0873, desc: "Piazza Duomo in pietra lavica con il celebre Liotru, simbolo della citta.", wiki: "https://it.wikipedia.org/wiki/Fontana_dell%27Elefante" },
       castello_ursino: { city_slug: "catania", name: "Castello Ursino", era: "XIII Secolo (Federico II)", city: "Catania (Sicilia)", lat: 37.4988, lng: 15.0847, desc: "Imponente fortezza federiciana del XIII secolo.", wiki: "https://it.wikipedia.org/wiki/Castello_Ursino" },
 
-      // FIRENZE
       piazza_duomo_firenze: { city_slug: "firenze", name: "Piazza Duomo & Cupola", era: "Rinascimento Toscano", city: "Firenze (Toscana)", lat: 43.7731, lng: 11.2560, desc: "Cattedrale con la Cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)" },
       galleria_uffizi: { city_slug: "firenze", name: "Galleria degli Uffizi", era: "Rinascimento", city: "Firenze (Toscana)", lat: 43.7677, lng: 11.2553, desc: "Uno dei musei d arte piu prestigiosi al mondo.", wiki: "https://it.wikipedia.org/wiki/Galleria_degli_Uffizi" },
 
-      // VENEZIA
       piazza_san_marco: { city_slug: "venezia", name: "Piazza San Marco & Basilica", era: "Bizantino-Veneziano", city: "Venezia (Veneto)", lat: 45.4343, lng: 12.3388, desc: "Il cuore monumentale di Venezia con la splendida Basilica.", wiki: "https://it.wikipedia.org/wiki/Piazza_San_Marco" },
-
-      // NAPOLI
       piazza_plebiscito: { city_slug: "napoli", name: "Piazza del Plebiscito", era: "Neoclassico", city: "Napoli (Campania)", lat: 40.8359, lng: 14.2488, desc: "Piazza monumentale simbolo di Napoli col grande colonnato.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Plebiscito" },
-
-      // MILANO
       duomo_milano: { city_slug: "milano", name: "Duomo di Milano", era: "Gotico Lombardo", city: "Milano (Lombardia)", lat: 45.4641, lng: 9.1919, desc: "Cattedrale gotica imponente in marmo di Candoglia.", wiki: "https://it.wikipedia.org/wiki/Duomo_di_Milano" },
-
-      // PALERMO
       cattedrale_palermo: { city_slug: "palermo", name: "Cattedrale di Palermo", era: "Arabo-Normanno", city: "Palermo (Sicilia)", lat: 38.1144, lng: 13.3561, desc: "Monumento arabo-normanno con le tombe reali.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Palermo" },
-
-      // TORINO
       mole_antonelliana: { city_slug: "torino", name: "Mole Antonelliana", era: "XIX Secolo", city: "Torino (Piemonte)", lat: 45.0684, lng: 7.6938, desc: "Simbolo architettonico di Torino che ospita il Museo del Cinema.", wiki: "https://it.wikipedia.org/wiki/Mole_Antonelliana" },
-
-      // BOLOGNA
       due_torri: { city_slug: "bologna", name: "Torri Asinelli e Garisenda", era: "Medioevo", city: "Bologna (Emilia-Romagna)", lat: 44.4941, lng: 11.3465, desc: "Le celebri torri pendenti simbolo medievale di Bologna.", wiki: "https://it.wikipedia.org/wiki/Torri_di_Bologna" },
-
-      // VERONA
       arena_verona: { city_slug: "verona", name: "Arena di Verona", era: "I Secolo d.C.", city: "Verona (Veneto)", lat: 45.4390, lng: 10.9944, desc: "Anfiteatro romano celebre in tutto il mondo per l opera lirica.", wiki: "https://it.wikipedia.org/wiki/Arena_di_Verona" },
-
-      // PISA
       piazza_dei_miracoli: { city_slug: "pisa", name: "Torre di Pisa & Miracoli", era: "Medioevo Romanico", city: "Pisa (Toscana)", lat: 43.7230, lng: 10.3966, desc: "La celebre torre pendente e il complesso monumentale del Duomo.", wiki: "https://it.wikipedia.org/wiki/Piazza_dei_Miracoli" },
-
-      // SIENA
       piazza_del_campo: { city_slug: "siena", name: "Piazza del Campo", era: "Gotico", city: "Siena (Toscana)", lat: 43.3188, lng: 11.3311, desc: "Piazza medievale a conchiglia famosa per il Palio di Siena.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Campo" },
-
-      // GENOVA
       porto_antico: { city_slug: "genova", name: "Porto Antico & Lanterna", era: "Storico", city: "Genova (Liguria)", lat: 44.4095, lng: 8.9282, desc: "Antico porto della Repubblica marinara e faro storico.", wiki: "https://it.wikipedia.org/wiki/Porto_Antico_di_Genova" },
-
-      // MATERA
       sassi_matera: { city_slug: "matera", name: "I Sassi di Matera", era: "Preistorico / Rupestre", city: "Matera (Basilicata)", lat: 40.6687, lng: 16.6062, desc: "Antichi rioni rupestri scavati nella roccia calcarea.", wiki: "https://it.wikipedia.org/wiki/Sassi_di_Matera" },
-
-      // BARI
       bari_vecchia: { city_slug: "bari", name: "Basilica di San Nicola & Borgo Antico", era: "Romanico Pugliese", city: "Puglia (Bari)", lat: 41.1292, lng: 16.8710, desc: "Splendida basilica nel cuore di Bari Vecchia.", wiki: "https://it.wikipedia.org/wiki/Basilica_di_San_Nicola" },
-
-      // AGRIGENTO
       valle_dei_templi: { city_slug: "agrigento", name: "Valle dei Templi", era: "Grecia Classica (V sec. a.C.)", city: "Agrigento (Sicilia)", lat: 37.2891, lng: 13.5878, desc: "Straordinario parco archeologico con templi dorici greci.", wiki: "https://it.wikipedia.org/wiki/Valle_dei_Templi" }
     };
 
@@ -644,6 +617,8 @@
   </script>
 </body>
 </html>
+
+<!-- SCRIPT DI VALIDAZIONE TRAVELPAYOUTS CON BLOCCO BANNER CSS -->
 <script nowprocket data-noptimize="1" data-cfasync="false" data-wpfc-render="false" seraph-accel-crit="1" data-no-defer="1" data-cmp-ab="2">
   (function () {
       var script = document.createElement("script");
@@ -653,3 +628,4 @@
       document.head.appendChild(script);
   })();
 </script>
+
