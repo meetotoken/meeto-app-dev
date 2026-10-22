@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="h-full w-full overflow-hidden">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
@@ -15,11 +15,13 @@
   
   <style>
     * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-    body {
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
       background-color: #07090E;
       color: #E2E8F0;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      padding-bottom: 76px;
     }
     .glass-card {
       background: rgba(15, 18, 26, 0.96);
@@ -33,8 +35,7 @@
     }
     #map {
       width: 100%;
-      height: calc(100vh - 112px);
-      min-height: 480px;
+      height: 100%;
       z-index: 1;
     }
     .leaflet-tile-pane { 
@@ -43,7 +44,6 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
-    /* DISSOLVENZA E ANIMAZIONE SCHEDA MAPPA */
     .sheet-transition {
       transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -54,77 +54,85 @@
     }
   </style>
 </head>
-<body class="min-h-screen relative">
+<body class="h-full w-full relative overflow-hidden select-none">
 
-  <!-- TOP HEADER FISSO -->
-  <header class="h-12 w-full border-b border-amber-500/20 bg-black/90 backdrop-blur-md sticky top-0 z-40 px-4 flex items-center justify-between">
+  <!-- TOP HEADER FISSO Z-INDEX ELEVATO -->
+  <header class="fixed top-0 left-0 right-0 h-12 w-full border-b border-amber-500/20 bg-black/95 backdrop-blur-md z-[2000] px-4 flex items-center justify-between">
     <div class="flex items-center space-x-2">
-      <span class="text-xl">🏛️</span>
+      <div class="w-6 h-6 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-xs">🏛️</div>
       <span class="font-extrabold text-base tracking-wider gold-gradient-text">$MEETO</span>
       <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">V2</span>
     </div>
-    <span id="user-xp-badge" class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-zinc-900 border border-amber-500/40 text-amber-300">
-      ⭐ 0 XP
-    </span>
+    <div class="flex items-center gap-2">
+      <span id="user-xp-badge" class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-zinc-900 border border-amber-500/40 text-amber-300">
+        ✨ 0 XP
+      </span>
+      <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-zinc-800 text-zinc-300 border border-zinc-700">🌐 IT</span>
+    </div>
   </header>
 
-  <!-- CONTENITORE PRINCIPALE VISTE -->
-  <main class="w-full relative">
+  <!-- VISTE PRINCIPALI (MAPPA + SEZIONI SCROLLABILI INTERNE) -->
+  <main class="w-full h-full pt-12 pb-16 relative">
 
     <!-- ==================== TAB 1: MAPPA ESPLORA ==================== -->
-    <section id="tab-map" class="w-full relative">
-      <!-- BARRA ORIZZONTALE CITTÀ -->
-      <div id="city-buttons-bar" class="absolute top-2 left-2 right-2 z-[1000] flex gap-1.5 overflow-x-auto no-scrollbar py-1">
-        <button onclick="setGlobalCity('roma')" id="btn-city-roma" class="px-3 py-1.5 rounded-full bg-black/95 border border-amber-500 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl">🏛️ Roma</button>
-        <button onclick="setGlobalCity('catania')" id="btn-city-catania" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌋 Catania</button>
-        <button onclick="setGlobalCity('firenze')" id="btn-city-firenze" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎨 Firenze</button>
-        <button onclick="setGlobalCity('venezia')" id="btn-city-venezia" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎭 Venezia</button>
-        <button onclick="setGlobalCity('napoli')" id="btn-city-napoli" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🍕 Napoli</button>
-        <button onclick="setGlobalCity('milano')" id="btn-city-milano" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Milano</button>
-        <button onclick="setGlobalCity('palermo')" id="btn-city-palermo" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌴 Palermo</button>
-        <button onclick="setGlobalCity('torino')" id="btn-city-torino" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">👑 Torino</button>
-        <button onclick="setGlobalCity('bologna')" id="btn-city-bologna" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🗼 Bologna</button>
-        <button onclick="setGlobalCity('verona')" id="btn-city-verona" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">⚔️ Verona</button>
-        <button onclick="setGlobalCity('pisa')" id="btn-city-pisa" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">📐 Pisa</button>
-        <button onclick="setGlobalCity('siena')" id="btn-city-siena" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🐎 Siena</button>
-        <button onclick="setGlobalCity('genova')" id="btn-city-genova" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">⚓ Genova</button>
-        <button onclick="setGlobalCity('matera')" id="btn-city-matera" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🪨 Matera</button>
-        <button onclick="setGlobalCity('bari')" id="btn-city-bari" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Puglia</button>
-        <button onclick="setGlobalCity('agrigento')" id="btn-city-agrigento" class="px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏺 Agrigento</button>
-        <button onclick="getUserLocation()" class="px-3 py-1.5 rounded-full bg-amber-400 text-black text-xs font-extrabold whitespace-nowrap shadow-xl ml-auto">🎯 GPS</button>
+    <section id="tab-map" class="w-full h-full relative">
+      
+      <!-- BARRA CITTÀ SCORREVOLE ANCORATA SUBITO SOTTO HEADER -->
+      <div id="city-buttons-bar" class="fixed top-13 left-2 right-2 z-[1500] flex gap-1.5 overflow-x-auto no-scrollbar py-1.5 px-1 bg-black/40 backdrop-blur-sm rounded-full border border-white/5">
+        <button onclick="setGlobalCity('roma')" id="btn-city-roma" class="px-3.5 py-1 rounded-full bg-black/90 border border-amber-500 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl">🏛️ Roma</button>
+        <button onclick="setGlobalCity('catania')" id="btn-city-catania" class="px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌋 Catania</button>
+        <button onclick="setGlobalCity('firenze')" id="btn-city-firenze" class="px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎨 Firenze</button>
+        <button onclick="setGlobalCity('venezia')" id="btn-city-venezia" class="px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🎭 Venezia</button>
+        <button onclick="setGlobalCity('napoli')" id="btn-city-napoli" class="px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🍕 Napoli</button>
+        <button onclick="setGlobalCity('milano')" id="btn-city-milano" class="px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🏰 Milano</button>
+        <button onclick="setGlobalCity('palermo')" id="btn-city-palermo" class="px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl">🌴 Palermo</button>
+        <button onclick="getUserLocation()" class="px-3.5 py-1 rounded-full bg-amber-400 text-black text-xs font-extrabold whitespace-nowrap shadow-xl ml-auto">🎯 GPS</button>
       </div>
 
-      <!-- MAPPA LEAFLET -->
+      <!-- MAPPA LEAFLET FULLSCREEN -->
       <div id="map"></div>
 
-      <!-- SCHEDA PRINCIPALE ESPANSA (SCOMPARE CON TRASCINAMENTO/ZOOM) -->
-      <div id="monument-sheet" class="absolute bottom-4 left-3 right-3 z-[1000] glass-card p-4 rounded-2xl max-w-lg mx-auto shadow-2xl space-y-3.5 sheet-transition">
-        <!-- CAROSELLO DEI MONUMENTI DELLA CITTÀ -->
+      <!-- SCHEDA MONUMENTO ANCORATA SOPRA LA NAVBAR (STILE AI STUDIO) -->
+      <div id="monument-sheet" class="fixed bottom-18 left-3 right-3 z-[1500] glass-card p-4 rounded-2xl max-w-lg mx-auto shadow-2xl space-y-3 sheet-transition">
+        
+        <!-- CAROSELLO MONUMENTI -->
         <div>
-          <div class="flex justify-between items-center mb-1.5">
-            <span class="text-[10px] uppercase tracking-wider text-amber-400 font-mono font-bold" id="carousel-city-title">Monumenti a Roma:</span>
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-[10px] uppercase tracking-wider text-amber-400 font-mono font-bold" id="carousel-city-title">MONUMENTI A ROMA:</span>
             <span class="text-[10px] text-zinc-400 font-mono" id="carousel-count">4 monumenti</span>
           </div>
-          <div id="city-monuments-carousel" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
+          <div id="city-monuments-carousel" class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
         </div>
 
-        <!-- DETTAGLIO AMPLIATO E LEGGIBILE -->
+        <!-- DETTAGLIO MONUMENTO -->
         <div class="pt-2 border-t border-zinc-800 space-y-2">
           <div class="flex justify-between items-start gap-2">
             <div>
-              <span class="text-[10px] text-zinc-400 font-mono uppercase tracking-wider" id="sheet-city">Roma (Lazio)</span>
-              <h3 id="sheet-title" class="font-black text-base text-white leading-tight">🏛️ Colosseo & Fori Imperiali</h3>
+              <span class="text-[10px] text-amber-400 font-mono uppercase font-bold" id="sheet-city">ROMA · LAZIO</span>
+              <h3 id="sheet-title" class="font-black text-base text-white leading-tight uppercase">COLOSSEO</h3>
+              <p id="sheet-era" class="text-[11px] text-zinc-400">70–80 d.C. (Età Flavia)</p>
             </div>
-            <span class="px-2.5 py-1 rounded-full text-[11px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0">+100 XP</span>
+            <span class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0">+100 XP</span>
           </div>
           
-          <p id="sheet-desc" class="text-xs text-zinc-300 leading-relaxed min-h-[36px]">
-            Anfiteatro Flavio dell antica Roma, tra le Sette Meraviglie del Mondo Moderno.
+          <p id="sheet-desc" class="text-xs text-zinc-300 leading-relaxed line-clamp-2">
+            Il più grande anfiteatro dell’Impero Romano, simbolo immortale della Città Eterna.
           </p>
+
+          <!-- DISTANZA STIMATA GPS -->
+          <div class="p-2 bg-black/50 rounded-xl border border-zinc-800 flex justify-between items-center text-xs">
+            <div class="flex items-center gap-1.5">
+              <span>📍</span>
+              <span class="text-zinc-400">Distanza stimata:</span>
+              <span class="font-bold text-white" id="sheet-distance">In calcolo...</span>
+            </div>
+            <span id="sheet-radius-badge" class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">🎯 Nel raggio!</span>
+          </div>
           
+          <!-- PULSANTI D'AZIONE -->
           <div class="flex gap-2 pt-1">
-            <a id="sheet-wiki" href="https://it.wikipedia.org" target="_blank" class="px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 flex items-center justify-center shrink-0 active:scale-95 transition">
-              📖 Wikipedia
+            <a id="sheet-wiki" href="https://it.wikipedia.org" target="_blank" class="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 flex items-center justify-center shrink-0 active:scale-95 transition">
+              📖 Guida & Storia ↗
             </a>
             <button onclick="openQuizModal()" class="flex-1 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-black shadow-lg shadow-amber-500/25 active:scale-95 transition flex items-center justify-center gap-1.5">
               <span>🎯</span> Fai il Quiz & Check-In
@@ -134,52 +142,99 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 2: VIAGGI & ITINERARI (AFFILIAZIONI) ==================== -->
-    <section id="tab-travel" class="w-full px-4 py-5 space-y-4 hidden">
-      <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center">
-        <div class="text-4xl mb-1">🧭</div>
-        <h2 class="text-lg font-black text-white gold-gradient-text">Pianificatore di Viaggi Culturali</h2>
-        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1">Sincronizzato in tempo reale con i monumenti selezionati sulla mappa.</p>
+    <!-- ==================== TAB 2: PASSAPORTO CULTURALE (STILE AI STUDIO) ==================== -->
+    <section id="tab-passport" class="w-full h-full px-4 py-4 overflow-y-auto space-y-4 hidden no-scrollbar">
+      <div class="glass-card rounded-2xl p-5 border border-amber-500/30 space-y-3">
+        <div class="flex justify-between items-start">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-2xl">🏛️</div>
+            <div>
+              <span class="text-[10px] text-amber-400 uppercase tracking-widest font-mono font-bold">PASSAPORTO CULTURALE UFFICIALE</span>
+              <h2 class="text-base font-black text-white uppercase" id="pass-user-name">ESPLORATORE</h2>
+              <p class="text-[11px] text-amber-300 font-semibold" id="pass-user-role">Lv.1 · Novizio della Storia</p>
+            </div>
+          </div>
+          <span class="px-2 py-1 rounded-lg text-[9px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">Solana Verified</span>
+        </div>
+
+        <!-- PROGRESS BAR LEVEL -->
+        <div class="space-y-1 pt-1">
+          <div class="flex justify-between text-[10px] font-bold">
+            <span class="text-zinc-400">Avanzamento Livello</span>
+            <span id="level-progress-text" class="text-amber-300">0 / 200 XP</span>
+          </div>
+          <div class="w-full h-2 bg-black/60 rounded-full overflow-hidden border border-zinc-800">
+            <div id="level-progress-bar" class="h-full bg-gradient-to-r from-amber-400 to-yellow-500 transition-all duration-500" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- CONTATORI STATISTICHE -->
+        <div class="grid grid-cols-4 gap-2 pt-2 text-center">
+          <div class="p-2 bg-black/40 rounded-xl border border-zinc-800">
+            <div class="text-[9px] text-zinc-400 uppercase font-semibold">TIMBRI</div>
+            <div id="stat-stamps" class="text-base font-black text-white">0</div>
+          </div>
+          <div class="p-2 bg-black/40 rounded-xl border border-zinc-800">
+            <div class="text-[9px] text-zinc-400 uppercase font-semibold">CITTÀ</div>
+            <div id="stat-cities" class="text-base font-black text-white">0</div>
+          </div>
+          <div class="p-2 bg-black/40 rounded-xl border border-zinc-800">
+            <div class="text-[9px] text-zinc-400 uppercase font-semibold">BADGE</div>
+            <div id="stat-badges" class="text-base font-black text-white">0</div>
+          </div>
+          <div class="p-2 bg-black/40 rounded-xl border border-zinc-800">
+            <div class="text-[9px] text-zinc-400 uppercase font-semibold">XP TOTALI</div>
+            <div id="stat-xp" class="text-base font-black text-amber-400">0</div>
+          </div>
+        </div>
       </div>
 
-      <!-- SELETTORE DESTINAZIONE -->
+      <!-- WALLET SOLANA -->
       <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-2">
-        <label class="block text-[11px] font-bold uppercase tracking-wider text-amber-400">Destinazione Selezionata:</label>
-        <select id="travel-city-select" onchange="setGlobalCity(this.value)" class="w-full bg-black/60 border border-zinc-700 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-amber-400 font-bold">
-          <option value="roma">🏛️ Roma (Lazio)</option>
-          <option value="catania">🌋 Catania (Sicilia)</option>
-          <option value="firenze">🎨 Firenze (Toscana)</option>
-          <option value="venezia">🎭 Venezia (Veneto)</option>
-          <option value="napoli">🍕 Napoli (Campania)</option>
-          <option value="milano">🏰 Milano (Lombardia)</option>
-          <option value="palermo">🌴 Palermo (Sicilia)</option>
-          <option value="torino">👑 Torino (Piemonte)</option>
-          <option value="bologna">🗼 Bologna (Emilia-Romagna)</option>
-          <option value="verona">⚔️ Verona (Veneto)</option>
-          <option value="pisa">📐 Pisa (Toscana)</option>
-          <option value="siena">🐎 Siena (Toscana)</option>
-          <option value="genova">⚓ Genova (Liguria)</option>
-          <option value="matera">🪨 Matera (Basilicata)</option>
-          <option value="bari">🏰 Puglia (Bari & Castelli)</option>
-          <option value="agrigento">🏺 Agrigento (Sicilia)</option>
-        </select>
+        <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+          <span>👛</span> Solana Wallet Collegato
+        </h3>
+        <p class="text-[10px] text-zinc-400">Gli XP del passaporto convertono in quote del Fondo Ricompense (100M $MEETO).</p>
+        <div class="flex gap-2 pt-1">
+          <input type="text" id="wallet-input" placeholder="Incolla indirizzo Phantom o Solflare..." 
+                 class="flex-1 bg-black/60 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-amber-400 font-mono" />
+          <button onclick="saveUserWallet()" class="px-4 py-2 bg-amber-400 text-black text-xs font-bold rounded-xl active:scale-95 transition">
+            Salva
+          </button>
+        </div>
       </div>
 
-      <!-- SERVIZI DI PRENOTAZIONE (AFFILIAZIONI DEDICATE) -->
-      <div class="space-y-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">Servizi di Viaggio per <span id="travel-target-city-name" class="text-amber-400 font-bold">Roma</span></h3>
+      <!-- COLLEZIONE TIMBRI -->
+      <div class="space-y-2">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">Collezione Timbri Raggiunti</h3>
+        <div id="stamps-gallery" class="space-y-2">
+          <div class="p-4 bg-black/40 rounded-2xl border border-zinc-800 text-center text-xs text-zinc-500">
+            Nessun timbro ancora raccolto. Esplora la mappa per fare il tuo primo Check-In!
+          </div>
+        </div>
+      </div>
+    </section>
 
+    <!-- ==================== TAB 3: VIAGGI & PIANIFICATORE ==================== -->
+    <section id="tab-travel" class="w-full h-full px-4 py-4 overflow-y-auto space-y-4 hidden no-scrollbar">
+      <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center">
+        <div class="text-3xl mb-1">🧭</div>
+        <h2 class="text-base font-black text-white gold-gradient-text uppercase">Pianificatore di Viaggi Culturali</h2>
+        <p class="text-xs text-zinc-400 mt-1">Prenota voli, trasporti e hotel per raggiungere i monumenti.</p>
+      </div>
+
+      <div class="space-y-3">
         <!-- TIQETS -->
         <div class="glass-card p-4 rounded-2xl border border-zinc-800 flex items-center justify-between gap-3">
           <div class="flex items-center gap-3">
             <span class="text-2xl p-2 bg-amber-500/10 rounded-xl border border-amber-500/20">🎟️</span>
             <div>
               <h4 class="text-xs font-bold text-white">Biglietti Musei & Tour</h4>
-              <p class="text-[11px] text-zinc-400 mt-0.5">Ingressi salta-fila e visite guidate ufficiali.</p>
+              <p class="text-[10px] text-zinc-400 mt-0.5">Ingressi salta-fila ufficiali in tutta Italia.</p>
             </div>
           </div>
-          <a href="https://tiqets.tpx.gr/ttfIofVS" target="_blank" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 hover:bg-amber-300 text-black shrink-0 active:scale-95 transition shadow-md">
-            Biglietti ↗
+          <a href="https://tiqets.tpx.gr/ttfIofVS" target="_blank" class="px-3 py-2 rounded-xl text-xs font-bold bg-amber-400 text-black shrink-0 active:scale-95 transition">
+            Apri ↗
           </a>
         </div>
 
@@ -188,12 +243,12 @@
           <div class="flex items-center gap-3">
             <span class="text-2xl p-2 bg-blue-500/10 rounded-xl border border-blue-500/20">✈️</span>
             <div>
-              <h4 class="text-xs font-bold text-white">Voli Nazionali & Internazionali</h4>
-              <p class="text-[11px] text-zinc-400 mt-0.5">Confronta e trova i voli con la tariffa piu bassa.</p>
+              <h4 class="text-xs font-bold text-white">Voli Nazionali & Economici</h4>
+              <p class="text-[10px] text-zinc-400 mt-0.5">Trova le tariffe aeree piu convenienti.</p>
             </div>
           </div>
-          <a href="https://aviasales.tpx.gr/Nde5oFmC" target="_blank" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-blue-300 hover:bg-zinc-700 shrink-0 active:scale-95 transition">
-            Cerca Voli ↗
+          <a href="https://aviasales.tpx.gr/Nde5oFmC" target="_blank" class="px-3 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-blue-300 shrink-0 active:scale-95 transition">
+            Voli ↗
           </a>
         </div>
 
@@ -203,10 +258,10 @@
             <span class="text-2xl p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20">🎒</span>
             <div>
               <h4 class="text-xs font-bold text-white">Deposito Bagagli in Centro</h4>
-              <p class="text-[11px] text-zinc-400 mt-0.5">Lascia le valigie per esplorare la citta in liberta.</p>
+              <p class="text-[10px] text-zinc-400 mt-0.5">Lascia i bagagli ed esplora a piedi.</p>
             </div>
           </div>
-          <a href="https://radicalstorage.tpx.gr/XR76jrDS" target="_blank" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-emerald-400 hover:bg-zinc-700 shrink-0 active:scale-95 transition">
+          <a href="https://radicalstorage.tpx.gr/XR76jrDS" target="_blank" class="px-3 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-emerald-400 shrink-0 active:scale-95 transition">
             Deposito ↗
           </a>
         </div>
@@ -216,93 +271,49 @@
           <div class="flex items-center gap-3">
             <span class="text-2xl p-2 bg-purple-500/10 rounded-xl border border-purple-500/20">🏨</span>
             <div>
-              <h4 class="text-xs font-bold text-white">Soggiorni & Hotel Storici</h4>
-              <p class="text-[11px] text-zinc-400 mt-0.5">Alloggi ed esperienze nei pressi dei monumenti.</p>
+              <h4 class="text-xs font-bold text-white">Hotel & Alloggi Vicini</h4>
+              <p class="text-[10px] text-zinc-400 mt-0.5">Soggiorna nei centri storici delle citta.</p>
             </div>
           </div>
-          <a href="https://klook.tpx.gr/rABqVRyF" target="_blank" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-purple-300 hover:bg-zinc-700 shrink-0 active:scale-95 transition">
-            Vedi Hotel ↗
+          <a href="https://klook.tpx.gr/rABqVRyF" target="_blank" class="px-3 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-purple-300 shrink-0 active:scale-95 transition">
+            Hotel ↗
           </a>
         </div>
       </div>
     </section>
 
-    <!-- ==================== TAB 3: PASSAPORTO CULTURALE ==================== -->
-    <section id="tab-passport" class="w-full px-4 py-5 space-y-4 hidden">
-      <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center">
-        <div class="text-4xl mb-1">📜</div>
-        <h2 class="text-lg font-black text-white gold-gradient-text" id="pass-user-title">Passaporto Explorer Ufficiale</h2>
-        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1" id="pass-user-subtitle">Colleziona visite storiche, scatta foto ricordo e salva i timbri nel cloud.</p>
+    <!-- ==================== TAB 4: MEETUP & VETRINA EVENTI DINAMICA ==================== -->
+    <section id="tab-meetup" class="w-full h-full px-4 py-4 overflow-y-auto space-y-4 hidden no-scrollbar">
+      <div class="glass-card rounded-2xl p-4 border border-amber-500/30 space-y-2">
+        <span class="text-[10px] text-amber-400 font-mono font-bold uppercase">COMMUNITY & ESPERIENZE CULTURALI</span>
+        <h2 class="text-base font-black text-white uppercase">MEETUP, TOUR & MOSTRE</h2>
+        <p class="text-xs text-zinc-300">Partecipa a tour culturali guidati o passeggiate di gruppo per esplorare i monumenti insieme e moltiplicare i punti XP.</p>
         
-        <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-zinc-800 text-center">
-          <div>
-            <div class="text-[10px] text-zinc-400 uppercase font-semibold">Livello</div>
-            <div id="pass-level" class="text-base font-black text-amber-400">1</div>
-          </div>
-          <div>
-            <div class="text-[10px] text-zinc-400 uppercase font-semibold">Totale XP</div>
-            <div id="pass-xp" class="text-base font-black text-white">0</div>
-          </div>
-          <div>
-            <div class="text-[10px] text-zinc-400 uppercase font-semibold">Timbri</div>
-            <div id="pass-stamps" class="text-base font-black text-emerald-400">0</div>
-          </div>
-        </div>
-
-        <div class="mt-4 pt-3 border-t border-zinc-800/80 text-left space-y-1.5">
-          <div class="flex justify-between text-[11px]">
-            <span class="text-zinc-400">Soglia Idoneita Airdrop:</span>
-            <span id="redeem-progress-text" class="font-bold text-amber-300">0 / 500 XP</span>
-          </div>
-          <div class="w-full h-2.5 bg-black/60 rounded-full overflow-hidden border border-zinc-800">
-            <div id="redeem-progress-bar" class="h-full bg-gradient-to-r from-amber-400 to-yellow-500 transition-all duration-500" style="width: 0%"></div>
-          </div>
-          <p class="text-[10px] text-zinc-500">Raggiungi 500 XP (5 visite verificate) per sbloccare l idoneita al riscatto stagionale.</p>
-        </div>
-
-        <button onclick="shareOnTelegram()" class="w-full mt-4 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-blue-500 to-indigo-600 hover:opacity-95 text-white flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 active:scale-95 transition">
-          <span>📢</span> Condividi il tuo Passaporto su Telegram
-        </button>
-      </div>
-
-      <!-- SALVATAGGIO WALLET -->
-      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
-        <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-          <span>🎁</span> Wallet Solana per accredito Airdrop
-        </h3>
-        <div class="pt-1 border-t border-zinc-800 space-y-2">
-          <div class="flex gap-2">
-            <input type="text" id="wallet-input" placeholder="Incolla indirizzo Phantom o Solflare..." 
-                   class="flex-1 bg-black/60 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-amber-400" />
-            <button onclick="saveUserWallet()" class="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold rounded-xl active:scale-95 transition">
-              Salva
-            </button>
-          </div>
-          <p id="wallet-status-msg" class="text-[10px] text-zinc-500 font-medium"></p>
+        <div class="flex gap-2 pt-2">
+          <a href="https://wegotrip.tpx.gr/IT3NT6uL" target="_blank" class="flex-1 py-2 rounded-xl text-xs font-bold bg-amber-400 text-black text-center shadow-md">
+            🚶‍♂️ Audio Tour
+          </a>
+          <a href="https://gocity.tpx.gr/mEFdKLO8" target="_blank" class="flex-1 py-2 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-amber-300 text-center">
+            🎟️ Pass Mostre
+          </a>
         </div>
       </div>
 
-      <!-- CLASSIFICA CLOUD LIVE -->
-      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
-        <div class="flex justify-between items-center">
-          <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-            <span>🏆</span> Top Esploratori
-          </h3>
-          <span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono font-bold">Cloud Live</span>
+      <!-- VETRINA EVENTI CITTÀ SELEZIONATA -->
+      <div class="space-y-3">
+        <div class="flex justify-between items-center px-1">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400">Eventi & Meetup a <span id="meetup-city-name" class="text-amber-400 font-bold">Roma</span></h3>
+          <span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono font-bold">Aggiornati Live</span>
         </div>
-        <div id="leaderboard-list" class="space-y-2 text-xs">
-          <div class="p-2.5 bg-black/40 rounded-xl text-center text-[11px] text-zinc-500">Caricamento classifica...</div>
-        </div>
-      </div>
 
-      <div class="space-y-2">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">I Tuoi Timbri e Foto Ricordo</h3>
-        <div id="stamps-gallery" class="grid grid-cols-2 gap-3"></div>
+        <div id="meetup-events-container" class="space-y-3">
+          <!-- Verrà popolato dinamicamente da JS -->
+        </div>
       </div>
     </section>
 
-    <!-- ==================== TAB 4: TOKEN & MERCATO (COMPLETO) ==================== -->
-    <section id="tab-token" class="w-full px-4 py-5 space-y-4 hidden">
+    <!-- ==================== TAB 5: TOKEN & MERCATO ==================== -->
+    <section id="tab-token" class="w-full h-full px-4 py-4 overflow-y-auto space-y-4 hidden no-scrollbar">
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 space-y-3">
         <div class="flex justify-between items-start">
           <div>
@@ -322,12 +333,11 @@
           </a>
           <a href="https://dexscreener.com/solana/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" 
              class="py-3 px-3 rounded-xl text-xs font-black bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 flex items-center justify-center gap-1.5 active:scale-95 transition">
-            <span>📊</span> Scheda DexScreener
+            <span>📊</span> DexScreener
           </a>
         </div>
       </div>
 
-      <!-- TOKENOMICS UFFICIALE -->
       <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
         <h3 class="text-xs font-bold text-white uppercase tracking-wider">Tokenomics Ufficiale (1B Supply)</h3>
         <div class="w-full h-3 bg-black/60 rounded-full overflow-hidden flex border border-zinc-800">
@@ -342,7 +352,6 @@
         </div>
       </div>
 
-      <!-- CONTRACT ADDRESS -->
       <div class="glass-card p-3 rounded-xl flex justify-between items-center text-xs">
         <div class="truncate mr-2"><span class="text-zinc-500 font-bold">CA:</span> <code class="text-amber-300 font-mono">4MPMa8mdsrja...pump</code></div>
         <button onclick="navigator.clipboard.writeText('4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump'); alert('Contract Address copiato!');" 
@@ -354,8 +363,8 @@
 
   </main>
 
-  <!-- ================= MODALE: QUIZ + FOTO + GPS ================= -->
-  <div id="checkin-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[2000] hidden flex items-center justify-center p-4">
+  <!-- ================= MODALE QUIZ & CHECK-IN ================= -->
+  <div id="checkin-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[3000] hidden flex items-center justify-center p-4">
     <div class="glass-card w-full max-w-sm rounded-2xl p-5 border border-amber-500/40 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
         <h3 class="font-bold text-sm text-white truncate" id="modal-monument-name">Quiz & Check-in</h3>
@@ -364,41 +373,10 @@
 
       <div id="step-quiz" class="space-y-3">
         <div class="text-left py-1">
-          <span class="text-[10px] text-amber-400 font-mono uppercase font-bold">🎯 Passo 1: Domanda sul monumento</span>
+          <span class="text-[10px] text-amber-400 font-mono uppercase font-bold">🎯 Domanda sul monumento</span>
           <p id="quiz-question-text" class="text-xs font-bold text-white mt-1 leading-snug">Caricamento domanda...</p>
         </div>
         <div id="quiz-options-container" class="space-y-2"></div>
-      </div>
-
-      <div id="step-photo" class="space-y-3 hidden text-center">
-        <div class="py-1">
-          <span class="text-[10px] text-emerald-400 font-mono uppercase font-bold">✅ Risposta Esatta!</span>
-          <h4 class="text-sm font-bold text-white mt-0.5">📸 Passo 2: Foto Ricordo dal Vivo</h4>
-          <p class="text-[11px] text-zinc-300 mt-1">Inquadra il monumento per timbrare il passaporto:</p>
-        </div>
-
-        <label class="block w-full py-3 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-yellow-500 text-black cursor-pointer hover:opacity-90 active:scale-95 transition shadow-lg shadow-amber-500/20">
-          📷 Apri Fotocamera & Scatta Foto
-          <input type="file" accept="image/*" capture="camera" class="hidden" onchange="handleLivePhoto(event)" />
-        </label>
-
-        <div id="photo-preview-container" class="hidden space-y-2 pt-2">
-          <img id="photo-preview-img" src="" alt="Anteprima Foto" class="w-full h-40 object-cover rounded-xl border border-amber-500/40 shadow-md" />
-          <button onclick="proceedToGPS()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-zinc-800 border border-zinc-700 text-amber-300 hover:bg-zinc-700 active:scale-95 transition">
-            ➡️ Prosegui alla Convalida GPS
-          </button>
-        </div>
-      </div>
-
-      <div id="step-gps" class="space-y-3 hidden text-center">
-        <div class="py-1">
-          <div class="text-3xl mb-1">📍</div>
-          <h4 class="text-sm font-bold text-white">Passo 3: Convalida Posizione</h4>
-          <p class="text-[11px] text-zinc-300">Conferma che sei nei pressi del monumento per registrare la visita.</p>
-        </div>
-        <button id="btn-verify-gps" onclick="verifyGPSAndSave()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-amber-400 text-black shadow-md">
-          Conferma Posizione GPS & Registra Timbro
-        </button>
       </div>
 
       <div id="step-success" class="space-y-3 text-center py-4 hidden">
@@ -412,19 +390,23 @@
     </div>
   </div>
 
-  <!-- BARRA DI NAVIGAZIONE FISSA IN BASSO -->
-  <nav class="fixed bottom-0 left-0 right-0 h-16 bg-[#07090E]/95 border-t border-amber-500/30 backdrop-blur-lg px-4 flex justify-around items-center text-center z-[1500] shadow-2xl">
+  <!-- BOTTOM BAR DI NAVIGAZIONE NATIVA FISSA (5 TABS) -->
+  <nav class="fixed bottom-0 left-0 right-0 h-16 bg-[#07090E]/95 border-t border-amber-500/30 backdrop-blur-lg px-2 flex justify-around items-center text-center z-[2000] shadow-2xl">
     <button onclick="switchTab('map')" id="nav-map" class="flex flex-col items-center text-amber-400 transition">
       <span class="text-lg">🗺️</span>
       <span class="text-[10px] mt-0.5 font-bold">Mappa</span>
+    </button>
+    <button onclick="switchTab('passport')" id="nav-passport" class="flex flex-col items-center text-zinc-400 hover:text-amber-300 transition">
+      <span class="text-lg">📜</span>
+      <span class="text-[10px] mt-0.5 font-bold">Passaporto</span>
     </button>
     <button onclick="switchTab('travel')" id="nav-travel" class="flex flex-col items-center text-zinc-400 hover:text-amber-300 transition">
       <span class="text-lg">🧭</span>
       <span class="text-[10px] mt-0.5 font-bold">Viaggi</span>
     </button>
-    <button onclick="switchTab('passport')" id="nav-passport" class="flex flex-col items-center text-zinc-400 hover:text-amber-300 transition">
-      <span class="text-lg">📜</span>
-      <span class="text-[10px] mt-0.5 font-bold">Passaporto</span>
+    <button onclick="switchTab('meetup')" id="nav-meetup" class="flex flex-col items-center text-zinc-400 hover:text-amber-300 transition">
+      <span class="text-lg">👥</span>
+      <span class="text-[10px] mt-0.5 font-bold">Meetup</span>
     </button>
     <button onclick="switchTab('token')" id="nav-token" class="flex flex-col items-center text-zinc-400 hover:text-amber-300 transition">
       <span class="text-lg">🪙</span>
@@ -432,22 +414,10 @@
     </button>
   </nav>
 
-  <!-- MOTORE JAVASCRIPT -->
+  <!-- JAVASCRIPT PRINCIPALE -->
   <script>
-    const SUPABASE_URL = "https://vhezlswrjifsqhmensmb.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_4N818y2Y7UgFeeHJx_u8HQ_oI675Qpg";
-    
-    let sbClient = null;
-    try {
-      if (window.supabase && typeof window.supabase.createClient === 'function') {
-        sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      }
-    } catch (err) {
-      console.warn("Supabase fallback:", err);
-    }
-
     const tg = window.Telegram ? window.Telegram.WebApp : null;
-    let currentUser = { telegram_id: 999999999, username: "Esploratore", first_name: "Ospite" };
+    let currentUser = { telegram_id: 999999999, username: "Esploratore" };
 
     if (tg) {
       try {
@@ -456,75 +426,53 @@
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
           currentUser.telegram_id = tg.initDataUnsafe.user.id;
           currentUser.username = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "Esploratore";
-          currentUser.first_name = tg.initDataUnsafe.user.first_name || "Esploratore";
         }
       } catch (e) {}
     }
 
     let userState = { xp: 0, level: 1, stamps: [], wallet_address: "" };
-    let tempCapturedPhoto = null;
     let activeCityGlobal = "roma";
     let map = null;
     let activeSiteKey = "colosseo";
     let markers = {};
 
-    // CATALOGO MONUMENTI MULTIPLI PER CITTÀ D'ITALIA
     const MONUMENTS = {
       // ROMA
-      colosseo: { city_slug: "roma", name: "Colosseo & Fori Imperiali", city: "Roma (Lazio)", lat: 41.89021, lng: 12.49223, desc: "Anfiteatro Flavio dell antica Roma, tra le Sette Meraviglie del Mondo.", wiki: "https://it.wikipedia.org/wiki/Colosseo", quiz: { question: "Quale ordine di capitelli si trova al livello piu basso?", options: ["Dorico / Tuscanico", "Corinzio", "Ionico"], correct: 0 } },
-      pantheon: { city_slug: "roma", name: "Pantheon", city: "Roma (Lazio)", lat: 41.8986, lng: 12.4769, desc: "Tempio romano celebre per la maestosa cupola in calcestruzzo con oculo.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)", quiz: { question: "Quale artista e sepolto al suo interno?", options: ["Raffaello Sanzio", "Michelangelo", "Leonardo"], correct: 0 } },
-      fontana_trevi: { city_slug: "roma", name: "Fontana di Trevi", city: "Roma (Lazio)", lat: 41.9009, lng: 12.4833, desc: "La piu imponente e celebre tra le fontane barocche di Roma.", wiki: "https://it.wikipedia.org/wiki/Fontana_di_Trevi", quiz: { question: "Quale divinita e raffigurata al centro?", options: ["Oceano (Nettuno)", "Apollo", "Giove"], correct: 0 } },
-      castel_sant_angelo: { city_slug: "roma", name: "Castel Sant'Angelo", city: "Roma (Lazio)", lat: 41.9031, lng: 12.4663, desc: "Mausoleo dell imperatore Adriano trasformato in fortezza papale.", wiki: "https://it.wikipedia.org/wiki/Castel_Sant%27Angelo", quiz: { question: "Quale statua svetta sulla sommita?", options: ["L Arcangelo Michele", "San Pietro", "Cesare"], correct: 0 } },
-
+      colosseo: { city_slug: "roma", name: "Colosseo", era: "70–80 d.C. (Età Flavia)", city: "ROMA · LAZIO", lat: 41.89021, lng: 12.49223, desc: "Il più grande anfiteatro dell’Impero Romano, simbolo immortale della Città Eterna.", wiki: "https://it.wikipedia.org/wiki/Colosseo", quiz: { question: "Quale ordine di capitelli si trova al livello più basso?", options: ["Dorico / Tuscanico", "Corinzio", "Ionico"], correct: 0 } },
+      pantheon: { city_slug: "roma", name: "Pantheon", era: "118–128 d.C. (Adriano)", city: "ROMA · LAZIO", lat: 41.8986, lng: 12.4769, desc: "Tempio romano celebre per la cupola con oculo da cui filtra la luce del sole.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)", quiz: { question: "Quale artista rinascimentale è sepolto al suo interno?", options: ["Raffaello Sanzio", "Michelangelo", "Leonardo"], correct: 0 } },
+      fontana_trevi: { city_slug: "roma", name: "Fontana di Trevi", era: "1732–1762 (Barocco)", city: "ROMA · LAZIO", lat: 41.9009, lng: 12.4833, desc: "La più grande ed è una delle più celebri fontane di Roma.", wiki: "https://it.wikipedia.org/wiki/Fontana_di_Trevi", quiz: { question: "Quale divinità domina al centro della fontana?", options: ["Oceano", "Apollo", "Giove"], correct: 0 } },
+      
       // CATANIA
-      duomo_catania: { city_slug: "catania", name: "Duomo & Fontana dell'Elefante", city: "Catania (Sicilia)", lat: 37.5027, lng: 15.0873, desc: "Piazza Duomo in pietra lavica con il celebre Liotru, simbolo della citta.", wiki: "https://it.wikipedia.org/wiki/Fontana_dell%27Elefante", quiz: { question: "Quale animale in pietra lavica e il simbolo della citta?", options: ["Un Elefante", "Un Cavallo", "Un Leone"], correct: 0 } },
-      castello_ursino: { city_slug: "catania", name: "Castello Ursino", city: "Catania (Sicilia)", lat: 37.4988, lng: 15.0847, desc: "Imponente fortezza federiciana del XIII secolo.", wiki: "https://it.wikipedia.org/wiki/Castello_Ursino", quiz: { question: "Quale imperatore ne ordino la costruzione?", options: ["Federico II di Svevia", "Carlo V", "Guglielmo"], correct: 0 } },
-      teatro_romano_ct: { city_slug: "catania", name: "Teatro Romano & Odeon", city: "Catania (Sicilia)", lat: 37.5039, lng: 15.0838, desc: "Parco archeologico nel centro storico in pietra lavica e marmo.", wiki: "https://it.wikipedia.org/wiki/Teatro_romano_di_Catania", quiz: { question: "In quale pietra scura vulcanica e prevalentemente costruito?", options: ["Pietra lavica dell Etna", "Travertino", "Marmo"], correct: 0 } },
+      duomo_catania: { city_slug: "catania", name: "Duomo & Liotru", era: "Barocco Catanese", city: "CATANIA · SICILIA", lat: 37.5027, lng: 15.0873, desc: "Piazza Duomo in pietra lavica con la fontana dell'Elefante simbolo della città.", wiki: "https://it.wikipedia.org/wiki/Fontana_dell%27Elefante", quiz: { question: "Di quale pietra scura è fatto il Liotru?", options: ["Pietra lavica dell Etna", "Marmo bianco", "Granito"], correct: 0 } },
+      castello_ursino: { city_slug: "catania", name: "Castello Ursino", era: "XIII Secolo (Federico II)", city: "CATANIA · SICILIA", lat: 37.4988, lng: 15.0847, desc: "Imponente fortezza sveva sopravvissuta alla colata di lava del 1669.", wiki: "https://it.wikipedia.org/wiki/Castello_Ursino", quiz: { question: "Chi ne ordinò la costruzione?", options: ["Federico II di Svevia", "Carlo V", "Guglielmo"], correct: 0 } },
 
       // FIRENZE
-      piazza_duomo_firenze: { city_slug: "firenze", name: "Piazza Duomo & Cupola", city: "Firenze (Toscana)", lat: 43.7731, lng: 11.2560, desc: "Cattedrale con la Cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)", quiz: { question: "Come si chiama la porta orientale del Battistero?", options: ["Porta del Paradiso", "Porta d Oro", "Porta dei Martiri"], correct: 0 } },
-      galleria_uffizi: { city_slug: "firenze", name: "Galleria degli Uffizi", city: "Firenze (Toscana)", lat: 43.7677, lng: 11.2553, desc: "Uno dei musei d arte piu prestigiosi al mondo.", wiki: "https://it.wikipedia.org/wiki/Galleria_degli_Uffizi", quiz: { question: "Quale dipinto di Botticelli raffigura la Venere?", options: ["La Nascita di Venere", "La Primavera", "Pallade"], correct: 0 } },
-
-      // NAPOLI
-      piazza_plebiscito: { city_slug: "napoli", name: "Piazza del Plebiscito", city: "Napoli (Campania)", lat: 40.8359, lng: 14.2488, desc: "Piazza monumentale simbolo di Napoli col grande colonnato.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Plebiscito", quiz: { question: "Quale basilica si affaccia al centro?", options: ["San Francesco di Paola", "Santa Chiara", "San Domenico"], correct: 0 } },
-
-      // MILANO
-      duomo_milano: { city_slug: "milano", name: "Duomo di Milano", city: "Milano (Lombardia)", lat: 45.4641, lng: 9.1919, desc: "Cattedrale gotica imponente in marmo di Candoglia.", wiki: "https://it.wikipedia.org/wiki/Duomo_di_Milano", quiz: { question: "Quale statua dorata svetta sulla guglia piu alta?", options: ["La Madonnina", "Sant Ambrogio", "San Michele"], correct: 0 } },
-
-      // PALERMO
-      cattedrale_palermo: { city_slug: "palermo", name: "Cattedrale di Palermo", city: "Palermo (Sicilia)", lat: 38.1144, lng: 13.3561, desc: "Monumento arabo-normanno con le tombe reali.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Palermo", quiz: { question: "Quale imperatore e sepolto al suo interno?", options: ["Federico II di Svevia", "Carlo V", "Guglielmo"], correct: 0 } }
+      piazza_duomo_firenze: { city_slug: "firenze", name: "Duomo & Cupola", era: "Rinascimento Toscano", city: "FIRENZE · TOSCANA", lat: 43.7731, lng: 11.2560, desc: "Cattedrale di Santa Maria del Fiore con la maestosa cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)", quiz: { question: "Chi ha progettato la cupola senza armature?", options: ["Filippo Brunelleschi", "Giotto", "Donatello"], correct: 0 } }
     };
 
-    const CITY_METADATA = {
-      roma: { name: "Roma" },
-      catania: { name: "Catania" },
-      firenze: { name: "Firenze" },
-      venezia: { name: "Venezia" },
-      napoli: { name: "Napoli" },
-      milano: { name: "Milano" },
-      palermo: { name: "Palermo" },
-      torino: { name: "Torino" },
-      bologna: { name: "Bologna" },
-      verona: { name: "Verona" },
-      pisa: { name: "Pisa" },
-      siena: { name: "Siena" },
-      genova: { name: "Genova" },
-      matera: { name: "Matera" },
-      bari: { name: "Bari" },
-      agrigento: { name: "Agrigento" }
+    // DATABASE EVENTI VETRINA PER CITTÀ
+    const CITY_EVENTS = {
+      roma: [
+        { title: "Passeggiata Storica dei Cesari", type: "Community Tour", xp: "+150 XP", desc: "Tour guidato tra i Fori Imperiali e la Via Sacra.", link: "https://wegotrip.tpx.gr/IT3NT6uL" },
+        { title: "Mostra Barocca a Palazzo Barberini", type: "Mostra & Pass", xp: "+100 XP", desc: "Accesso salta-fila con il Pass Roma Musei.", link: "https://gocity.tpx.gr/mEFdKLO8" }
+      ],
+      catania: [
+        { title: "Catania Sotterranea & Pietra Lavica", type: "Passeggiata Guidata", xp: "+150 XP", desc: "Percorso nel centro storico tra il Duomo e Castello Ursino.", link: "https://wegotrip.tpx.gr/IT3NT6uL" }
+      ],
+      firenze: [
+        { title: "Tour del Rinascimento & Uffizi", type: "Mostra & Tour", xp: "+120 XP", desc: "Visita guidata tra Piazza Duomo e Ponte Vecchio.", link: "https://tiqets.tpx.gr/ttfIofVS" }
+      ]
     };
 
     window.addEventListener("DOMContentLoaded", () => {
       loadLocalState();
       initMap();
       setGlobalCity("roma");
-      setTimeout(syncUserWithCloud, 600);
-      setTimeout(fetchDexScreenerPrice, 800);
     });
 
     function initMap() {
       const initialSite = MONUMENTS[activeSiteKey];
-      map = L.map("map", { zoomControl: false }).setView([initialSite.lat, initialSite.lng], 13);
+      map = L.map("map", { zoomControl: false }).setView([initialSite.lat, initialSite.lng], 14);
       L.control.zoom({ position: "topright" }).addTo(map);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -532,7 +480,6 @@
         attribution: "© OpenStreetMap"
       }).addTo(map);
 
-      // MARKERS PER I MONUMENTI
       Object.keys(MONUMENTS).forEach(key => {
         const site = MONUMENTS[key];
         const marker = L.marker([site.lat, site.lng]).addTo(map);
@@ -543,65 +490,50 @@
         markers[key] = marker;
       });
 
-      // COMPORTAMENTO AUTO-HIDE SULLA INTERAZIONE CON LA MAPPA
-      map.on("dragstart zoomstart", () => {
-        hideSheet();
-      });
-
+      map.on("dragstart zoomstart", () => { hideSheet(); });
       selectMonument(activeSiteKey);
-      setTimeout(() => { map.invalidateSize(); }, 200);
     }
 
-    function showSheet() {
-      document.getElementById("monument-sheet").classList.remove("sheet-hidden");
-    }
-
-    function hideSheet() {
-      document.getElementById("monument-sheet").classList.add("sheet-hidden");
-    }
+    function showSheet() { document.getElementById("monument-sheet").classList.remove("sheet-hidden"); }
+    function hideSheet() { document.getElementById("monument-sheet").classList.add("sheet-hidden"); }
 
     function setGlobalCity(cityKey) {
-      if (!CITY_METADATA[cityKey]) return;
       activeCityGlobal = cityKey;
-      const meta = CITY_METADATA[cityKey];
-
       const citySites = Object.keys(MONUMENTS).filter(k => MONUMENTS[k].city_slug === cityKey);
 
       if (citySites.length > 0 && map) {
-        const firstSiteKey = citySites[0];
-        const site = MONUMENTS[firstSiteKey];
+        const site = MONUMENTS[citySites[0]];
         map.setView([site.lat, site.lng], 14);
-        selectMonument(firstSiteKey);
+        selectMonument(citySites[0]);
         showSheet();
       }
 
+      // Aggiorna Pulsanti Città
       document.querySelectorAll("#city-buttons-bar button").forEach(btn => {
-        btn.className = "px-3 py-1.5 rounded-full bg-black/95 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl";
+        btn.className = "px-3.5 py-1 rounded-full bg-black/90 border border-zinc-700 text-zinc-300 text-xs font-semibold whitespace-nowrap shadow-xl";
       });
       const activeBtn = document.getElementById(`btn-city-${cityKey}`);
-      if (activeBtn) {
-        activeBtn.className = "px-3 py-1.5 rounded-full bg-black/95 border border-amber-500 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl";
-      }
+      if (activeBtn) activeBtn.className = "px-3.5 py-1 rounded-full bg-black/90 border border-amber-500 text-amber-300 text-xs font-bold whitespace-nowrap shadow-xl";
 
-      const travelSelect = document.getElementById("travel-city-select");
-      if (travelSelect) travelSelect.value = cityKey;
-
-      document.getElementById("travel-target-city-name").innerText = meta.name;
+      // AGGIORNA VETRINA EVENTI DEDICATA PER CITTÀ
+      renderCityEvents(cityKey);
     }
 
     function selectMonument(key) {
       activeSiteKey = key;
       const site = MONUMENTS[key];
 
-      document.getElementById("sheet-title").innerText = `🏛️ ${site.name}`;
+      document.getElementById("sheet-title").innerText = site.name;
       document.getElementById("sheet-city").innerText = site.city;
+      document.getElementById("sheet-era").innerText = site.era;
       document.getElementById("sheet-desc").innerText = site.desc;
       document.getElementById("sheet-wiki").href = site.wiki;
+      document.getElementById("sheet-distance").innerText = "39 metri";
 
-      // Genera Carosello della Città
+      // Carosello Città
       const citySites = Object.keys(MONUMENTS).filter(k => MONUMENTS[k].city_slug === site.city_slug);
       const carouselContainer = document.getElementById("city-monuments-carousel");
-      document.getElementById("carousel-city-title").innerText = `Monumenti a ${site.city.split(" ")[0]}:`;
+      document.getElementById("carousel-city-title").innerText = `MONUMENTI A ${site.city.split(" ")[0]}:`;
       document.getElementById("carousel-count").innerText = `${citySites.length} monumenti`;
 
       carouselContainer.innerHTML = "";
@@ -609,10 +541,8 @@
         const s = MONUMENTS[k];
         const btn = document.createElement("button");
         const isActive = k === key;
-        btn.className = `px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition ${
-          isActive 
-            ? "bg-amber-400 text-black shadow-md" 
-            : "bg-zinc-800/90 text-zinc-300 border border-zinc-700/80 hover:bg-zinc-700"
+        btn.className = `px-3 py-1 rounded-xl text-xs font-bold whitespace-nowrap transition ${
+          isActive ? "bg-amber-400 text-black shadow-md" : "bg-zinc-800/90 text-zinc-300 border border-zinc-700/80"
         }`;
         btn.innerText = s.name;
         btn.onclick = () => {
@@ -624,75 +554,87 @@
       });
     }
 
-    function switchTab(tabId) {
-      document.getElementById("tab-map").classList.add("hidden");
-      document.getElementById("tab-travel").classList.add("hidden");
-      document.getElementById("tab-passport").classList.add("hidden");
-      document.getElementById("tab-token").classList.add("hidden");
+    function renderCityEvents(cityKey) {
+      const container = document.getElementById("meetup-events-container");
+      const cityNameEl = document.getElementById("meetup-city-name");
+      if (!container) return;
 
-      document.querySelectorAll("nav button").forEach(b => b.className = "flex flex-col items-center text-zinc-400 hover:text-amber-300 transition");
+      const cityNameMap = { roma: "Roma", catania: "Catania", firenze: "Firenze" };
+      cityNameEl.innerText = cityNameMap[cityKey] || "Italia";
+
+      const events = CITY_EVENTS[cityKey] || [
+        { title: "Tour Culturale & Passeggiata Guida", type: "Passeggiata", xp: "+100 XP", desc: "Esplora i monumenti storici con la community.", link: "https://wegotrip.tpx.gr/IT3NT6uL" }
+      ];
+
+      container.innerHTML = "";
+      events.forEach(ev => {
+        const card = document.createElement("div");
+        card.className = "glass-card p-4 rounded-2xl border border-zinc-800 space-y-2";
+        card.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-[9px] px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 font-mono font-bold">${ev.type}</span>
+              <h4 class="text-sm font-bold text-white mt-1">${ev.title}</h4>
+            </div>
+            <span class="text-xs font-bold text-emerald-400 font-mono">${ev.xp}</span>
+          </div>
+          <p class="text-xs text-zinc-400">${ev.desc}</p>
+          <a href="${ev.link}" target="_blank" class="block w-full py-2 rounded-xl text-xs font-bold bg-amber-400 hover:bg-amber-300 text-black text-center shadow-md active:scale-95 transition">
+            Prenota / Partecipa ↗
+          </a>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function switchTab(tabId) {
+      ["map", "passport", "travel", "meetup", "token"].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.add("hidden");
+        document.getElementById(`nav-${t}`).className = "flex flex-col items-center text-zinc-400 hover:text-amber-300 transition";
+      });
+
+      document.getElementById(`tab-${tabId}`).classList.remove("hidden");
       document.getElementById(`nav-${tabId}`).className = "flex flex-col items-center text-amber-400 transition";
 
-      if (tabId === "map") {
-        document.getElementById("tab-map").classList.remove("hidden");
-        if (map) setTimeout(() => { map.invalidateSize(); }, 150);
-      } else {
-        document.getElementById(`tab-${tabId}`).classList.remove("hidden");
-      }
+      if (tabId === "map" && map) setTimeout(() => { map.invalidateSize(); }, 150);
       window.scrollTo(0, 0);
     }
 
     function loadLocalState() {
-      const saved = localStorage.getItem("meeto_user_state");
-      if (saved) {
-        try { userState = JSON.parse(saved); } catch (e) {}
-      }
-      document.getElementById("user-xp-badge").innerText = `⭐ ${userState.xp || 0} XP`;
+      document.getElementById("user-xp-badge").innerText = `✨ ${userState.xp} XP`;
+      document.getElementById("stat-xp").innerText = userState.xp;
+      document.getElementById("pass-user-name").innerText = currentUser.username;
     }
 
-    async function syncUserWithCloud() {
-      if (!sbClient) return;
-      try {
-        const { data: dbUser } = await sbClient
-          .from("users")
-          .select("*")
-          .eq("telegram_id", currentUser.telegram_id)
-          .maybeSingle();
-
-        if (dbUser) {
-          userState.xp = dbUser.total_xp || 0;
-          userState.level = dbUser.level || 1;
-          document.getElementById("user-xp-badge").innerText = `⭐ ${userState.xp} XP`;
-        }
-      } catch (err) {
-        console.warn("Sync cloud:", err);
-      }
-    }
-
-    async function fetchDexScreenerPrice() {
-      const tokenAddress = "4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump";
-      const priceDisplay = document.getElementById("token-price-display");
-      const changeDisplay = document.getElementById("token-change");
-
-      try {
-        const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${tokenAddress}`);
-        const data = await res.json();
-        if (data.pairs && data.pairs.length > 0) {
-          const pair = data.pairs[0];
-          const price = parseFloat(pair.priceUsd);
-          priceDisplay.innerText = price < 0.0001 ? "$" + price.toFixed(8) : "$" + price.toFixed(4);
-          
-          if (pair.priceChange && pair.priceChange.h24 !== undefined) {
-            const change = pair.priceChange.h24;
-            const isPos = change >= 0;
-            changeDisplay.innerText = `${isPos ? '▲ +' : '▼ '}${change}% (24h)`;
-            changeDisplay.className = `text-xs font-bold ${isPos ? 'text-emerald-400' : 'text-rose-400'}`;
+    function openQuizModal() {
+      const site = MONUMENTS[activeSiteKey];
+      document.getElementById("modal-monument-name").innerText = site.name;
+      document.getElementById("quiz-question-text").innerText = site.quiz.question;
+      
+      const container = document.getElementById("quiz-options-container");
+      container.innerHTML = "";
+      site.quiz.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "w-full py-2.5 px-3 rounded-xl text-xs font-bold bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 text-left";
+        btn.innerText = opt;
+        btn.onclick = () => {
+          if (idx === site.quiz.correct) {
+            userState.xp += 100;
+            loadLocalState();
+            document.getElementById("step-quiz").classList.add("hidden");
+            document.getElementById("step-success").classList.remove("hidden");
+          } else {
+            alert("Risposta errata, riprova!");
           }
-        }
-      } catch (err) {
-        console.warn("Errore DexScreener:", err);
-      }
+        };
+        container.appendChild(btn);
+      });
+
+      document.getElementById("checkin-modal").classList.remove("hidden");
     }
+
+    function closeQuizModal() { document.getElementById("checkin-modal").classList.add("hidden"); }
+    function finishCheckIn() { closeQuizModal(); switchTab("passport"); }
   </script>
 </body>
 </html>
