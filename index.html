@@ -1,0 +1,2191 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>$MEETO — Passaporto & Travel Planner (Ottimizzato V2.5)</title>
+
+  <!-- Preconnect per accelerare il caricamento dei font e delle risorse -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Telegram WebApp SDK (Asincrono e non bloccante) -->
+  <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
+  
+  <!-- Leaflet Map CSS & JS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" defer></script>
+
+  <style>
+    :root {
+      --bg-dark: #07090E;
+      --card-bg: rgba(15, 18, 26, 0.92);
+      --gold-primary: #D4AF37;
+      --gold-glow: rgba(212, 175, 55, 0.25);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --border-dark: #27272A;
+      --border-gold: rgba(212, 175, 55, 0.35);
+    }
+
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      padding-bottom: 76px;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Utilità Stile & Glassmorphism */
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-gold);
+    }
+
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFF5C0 0%, #D4AF37 50%, #AA7C11 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Mappa a 60 FPS senza filtri distruttivi sulla GPU */
+    #map {
+      width: 100%;
+      height: calc(100vh - 128px);
+      min-height: 480px;
+      z-index: 1;
+      background-color: #07090E;
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Bottom Sheet animato */
+    #monument-sheet {
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+      will-change: transform, opacity;
+    }
+    .sheet-hidden {
+      transform: translateY(120%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Pulsanti & Elementi UI */
+    .hdr-btn {
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 8px;
+      background: rgba(18, 21, 31, 0.85);
+      border: 1px solid var(--border-gold);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #FDE68A;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .hdr-btn:active { transform: scale(0.96); }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      color: #000;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .btn-gold:active { transform: scale(0.97); }
+
+    /* Toast Overlay Non Bloccante */
+    #toast-container {
+      position: fixed;
+      top: 60px;
+      right: 12px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+      max-width: 320px;
+      width: calc(100% - 24px);
+    }
+    .toast-box {
+      pointer-events: auto;
+      background: rgba(10, 12, 18, 0.95);
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      border-radius: 12px;
+      padding: 10px 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+      font-size: 11px;
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn 0.25s ease-out;
+    }
+    @keyframes toastIn {
+      from { transform: translateY(-10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Modal Check-In */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(8px);
+      z-index: 5000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    /* Responsive Grid & Containers */
+    .app-container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 16px 12px;
+    }
+  </style>
+<script src="/_aistudio-iframe.js?v=6634132a"></script></head>
+<body>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container"></div>
+
+  <!-- TOP HEADER FISSO -->
+  <header style="height: 56px; width: 100%; border-bottom: 1px solid rgba(212,175,55,0.2); background: rgba(7,9,14,0.92); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 1000; padding: 0 12px; display: flex; align-items: center; justify-content: space-between;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <a href="https://meetotoken.github.io/Meeto/" target="_blank" class="hdr-btn">
+        <span>🏠</span>
+        <span>Home</span>
+      </a>
+      <span class="gold-gradient-text" style="font-size: 17px; font-weight: 800; letter-spacing: 0.05em;">$MEETO</span>
+      <span style="font-size: 9px; font-family: monospace; font-weight: bold; background: rgba(212,175,55,0.12); color: #FDE68A; border: 1px solid rgba(212,175,55,0.3); border-radius: 4px; padding: 2px 6px;">
+        V2.5 OPT
+      </span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <button id="lang-btn" onclick="openLanguageModal()" class="hdr-btn" style="font-family: monospace;" title="Scegli lingua / Choose language">
+        <span>🌐</span>
+        <span id="lang-text">IT</span>
+      </button>
+      <div id="user-xp-badge" class="hdr-btn" style="color: #FDE047; font-family: monospace;">
+        <span>⭐</span>
+        <span id="top-xp-val">0 XP</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENITORE VISTE PRINCIPALI -->
+  <main id="main-content">
+
+    <!-- ================= TAB 1: MAPPA ================= -->
+    <section id="tab-map" style="position: relative; width: 100%;">
+      <!-- City Bar Selector -->
+      <div id="city-buttons-bar" class="no-scrollbar" style="position: absolute; top: 10px; left: 8px; right: 8px; z-index: 500; display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;">
+        <!-- Generato dinamicamente per massimizzare la reattività -->
+      </div>
+
+      <!-- Mappa Leaflet -->
+      <div id="map"></div>
+
+      <!-- Monument Bottom Sheet -->
+      <div id="monument-sheet" class="glass-card" style="position: absolute; bottom: 12px; left: 10px; right: 10px; z-index: 500; border-radius: 18px; padding: 14px; max-width: 480px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
+          <div>
+            <span id="sheet-city" style="font-size: 9px; color: #F59E0B; text-transform: uppercase; font-family: monospace; font-weight: bold; letter-spacing: 0.1em; display: block;">ROMA (LAZIO)</span>
+            <h3 id="sheet-title" style="font-size: 14px; font-weight: 800; color: #FFF; margin: 2px 0;">COLOSSEO</h3>
+            <span id="sheet-era" style="font-size: 10px; color: rgba(253,230,138,0.8); font-family: monospace; display: block;"></span>
+          </div>
+          <span style="font-size: 10px; font-weight: 800; background: rgba(212,175,55,0.18); color: #FDE047; border: 1px solid rgba(212,175,55,0.4); border-radius: 20px; padding: 2px 8px; white-space: nowrap;">
+            +100 XP
+          </span>
+        </div>
+
+        <p id="sheet-desc" style="font-size: 11px; color: #CBD5E1; line-height: 1.45; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"></p>
+        
+        <!-- Carosello monumenti vicini -->
+        <div style="border-top: 1px solid #27272A; padding-top: 8px; margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; font-size: 9px; font-family: monospace; font-weight: bold; margin-bottom: 4px;">
+            <span style="color: #F59E0B; text-transform: uppercase;">MONUMENTI VICINI:</span>
+            <span id="carousel-count" style="color: #94A3B8;"></span>
+          </div>
+          <div id="city-monuments-carousel" class="no-scrollbar" style="display: flex; gap: 6px; overflow-x: auto; padding: 2px 0;"></div>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <a id="sheet-wiki" href="https://it.wikipedia.org" target="_blank" style="padding: 9px 14px; border-radius: 12px; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #FFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            📖 Info
+          </a>
+          <button onclick="openCheckInModal()" class="btn-gold" style="flex: 1; padding: 9px 14px; border-radius: 12px; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px rgba(217,119,6,0.3);">
+            <span>🎯</span> Fai il Quiz & Check-In
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: VIAGGI ================= -->
+    <section id="tab-travel" class="app-container" style="display: none;">
+      <div class="glass-card" style="border-radius: 18px; padding: 18px; text-align: center; margin-bottom: 14px;">
+        <div style="font-size: 32px; margin-bottom: 4px;">🧭</div>
+        <h2 id="travel-main-title" class="gold-gradient-text" style="font-size: 16px; font-weight: 800;">Pianificatore di Viaggi Culturali</h2>
+        <p id="travel-sub-title" style="font-size: 11px; color: #94A3B8; margin-top: 4px;">Sincronizzato istantaneamente con le destinazioni selezionate sulla mappa.</p>
+      </div>
+
+      <div class="glass-card" style="border-radius: 16px; padding: 14px; margin-bottom: 14px;">
+        <label id="travel-dest-label" style="display: block; font-size: 10px; font-weight: bold; text-transform: uppercase; color: #F59E0B; margin-bottom: 6px; letter-spacing: 0.05em;">Destinazione Selezionata:</label>
+        <select id="travel-city-select" onchange="setGlobalCity(this.value)" style="width: 100%; background: #000; border: 1px solid #3F3F46; border-radius: 10px; padding: 10px; font-size: 12px; color: #FFF; font-weight: bold; outline: none;"></select>
+      </div>
+
+      <!-- BOX MONETIZZAZIONE & INCENTIVO A VIAGGIARE -->
+      <div class="glass-card" style="border-radius: 16px; padding: 14px; margin-bottom: 14px; background: linear-gradient(135deg, rgba(212,175,55,0.14) 0%, rgba(15,18,26,0.96) 100%); border: 1px solid rgba(212,175,55,0.45); box-shadow: 0 4px 20px rgba(0,0,0,0.6);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span id="promo-badge-text" style="font-size: 10px; font-weight: bold; text-transform: uppercase; color: #F59E0B; font-family: monospace;">⭐ PROMO WEEKEND CULTURALE</span>
+          <span style="font-size: 9px; font-weight: bold; background: #10B981; color: #000; padding: 2px 7px; border-radius: 4px;">+200 XP BONUS</span>
+        </div>
+        <h4 id="promo-title-text" style="font-size: 13px; font-weight: 800; color: #FFF; margin-bottom: 4px;">Parti per la prossima tappa storica</h4>
+        <p id="promo-desc-text" style="font-size: 11px; color: #CBD5E1; line-height: 1.4; margin-bottom: 10px;">
+          Prenota ingressi salta-fila, treni ed hotel tramite i partner ufficiali $MEETO per sostenere l'ecosistema ed accumulare punti XP validi per la leaderboard!
+        </p>
+        <div style="display: flex; gap: 6px;">
+          <a id="promo-tiqets-btn" href="https://tiqets.tpx.gr/ttfIofVS" target="_blank" class="btn-gold" style="flex: 1; padding: 8px 10px; border-radius: 10px; font-size: 11px; text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            🎟️ Salta-Fila Tiqets
+          </a>
+          <a id="promo-flights-btn" href="https://aviasales.tpx.gr/Nde5oFmC" target="_blank" style="flex: 1; padding: 8px 10px; border-radius: 10px; font-size: 11px; text-decoration: none; text-align: center; background: #27272A; color: #34D399; font-weight: bold; border: 1px solid #3F3F46; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            ✈️ Treni & Voli
+          </a>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <h3 id="travel-services-heading" style="font-size: 11px; font-weight: bold; text-transform: uppercase; color: #A1A1AA;">
+          Servizi per <span id="travel-target-city-name" style="color: #F59E0B;">Roma</span>
+        </h3>
+
+        <!-- Servizi affiliati -->
+        <div class="glass-card" style="border-radius: 14px; padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 22px; padding: 6px; background: rgba(245,158,11,0.1); border-radius: 10px;">🎟️</span>
+            <div>
+              <h4 id="svc-tiqets-title" style="font-size: 12px; font-weight: bold; color: #FFF;">Biglietti Salta-Fila & Musei (Tiqets)</h4>
+              <p id="svc-tiqets-desc" style="font-size: 10px; color: #94A3B8;">Ingressi prioritari e visite guidate ufficiali.</p>
+            </div>
+          </div>
+          <a href="https://tiqets.tpx.gr/ttfIofVS" target="_blank" class="btn-gold" style="padding: 7px 12px; border-radius: 10px; font-size: 11px; text-decoration: none; white-space: nowrap;">Apri ↗</a>
+        </div>
+
+        <div class="glass-card" style="border-radius: 14px; padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 22px; padding: 6px; background: rgba(160,185,129,0.1); border-radius: 10px;">✈️</span>
+            <div>
+              <h4 id="svc-avia-title" style="font-size: 12px; font-weight: bold; color: #FFF;">Voli & Trasporti (Aviasales)</h4>
+              <p id="svc-avia-desc" style="font-size: 10px; color: #94A3B8;">Confronta e trova le tariffe migliori.</p>
+            </div>
+          </div>
+          <a href="https://aviasales.tpx.gr/Nde5oFmC" target="_blank" style="padding: 7px 12px; border-radius: 10px; font-size: 11px; text-decoration: none; white-space: nowrap; background: #27272A; color: #34D399; font-weight: bold; border: 1px solid #3F3F46;">Apri ↗</a>
+        </div>
+
+        <div class="glass-card" style="border-radius: 14px; padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 22px; padding: 6px; background: rgba(168,85,247,0.1); border-radius: 10px;">🧳</span>
+            <div>
+              <h4 id="svc-radical-title" style="font-size: 12px; font-weight: bold; color: #FFF;">Deposito Bagagli (Radical Storage)</h4>
+              <p id="svc-radical-desc" style="font-size: 10px; color: #94A3B8;">Deposita valigie in sicurezza in centro.</p>
+            </div>
+          </div>
+          <a href="https://radicalstorage.tpx.gr/XR76jrDS" target="_blank" style="padding: 7px 12px; border-radius: 10px; font-size: 11px; text-decoration: none; white-space: nowrap; background: #27272A; color: #C084FC; font-weight: bold; border: 1px solid #3F3F46;">Apri ↗</a>
+        </div>
+
+        <div class="glass-card" style="border-radius: 14px; padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 22px; padding: 6px; background: rgba(59,130,246,0.1); border-radius: 10px;">🏙️</span>
+            <div>
+              <h4 id="svc-klook-title" style="font-size: 12px; font-weight: bold; color: #FFF;">Pass & Tour Guidati (Klook)</h4>
+              <p id="svc-klook-desc" style="font-size: 10px; color: #94A3B8;">Esperienze e city card all-in-one.</p>
+            </div>
+          </div>
+          <a href="https://klook.tpx.gr/rABqVRyF" target="_blank" style="padding: 7px 12px; border-radius: 10px; font-size: 11px; text-decoration: none; white-space: nowrap; background: #27272A; color: #60A5FA; font-weight: bold; border: 1px solid #3F3F46;">Apri ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: PASSAPORTO ================= -->
+    <section id="tab-passport" class="app-container" style="display: none;">
+      <div class="glass-card" style="border-radius: 18px; padding: 18px; text-align: center; margin-bottom: 14px;">
+        <div style="font-size: 32px; margin-bottom: 4px;">📜</div>
+        <h2 id="pass-main-title" class="gold-gradient-text" style="font-size: 16px; font-weight: 800;">Passaporto Explorer Ufficiale</h2>
+        <p id="pass-sub-title" style="font-size: 11px; color: #94A3B8; margin-top: 4px;">Colleziona timbri storici con foto compresse e certifica le tue visite.</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid #27272A;">
+          <div style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 10px;">
+            <div id="pass-lbl-level" style="font-size: 9px; color: #94A3B8; text-transform: uppercase; font-weight: bold;">Livello</div>
+            <div id="pass-level" style="font-size: 16px; font-weight: 900; color: #F59E0B;">1</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 10px;">
+            <div id="pass-lbl-xp" style="font-size: 9px; color: #94A3B8; text-transform: uppercase; font-weight: bold;">XP Totali</div>
+            <div id="pass-xp" style="font-size: 16px; font-weight: 900; color: #FFF;">0</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 10px;">
+            <div id="pass-lbl-stamps" style="font-size: 9px; color: #94A3B8; text-transform: uppercase; font-weight: bold;">Timbri</div>
+            <div id="pass-stamps" style="font-size: 16px; font-weight: 900; color: #34D399;">0</div>
+          </div>
+        </div>
+
+        <button id="btn-share-pass" onclick="shareOnTelegram()" style="width: 100%; margin-top: 12px; padding: 10px; border-radius: 12px; font-size: 11px; font-weight: bold; background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: #FFF; border: none; cursor: pointer;">
+          📢 Condividi Passaporto su Telegram
+        </button>
+      </div>
+
+      <!-- Solana Wallet -->
+      <div class="glass-card" style="border-radius: 16px; padding: 14px; margin-bottom: 14px;">
+        <label id="wallet-label-text" style="display: block; font-size: 11px; font-weight: bold; color: #E2E8F0; margin-bottom: 6px;">Wallet Solana per accredito ricompense:</label>
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="wallet-input" placeholder="Incolla indirizzo Solana..." style="flex: 1; background: #000; border: 1px solid #3F3F46; border-radius: 10px; padding: 8px 10px; font-size: 11px; color: #FFF; font-family: monospace; outline: none;" />
+          <button id="btn-save-wallet" onclick="saveUserWallet()" class="btn-gold" style="padding: 8px 14px; border-radius: 10px; font-size: 11px;">Salva</button>
+        </div>
+        <button id="btn-connect-phantom" onclick="connectPhantomWallet()" style="width: 100%; margin-top: 8px; padding: 9px; border-radius: 10px; font-size: 11px; font-weight: bold; background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%); color: #FFF; border: none; cursor: pointer;">
+          👻 Connetti con Phantom / Solflare
+        </button>
+      </div>
+
+      <!-- GRANDI QUEST CULTURALI NAZIONALI (Incentivo a viaggiare per l'Italia) -->
+      <div class="glass-card" style="border-radius: 16px; padding: 14px; margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h3 id="quests-heading-title" style="font-size: 11px; font-weight: bold; text-transform: uppercase; color: #FFF; display: flex; align-items: center; gap: 6px;">
+            <span>🗺️</span> Grandi Quest Culturali ($MEETO Tour)
+          </h3>
+          <span id="quests-multiplier-badge" style="font-size: 9px; font-family: monospace; font-weight: bold; background: rgba(245,158,11,0.15); color: #F59E0B; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(245,158,11,0.3);">
+            Bonus Moltiplicatori XP
+          </span>
+        </div>
+        <p id="quests-sub-text" style="font-size: 10px; color: #94A3B8; margin-bottom: 10px; line-height: 1.4;">
+          Completa le tappe storiche per sbloccare i titoli onorifici e ricevere bonus XP validi per la leaderboard.
+        </p>
+
+        <div id="quests-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+
+      <!-- Foto Ricordo & Cartoline Souvenir Collezionate -->
+      <div class="glass-card" style="border-radius: 16px; padding: 14px; margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <h3 id="souvenirs-heading-title" style="font-size: 11px; font-weight: bold; text-transform: uppercase; color: #FFF; display: flex; align-items: center; gap: 6px;">
+            <span>📸</span> Collezione Cartoline Polaroid
+          </h3>
+          <span id="souvenirs-count-badge" style="font-size: 9px; font-family: monospace; color: #34D399;">0 Cartoline</span>
+        </div>
+        <p id="souvenirs-sub-text" style="font-size: 10px; color: #94A3B8; margin-bottom: 8px;">Tocca una foto per ingrandirla e riscaricare il souvenir.</p>
+        <div id="passport-souvenirs-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;"></div>
+      </div>
+
+      <!-- Timbri nel passaporto -->
+      <div class="glass-card" style="border-radius: 16px; padding: 14px;">
+        <h3 id="stamps-heading-title" style="font-size: 11px; font-weight: bold; text-transform: uppercase; color: #FFF; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+          <span>🏛️</span> Registro Timbri Monumentali
+        </h3>
+        <div id="passport-stamps-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;"></div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 4: TOKEN ================= -->
+    <section id="tab-token" class="app-container" style="display: none;">
+      <div class="glass-card" style="border-radius: 18px; padding: 18px; text-align: center; margin-bottom: 14px;">
+        <div style="font-size: 32px; margin-bottom: 4px;">🪙</div>
+        <h2 id="token-main-title" class="gold-gradient-text" style="font-size: 16px; font-weight: 800;">ECOSISTEMA TOKEN MEETO ($MEETO)</h2>
+        <p id="token-sub-title" style="font-size: 11px; color: #94A3B8; margin-top: 4px;">Utility token su rete Solana per il turismo culturale e la gamification.</p>
+      </div>
+
+      <!-- Live metrics -->
+      <div class="glass-card" style="border-radius: 16px; padding: 14px; margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #27272A; padding-bottom: 8px; margin-bottom: 10px;">
+          <span style="font-size: 11px; font-weight: bold; font-family: monospace;">$MEETO / SOL</span>
+          <button id="token-refresh-btn" onclick="fetchLiveMarketData()" class="hdr-btn" style="font-size: 10px;">🔄 Aggiorna</button>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center;">
+          <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; border: 1px solid #27272A;">
+            <div id="token-lbl-price" style="font-size: 9px; color: #94A3B8; font-weight: bold;">PREZZO LIVE USD</div>
+            <div id="token-price-usd" style="font-size: 16px; font-weight: 900; color: #F59E0B; font-family: monospace; margin-top: 2px;">$0.00000299</div>
+          </div>
+          <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; border: 1px solid #27272A;">
+            <div id="token-lbl-mcap" style="font-size: 9px; color: #94A3B8; font-weight: bold;">MARKET CAP</div>
+            <div id="token-mcap-usd" style="font-size: 16px; font-weight: 900; color: #34D399; font-family: monospace; margin-top: 2px;">$2.99K</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contract Address CA -->
+      <div class="glass-card" style="border-radius: 16px; padding: 14px; margin-bottom: 14px;">
+        <label id="token-lbl-ca" style="display: block; font-size: 10px; font-weight: bold; text-transform: uppercase; color: #F59E0B; margin-bottom: 4px;">Contract Address (Solana CA):</label>
+        <div style="display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.6); padding: 8px 10px; border-radius: 10px; border: 1px solid #3F3F46;">
+          <span id="token-ca-val" style="font-family: monospace; font-size: 11px; color: #CBD5E1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;">4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump</span>
+          <button id="token-copy-btn" onclick="copyContractAddress()" class="btn-gold" style="padding: 6px 10px; border-radius: 8px; font-size: 10px;">📋 Copia</button>
+        </div>
+      </div>
+
+      <!-- Tokenomics 70/20/10 -->
+      <div class="glass-card" style="border-radius: 16px; padding: 14px; margin-bottom: 14px;">
+        <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; color: #FFF; margin-bottom: 8px; display: flex; justify-content: space-between;">
+          <span id="tokenomics-heading">📊 Tokenomics Ufficiale</span>
+          <span style="font-family: monospace; color: #F59E0B;">1.000.000.000 $MEETO</span>
+        </h3>
+        <!-- Barra colorata -->
+        <div style="width: 100%; height: 8px; border-radius: 4px; background: #27272A; display: flex; overflow: hidden; margin-bottom: 10px;">
+          <div style="width: 70%; background: #34D399;"></div>
+          <div style="width: 20%; background: #60A5FA;"></div>
+          <div style="width: 10%; background: #F59E0B;"></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px; font-size: 11px;">
+          <div style="background: rgba(0,0,0,0.4); padding: 8px; border-radius: 8px; display: flex; justify-content: space-between;">
+            <span id="tok-slice-1" style="color: #34D399; font-weight: bold;">70% Mercato Pubblico</span>
+            <span style="font-family: monospace;">700M</span>
+          </div>
+          <div style="background: rgba(0,0,0,0.4); padding: 8px; border-radius: 8px; display: flex; justify-content: space-between;">
+            <span id="tok-slice-2" style="color: #60A5FA; font-weight: bold;">20% Team & Sviluppo</span>
+            <span style="font-family: monospace;">200M</span>
+          </div>
+          <div style="background: rgba(0,0,0,0.4); padding: 8px; border-radius: 8px; display: flex; justify-content: space-between;">
+            <span id="tok-slice-3" style="color: #F59E0B; font-weight: bold;">10% Treasury Rewards</span>
+            <span style="font-family: monospace;">100M</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Treasury & Rewards Wallet -->
+      <div class="glass-card" style="border-radius: 16px; padding: 14px; margin-bottom: 14px;">
+        <label id="token-lbl-treasury" style="display: block; font-size: 10px; font-weight: bold; text-transform: uppercase; color: #F59E0B; margin-bottom: 4px;">Treasury & Rewards Wallet:</label>
+        <div style="display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.6); padding: 8px 10px; border-radius: 10px; border: 1px solid #3F3F46;">
+          <span id="token-treasury-val" style="font-family: monospace; font-size: 11px; color: #CBD5E1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;">V8PKJ8vAPncNKYgGnSX7u4TgfdJuyA8bLUbLwKjFuyV</span>
+          <button id="token-copy-treasury-btn" onclick="copyTreasuryAddress()" class="hdr-btn" style="padding: 6px 10px; border-radius: 8px; font-size: 10px;">📋 Copia</button>
+        </div>
+      </div>
+
+      <!-- Trasparenza On-Chain & Link Ufficiali -->
+      <div class="glass-card" style="border-radius: 16px; padding: 14px; margin-bottom: 14px;">
+        <h3 id="token-links-heading" style="font-size: 11px; font-weight: bold; text-transform: uppercase; color: #FFF; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+          <span>🔗</span> Trasparenza On-Chain & Link Ufficiali
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+          <a href="https://pump.fun/coin/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" rel="noopener noreferrer" class="btn-gold" style="padding: 10px 8px; border-radius: 10px; font-size: 11px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(245,158,11,0.25);">
+            <span>🚀 Pump.fun</span>
+            <span style="font-size: 10px;">↗</span>
+          </a>
+          <a href="https://dexscreener.com/solana/4mpma8mdsrjacjgn1crng1dqdh357sezoau9qr7vpump" target="_blank" rel="noopener noreferrer" style="background: rgba(39, 39, 42, 0.9); border: 1px solid #3F3F46; color: #34D399; padding: 10px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;">
+            <span>📊 DexScreener</span>
+            <span style="font-size: 10px;">↗</span>
+          </a>
+          <a href="https://solscan.io/token/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" rel="noopener noreferrer" style="background: rgba(39, 39, 42, 0.9); border: 1px solid #3F3F46; color: #93C5FD; padding: 10px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;">
+            <span>🔍 Solscan</span>
+            <span style="font-size: 10px;">↗</span>
+          </a>
+          <a href="https://birdeye.so/token/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump?chain=solana" target="_blank" rel="noopener noreferrer" style="background: rgba(39, 39, 42, 0.9); border: 1px solid #3F3F46; color: #67E8F9; padding: 10px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;">
+            <span>🦅 Birdeye</span>
+            <span style="font-size: 10px;">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Disclaimer Legale Ufficiale -->
+      <div style="background: rgba(0, 0, 0, 0.55); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 14px; padding: 12px 14px; font-size: 10px; color: #94A3B8; line-height: 1.5; margin-bottom: 6px;">
+        <div style="display: flex; align-items: center; gap: 6px; color: #E4E4E7; font-weight: bold; margin-bottom: 4px; font-family: monospace;">
+          <span style="color: #F59E0B;">🛡️</span>
+          <span id="disclaimer-heading-title">Disclaimer Legale Ufficiale:</span>
+        </div>
+        <p id="disclaimer-body-text" style="margin: 0; color: #A1A1AA;">
+          MEETO ($MEETO) è un progetto amatoriale e ricreativo basato sulla gamification e sulla valorizzazione culturale dei beni storici. Il token ha finalità di souvenir digitale ed utilità nella community. Non costituisce sollecitazione all'investimento o promessa di rendimento.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= MODALE: QUIZ + COMPRESSIONE FOTO + GPS ================= -->
+  <div id="checkin-modal" class="modal-backdrop" style="display: none;">
+    <div class="glass-card" style="width: 100%; max-width: 360px; border-radius: 18px; padding: 18px; border: 1px solid rgba(212,175,55,0.4); max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #27272A; padding-bottom: 8px; margin-bottom: 12px;">
+        <h3 id="modal-monument-name" style="font-size: 13px; font-weight: 800; color: #FFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Quiz & Check-in</h3>
+        <button onclick="closeCheckInModal()" style="background: none; border: none; color: #94A3B8; font-size: 16px; cursor: pointer;">✕</button>
+      </div>
+
+      <!-- Passo 1: Quiz -->
+      <div id="step-quiz">
+        <span id="quiz-step-title" style="font-size: 9px; font-family: monospace; font-weight: bold; color: #F59E0B; text-transform: uppercase;">🎯 Passo 1: Quiz sul monumento</span>
+        <p id="quiz-question-text" style="font-size: 12px; font-weight: bold; color: #FFF; margin: 6px 0 10px;"></p>
+        <div id="quiz-options-container" style="display: flex; flex-direction: column; gap: 6px;"></div>
+      </div>
+
+      <!-- Passo 2: Foto con Compressione Canvas Integrata -->
+      <div id="step-photo" style="display: none; text-align: center;">
+        <span id="photo-step-correct-tag" style="font-size: 9px; font-family: monospace; font-weight: bold; color: #34D399; text-transform: uppercase;">✅ Risposta Esatta!</span>
+        <h4 id="photo-step-title" style="font-size: 13px; font-weight: bold; color: #FFF; margin: 4px 0;">📸 Passo 2: Foto Ricordo con Compressione</h4>
+        <p id="photo-step-desc" style="font-size: 11px; color: #94A3B8; margin-bottom: 12px;">Scatta una foto: verrà compressa client-side per non intasare la RAM dello smartphone.</p>
+
+        <label id="photo-step-btn-label" class="btn-gold" style="display: block; padding: 10px; border-radius: 12px; font-size: 11px; cursor: pointer;">
+          📷 Scatta Foto con Fotocamera
+          <input type="file" accept="image/*" capture="environment" style="display: none;" onchange="handleOptimizedLivePhoto(event)" />
+        </label>
+
+        <div id="photo-preview-container" style="display: none; margin-top: 10px;">
+          <img id="photo-preview-img" src="" alt="Anteprima" style="width: 100%; height: 160px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(212,175,55,0.4); margin-bottom: 6px;" />
+          <div id="photo-stats-badge" style="font-size: 9px; font-family: monospace; color: #34D399; background: rgba(16,185,129,0.12); padding: 4px 8px; border-radius: 6px; margin-bottom: 8px;"></div>
+          <button id="photo-step-proceed-btn" onclick="proceedToGPS()" style="width: 100%; padding: 9px; border-radius: 10px; font-size: 11px; font-weight: bold; background: #27272A; border: 1px solid #3F3F46; color: #F59E0B; cursor: pointer;">
+            ➡️ Prosegui alla Convalida GPS
+          </button>
+        </div>
+      </div>
+
+      <!-- Passo 3: GPS -->
+      <div id="step-gps" style="display: none; text-align: center;">
+        <div style="font-size: 28px; margin-bottom: 4px;">📍</div>
+        <h4 id="gps-step-title" style="font-size: 13px; font-weight: bold; color: #FFF;">Passo 3: Convalida Posizione</h4>
+        <p id="gps-step-desc" style="font-size: 11px; color: #94A3B8; margin: 4px 0 12px;">Conferma le coordinate per convalidare il timbro ufficiale.</p>
+        <button id="gps-step-confirm-btn" onclick="verifyGPSAndSave()" class="btn-gold" style="width: 100%; padding: 10px; border-radius: 12px; font-size: 11px;">
+          Conferma GPS & Salva Timbro
+        </button>
+        <div id="gps-status-msg" style="font-size: 10px; color: #94A3B8; margin-top: 8px;"></div>
+      </div>
+
+      <!-- Passo 4: Successo con Generazione Polaroid Souvenir Ufficiale -->
+      <div id="step-success" style="display: none; text-align: center; padding: 6px 0;">
+        <div style="font-size: 28px; margin-bottom: 2px;">🎉</div>
+        <h4 id="success-step-title" style="font-size: 14px; font-weight: 900; color: #34D399;">Visita Convalidata!</h4>
+        <p id="success-step-desc" style="font-size: 11px; color: #CBD5E1; margin: 2px 0 10px;">Hai guadagnato <b style="color: #F59E0B;">+100 XP</b> e sbloccato la tua <b>Cartolina Polaroid Ufficiale</b>:</p>
+
+        <!-- Anteprima Polaroid Canvas -->
+        <div id="souvenir-card-container" style="margin-bottom: 12px; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 12px; border: 1px solid rgba(212,175,55,0.4);">
+          <img id="souvenir-preview-img" src="" alt="Cartolina Souvenir" style="width: 100%; max-height: 240px; object-fit: contain; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.8);" />
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <button id="btn-download-souvenir" onclick="downloadCurrentSouvenir()" class="btn-gold" style="width: 100%; padding: 10px; border-radius: 12px; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <span>📥</span> Scarica Cartolina Souvenir (PNG)
+          </button>
+          <button id="btn-share-souvenir-tg" onclick="shareSouvenirTelegram()" style="width: 100%; padding: 9px; border-radius: 12px; font-size: 11px; font-weight: bold; background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: #FFF; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <span>📢</span> Condividi Cartolina su Telegram
+          </button>
+          <button id="btn-finish-checkin" onclick="finishCheckIn()" style="width: 100%; padding: 9px; border-radius: 12px; font-size: 11px; font-weight: bold; background: #27272A; border: 1px solid #3F3F46; color: #E4E4E7; cursor: pointer;">
+            📜 Vai al Passaporto
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE DETTAGLIO CARTOLINA POLAROID FULL-SCREEN -->
+  <div id="souvenir-modal" class="modal-backdrop" style="display: none;" onclick="closeSouvenirModal()">
+    <div class="glass-card" style="width: 100%; max-width: 380px; border-radius: 18px; padding: 14px; text-align: center; border: 1px solid rgba(212,175,55,0.4);" onclick="event.stopPropagation()">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #27272A; padding-bottom: 8px; margin-bottom: 10px;">
+        <span id="souvenir-modal-title" style="font-size: 11px; font-weight: bold; color: #F59E0B; text-transform: uppercase;">Cartolina Souvenir</span>
+        <button onclick="closeSouvenirModal()" style="background: none; border: none; color: #94A3B8; font-size: 16px; cursor: pointer;">✕</button>
+      </div>
+      <img id="souvenir-modal-img" src="" alt="Cartolina" style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.8);" />
+      <div style="display: flex; gap: 6px;">
+        <button id="btn-dl-souvenir-modal" onclick="downloadSouvenirFromModal()" class="btn-gold" style="flex: 1; padding: 9px; border-radius: 10px; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 4px;">
+          📥 Scarica PNG
+        </button>
+        <button id="btn-share-souvenir-modal" onclick="shareModalSouvenirTelegram()" style="flex: 1; padding: 9px; border-radius: 10px; font-size: 11px; font-weight: bold; background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: #FFF; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+          📢 Condividi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE SELETTORE LINGUA (5 LINGUE INTERNAZIONALI) -->
+  <div id="lang-modal" class="modal-backdrop" style="display: none;" onclick="closeLanguageModal()">
+    <div class="glass-card" style="width: 100%; max-width: 320px; border-radius: 18px; padding: 16px; text-align: center; border: 1px solid rgba(212,175,55,0.4);" onclick="event.stopPropagation()">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #27272A; padding-bottom: 8px; margin-bottom: 12px;">
+        <span id="lang-modal-title" style="font-size: 11px; font-weight: bold; color: #F59E0B; text-transform: uppercase;">🌐 Scegli Lingua / Language</span>
+        <button onclick="closeLanguageModal()" style="background: none; border: none; color: #94A3B8; font-size: 16px; cursor: pointer;">✕</button>
+      </div>
+      <p id="lang-modal-sub" style="font-size: 11px; color: #94A3B8; margin-bottom: 12px;">Traduzione istantanea dell'intera app:</p>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <button id="lang-opt-it" onclick="selectLanguage('it')" class="hdr-btn" style="width: 100%; height: 40px; justify-content: space-between; padding: 0 16px; font-size: 12px; border-radius: 10px;">
+          <span style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 18px;">🇮🇹</span> <span>Italiano</span></span>
+          <span style="font-family: monospace; font-size: 10px; color: #F59E0B;">IT</span>
+        </button>
+        <button id="lang-opt-en" onclick="selectLanguage('en')" class="hdr-btn" style="width: 100%; height: 40px; justify-content: space-between; padding: 0 16px; font-size: 12px; border-radius: 10px;">
+          <span style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 18px;">🇬🇧</span> <span>English</span></span>
+          <span style="font-family: monospace; font-size: 10px; color: #F59E0B;">EN</span>
+        </button>
+        <button id="lang-opt-es" onclick="selectLanguage('es')" class="hdr-btn" style="width: 100%; height: 40px; justify-content: space-between; padding: 0 16px; font-size: 12px; border-radius: 10px;">
+          <span style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 18px;">🇪🇸</span> <span>Español</span></span>
+          <span style="font-family: monospace; font-size: 10px; color: #F59E0B;">ES</span>
+        </button>
+        <button id="lang-opt-fr" onclick="selectLanguage('fr')" class="hdr-btn" style="width: 100%; height: 40px; justify-content: space-between; padding: 0 16px; font-size: 12px; border-radius: 10px;">
+          <span style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 18px;">🇫🇷</span> <span>Français</span></span>
+          <span style="font-family: monospace; font-size: 10px; color: #F59E0B;">FR</span>
+        </button>
+        <button id="lang-opt-de" onclick="selectLanguage('de')" class="hdr-btn" style="width: 100%; height: 40px; justify-content: space-between; padding: 0 16px; font-size: 12px; border-radius: 10px;">
+          <span style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 18px;">🇩🇪</span> <span>Deutsch</span></span>
+          <span style="font-family: monospace; font-size: 10px; color: #F59E0B;">DE</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRA DI NAVIGAZIONE A 4 TASTI FISSA -->
+  <nav style="position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: rgba(7,9,14,0.95); border-top: 1px solid rgba(212,175,55,0.25); backdrop-filter: blur(16px); display: flex; justify-content: space-around; align-items: center; z-index: 1000;">
+    <button onclick="switchTab('map')" id="nav-map" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #F59E0B; cursor: pointer; font-size: 10px; font-weight: bold;">
+      <span style="font-size: 18px;">🗺️</span>
+      <span style="margin-top: 2px;">Mappa</span>
+    </button>
+    <button onclick="switchTab('travel')" id="nav-travel" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #71717A; cursor: pointer; font-size: 10px; font-weight: bold;">
+      <span style="font-size: 18px;">🧭</span>
+      <span style="margin-top: 2px;">Viaggi</span>
+    </button>
+    <button onclick="switchTab('passport')" id="nav-passport" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #71717A; cursor: pointer; font-size: 10px; font-weight: bold;">
+      <span style="font-size: 18px;">📜</span>
+      <span style="margin-top: 2px;">Passaporto</span>
+    </button>
+    <button onclick="switchTab('token')" id="nav-token" style="background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #71717A; cursor: pointer; font-size: 10px; font-weight: bold;">
+      <span style="font-size: 18px;">🪙</span>
+      <span style="margin-top: 2px;">Token</span>
+    </button>
+  </nav>
+
+  <!-- JAVASCRIPT OTTIMIZZATO INLINE (ZERO DEPENDENCY OVERHEAD) -->
+  <script>
+    const TOKEN_CA = "4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump";
+    const TREASURY_WALLET = "V8PKJ8vAPncNKYgGnSX7u4TgfdJuyA8bLUbLwKjFuyV";
+
+    // 22 Monumenti e Città Italiane
+    const CITIES_DATA = [
+      { slug: 'roma', name: 'Roma', icon: '🏛️', region: 'Lazio' },
+      { slug: 'firenze', name: 'Firenze', icon: '🎨', region: 'Toscana' },
+      { slug: 'venezia', name: 'Venezia', icon: '🎭', region: 'Veneto' },
+      { slug: 'napoli', name: 'Napoli', icon: '🍕', region: 'Campania' },
+      { slug: 'milano', name: 'Milano', icon: '🏰', region: 'Lombardia' },
+      { slug: 'torino', name: 'Torino', icon: '👑', region: 'Piemonte' },
+      { slug: 'bologna', name: 'Bologna', icon: '🗼', region: 'Emilia-Romagna' },
+      { slug: 'verona', name: 'Verona', icon: '⚔️', region: 'Veneto' },
+      { slug: 'pisa', name: 'Pisa', icon: '📐', region: 'Toscana' },
+      { slug: 'siena', name: 'Siena', icon: '🐎', region: 'Toscana' },
+      { slug: 'genova', name: 'Genova', icon: '⚓', region: 'Liguria' },
+      { slug: 'matera', name: 'Matera', icon: '🪨', region: 'Basilicata' },
+      { slug: 'bari', name: 'Puglia', icon: '🏰', region: 'Puglia' },
+      { slug: 'palermo', name: 'Palermo', icon: '🌴', region: 'Sicilia' },
+      { slug: 'catania', name: 'Catania', icon: '🌋', region: 'Sicilia' },
+      { slug: 'agrigento', name: 'Agrigento', icon: '🏺', region: 'Sicilia' },
+      { slug: 'siracusa', name: 'Siracusa', icon: '🏛️', region: 'Sicilia' },
+      { slug: 'lecce', name: 'Lecce', icon: '⚜️', region: 'Puglia' },
+      { slug: 'assisi', name: 'Assisi', icon: '🕊️', region: 'Umbria' },
+      { slug: 'ravenna', name: 'Ravenna', icon: '✨', region: 'Emilia-Romagna' },
+      { slug: 'aosta', name: 'Aosta', icon: '🏔️', region: "Valle d'Aosta" }
+    ];
+
+    const MONUMENTS = {
+      colosseo: { city_slug: "roma", name: "Colosseo & Fori Imperiali", era: "70–80 d.C. (Età Flavia)", city: "Roma (Lazio)", lat: 41.89021, lng: 12.49223, desc: "Anfiteatro Flavio dell antica Roma, tra le Sette Meraviglie del Mondo.", wiki: "https://it.wikipedia.org/wiki/Colosseo", quiz: { question: "Quale ordine di capitelli si trova al livello più basso degli archi esterni?", options: ["Dorico / Tuscanico", "Corinzio", "Ionico"], correct: 0 } },
+      pantheon: { city_slug: "roma", name: "Pantheon", era: "118–128 d.C. (Adriano)", city: "Roma (Lazio)", lat: 41.8986, lng: 12.4769, desc: "Tempio romano celebre per la maestosa cupola in calcestruzzo con oculo.", wiki: "https://it.wikipedia.org/wiki/Pantheon_(Roma)", quiz: { question: "Quale celebre maestro del Rinascimento è sepolto al suo interno?", options: ["Raffaello Sanzio", "Michelangelo", "Leonardo da Vinci"], correct: 0 } },
+      fontana_trevi: { city_slug: "roma", name: "Fontana di Trevi", era: "1732–1762 (Barocco)", city: "Roma (Lazio)", lat: 41.9009, lng: 12.4833, desc: "La più imponente e celebre tra le fontane barocche di Roma.", wiki: "https://it.wikipedia.org/wiki/Fontana_di_Trevi", quiz: { question: "Quale scultore ha progettato la Fontana di Trevi?", options: ["Nicola Salvi", "Bernini", "Borromini"], correct: 0 } },
+      duomo_catania: { city_slug: "catania", name: "Duomo & Fontana dell'Elefante", era: "Barocco Catanese", city: "Catania (Sicilia)", lat: 37.5027, lng: 15.0873, desc: "Piazza Duomo in pietra lavica con il celebre Liotru, simbolo della città.", wiki: "https://it.wikipedia.org/wiki/Fontana_dell%27Elefante", quiz: { question: "Di quale materiale è fatto il celebre elefante Liotru?", options: ["Pietra lavica", "Marmo bianco", "Bronzo"], correct: 0 } },
+      piazza_duomo_firenze: { city_slug: "firenze", name: "Piazza Duomo & Cupola", era: "Rinascimento Toscano", city: "Firenze (Toscana)", lat: 43.7731, lng: 11.2560, desc: "Cattedrale con la celebre Cupola del Brunelleschi.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Duomo_(Firenze)", quiz: { question: "Come viene chiamata la celebre porta in bronzo dorato del Battistero?", options: ["Porta del Paradiso", "Porta dei Martiri", "Porta d'Oro"], correct: 0 } },
+      piazza_san_marco: { city_slug: "venezia", name: "Piazza San Marco & Basilica", era: "Bizantino-Veneziano", city: "Venezia (Veneto)", lat: 45.4343, lng: 12.3388, desc: "Il cuore monumentale di Venezia con la splendida Basilica.", wiki: "https://it.wikipedia.org/wiki/Piazza_San_Marco", quiz: { question: "Quale animale alato svetta sulla colonna in piazza?", options: ["Il Leone di San Marco", "L Aquila Imperiale", "Il Grifone"], correct: 0 } },
+      piazza_plebiscito: { city_slug: "napoli", name: "Piazza del Plebiscito", era: "Neoclassico", city: "Napoli (Campania)", lat: 40.8359, lng: 14.2488, desc: "Piazza monumentale simbolo di Napoli col grande colonnato.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Plebiscito", quiz: { question: "Quale basilica si affaccia al centro del colonnato?", options: ["San Francesco di Paola", "Santa Chiara", "San Domenico"], correct: 0 } },
+      duomo_milano: { city_slug: "milano", name: "Duomo di Milano", era: "Gotico Lombardo", city: "Milano (Lombardia)", lat: 45.4641, lng: 9.1919, desc: "Cattedrale gotica imponente in marmo di Candoglia.", wiki: "https://it.wikipedia.org/wiki/Duomo_di_Milano", quiz: { question: "Quale statua dorata svetta sulla guglia più alta?", options: ["La Madonnina", "Sant Ambrogio", "San Michele"], correct: 0 } },
+      cattedrale_palermo: { city_slug: "palermo", name: "Cattedrale di Palermo", era: "Arabo-Normanno", city: "Palermo (Sicilia)", lat: 38.1144, lng: 13.3561, desc: "Monumento arabo-normanno con le tombe reali.", wiki: "https://it.wikipedia.org/wiki/Cattedrale_di_Palermo", quiz: { question: "Quale imperatore del Sacro Romano Impero è sepolto al suo interno?", options: ["Federico II di Svevia", "Carlo V", "Guglielmo II"], correct: 0 } },
+      mole_antonelliana: { city_slug: "torino", name: "Mole Antonelliana", era: "1863–1889 (Eclettismo)", city: "Torino (Piemonte)", lat: 45.0689, lng: 7.6931, desc: "Simbolo di Torino e sede del Museo del Cinema.", wiki: "https://it.wikipedia.org/wiki/Mole_Antonelliana", quiz: { question: "Quale architetto ne ha progettato la cupola?", options: ["Alessandro Antonelli", "Filippo Juvarra", "Guarino Guarini"], correct: 0 } },
+      piazza_maggiore: { city_slug: "bologna", name: "Piazza Maggiore & Due Torri", era: "Medioevo Bolognese", city: "Bologna (Emilia-Romagna)", lat: 44.4938, lng: 11.3426, desc: "Cuore storico con la Basilica di San Petronio e la Torre degli Asinelli.", wiki: "https://it.wikipedia.org/wiki/Piazza_Maggiore", quiz: { question: "Come si chiama la torre pendente più alta?", options: ["Torre degli Asinelli", "Torre Garisenda", "Torre Prendiparte"], correct: 0 } },
+      arena_verona: { city_slug: "verona", name: "Arena di Verona", era: "I Secolo d.C.", city: "Verona (Veneto)", lat: 45.4386, lng: 10.9935, desc: "Anfiteatro romano celebre per le opere liriche.", wiki: "https://it.wikipedia.org/wiki/Arena_di_Verona", quiz: { question: "Di quale pietra marmorea è costituita la struttura?", options: ["Rosso di Verona", "Marmo di Carrara", "Travertino"], correct: 0 } },
+      piazza_miracoli: { city_slug: "pisa", name: "Piazza dei Miracoli & Torre", era: "Romanico Pisano", city: "Pisa (Toscana)", lat: 43.7230, lng: 10.3966, desc: "Complesso monumentale celebre per il Campanile pendente.", wiki: "https://it.wikipedia.org/wiki/Piazza_dei_Miracoli", quiz: { question: "Quale scienziato usò la torre per studi sulla gravità?", options: ["Galileo Galilei", "Leonardo da Vinci", "Newton"], correct: 0 } },
+      piazza_campo: { city_slug: "siena", name: "Piazza del Campo", era: "Medioevo Senese", city: "Siena (Toscana)", lat: 43.3184, lng: 11.3316, desc: "Piazza a conchiglia famosa nel mondo per il Palio.", wiki: "https://it.wikipedia.org/wiki/Piazza_del_Campo", quiz: { question: "A quanti spicchi è suddivisa la pavimentazione a conchiglia?", options: ["9 spicchi", "12 spicchi", "7 spicchi"], correct: 0 } },
+      lanterna_genova: { city_slug: "genova", name: "La Lanterna di Genova", era: "1128–1543", city: "Genova (Liguria)", lat: 44.4048, lng: 8.9042, desc: "Il faro simbolo della città tra i più antichi al mondo.", wiki: "https://it.wikipedia.org/wiki/Lanterna_di_Genova", quiz: { question: "Quale famoso navigatore genovese salpò nel 1492?", options: ["Cristoforo Colombo", "Andrea Doria", "Amerigo Vespucci"], correct: 0 } },
+      sassi_matera: { city_slug: "matera", name: "Sassi di Matera", era: "Paleolitico / Antico", city: "Matera (Basilicata)", lat: 40.6664, lng: 16.6101, desc: "Paesaggio rupestre scavato nella calcarenite, patrimonio UNESCO.", wiki: "https://it.wikipedia.org/wiki/Sassi_di_Matera", quiz: { question: "In quale regione si trova Matera?", options: ["Basilicata", "Puglia", "Calabria"], correct: 0 } },
+      castel_del_monte: { city_slug: "bari", name: "Castel del Monte", era: "1240 (Medioevo Svevo)", city: "Puglia (Andria/Bari)", lat: 41.0847, lng: 16.2708, desc: "Fortezza ottagonale capolavoro di Federico II.", wiki: "https://it.wikipedia.org/wiki/Castel_del_Monte", quiz: { question: "Quale forma geometrica caratterizza la fortezza?", options: ["Ottagono", "Esagono", "Pentagono"], correct: 0 } },
+      valle_templi: { city_slug: "agrigento", name: "Valle dei Templi", era: "V Secolo a.C.", city: "Agrigento (Sicilia)", lat: 37.2969, lng: 13.5889, desc: "Straordinari templi dorici della Magna Grecia.", wiki: "https://it.wikipedia.org/wiki/Valle_dei_Templi", quiz: { question: "Qual è il tempio meglio conservato della Valle?", options: ["Tempio della Concordia", "Tempio di Eracle", "Tempio di Zeus"], correct: 0 } },
+      teatro_greco_siracusa: { city_slug: "siracusa", name: "Teatro Greco & Ortigia", era: "V Secolo a.C.", city: "Siracusa (Sicilia)", lat: 37.0758, lng: 15.2758, desc: "Antico teatro scavato nella roccia e l'isola di Ortigia.", wiki: "https://it.wikipedia.org/wiki/Teatro_greco_di_Siracusa", quiz: { question: "Quale matematico dell'antichità nacque a Siracusa?", options: ["Archimede", "Pitagora", "Euclide"], correct: 0 } },
+      piazza_duomo_lecce: { city_slug: "lecce", name: "Piazza Duomo & Barocco", era: "XVII-XVIII Secolo", city: "Lecce (Puglia)", lat: 40.3517, lng: 18.1681, desc: "Capitale del Barocco pugliese e della pietra leccese.", wiki: "https://it.wikipedia.org/wiki/Barocco_leccese", quiz: { question: "Di quale pietra è tipica la scultura barocca a Lecce?", options: ["Pietra leccese", "Pietra di Trani", "Tufo giallo"], correct: 0 } },
+      basilica_san_francesco: { city_slug: "assisi", name: "Basilica di San Francesco", era: "1228–1253 (Gotico)", city: "Assisi (Umbria)", lat: 43.0747, lng: 12.6053, desc: "Santuario con affreschi capolavoro di Giotto e Cimabue.", wiki: "https://it.wikipedia.org/wiki/Basilica_di_San_Francesco", quiz: { question: "Quale maestro affrescò le Storie di San Francesco?", options: ["Giotto", "Masaccio", "Piero della Francesca"], correct: 0 } },
+      mausoleo_galla_placidia: { city_slug: "ravenna", name: "Mausoleo di Galla Placidia", era: "V Secolo (Paleocristiano)", city: "Ravenna (Emilia-Romagna)", lat: 44.4213, lng: 12.1964, desc: "Monumento bizantino famoso per i mosaici del cielo stellato.", wiki: "https://it.wikipedia.org/wiki/Mausoleo_di_Galla_Placidia", quiz: { question: "Per quale arte decorativa antica è famosa Ravenna?", options: ["Mosaici bizantini", "Vetrate", "Arazzi"], correct: 0 } },
+      arco_augusto_aosta: { city_slug: "aosta", name: "Arco di Augusto", era: "25 a.C.", city: "Aosta (Valle d'Aosta)", lat: 45.7371, lng: 7.3278, desc: "Vestigia romane della Augusta Praetoria alpina.", wiki: "https://it.wikipedia.org/wiki/Arco_di_Augusto_(Aosta)", quiz: { question: "Come veniva chiamata Aosta in epoca romana?", options: ["Augusta Praetoria", "Mediolanum", "Florentia"], correct: 0 } }
+    };
+
+    // DIZIONARI COMPLETI MULTI-LINGUA (IT, EN, ES, FR, DE)
+    const I18N = {
+      it: {
+        app_title: "$MEETO — Passaporto & Travel Planner (Ottimizzato V2.5)",
+        lang_name: "Italiano", flag: "🇮🇹",
+        nav_map: "Mappa", nav_travel: "Viaggi", nav_passport: "Passaporto", nav_token: "Token",
+        home_btn: "Home", nearby_monuments: "MONUMENTI VICINI:", monuments_count: "monumenti",
+        info_btn: "📖 Info", quiz_btn: "Fai il Quiz & Check-In",
+        travel_title: "Pianificatore di Viaggi Culturali",
+        travel_sub: "Sincronizzato istantaneamente con le destinazioni selezionate sulla mappa.",
+        dest_label: "Destinazione Selezionata:", services_for: "Servizi per",
+        weekend_promo_title: "Parti per la prossima tappa storica",
+        promo_badge: "⭐ PROMO WEEKEND CULTURALE",
+        promo_desc: "Prenota ingressi salta-fila, treni ed hotel tramite i partner ufficiali $MEETO per sostenere l'ecosistema ed accumulare punti XP validi per la leaderboard!",
+        promo_tiqets: "Salta-Fila Tiqets", promo_flights: "Treni & Voli",
+        svc_tiqets_title: "Biglietti Salta-Fila & Musei (Tiqets)",
+        svc_tiqets_desc: "Ingressi prioritari e visite guidate ufficiali.",
+        svc_avia_title: "Voli & Trasporti (Aviasales)",
+        svc_avia_desc: "Confronta e trova le tariffe migliori.",
+        svc_radical_title: "Deposito Bagagli (Radical Storage)",
+        svc_radical_desc: "Deposita valigie in sicurezza in centro.",
+        svc_klook_title: "Pass & Tour Guidati (Klook)",
+        svc_klook_desc: "Esperienze e city card all-in-one.",
+        pass_title: "Passaporto Explorer Ufficiale",
+        pass_sub: "Colleziona timbri storici con foto compresse e certifica le tue visite.",
+        level_lbl: "Livello", xp_lbl: "XP Totali", stamps_lbl: "Timbri",
+        share_pass_btn: "📢 Condividi Passaporto su Telegram",
+        wallet_label: "Wallet Solana per accredito ricompense:",
+        wallet_placeholder: "Incolla indirizzo Solana...", save_btn: "Salva",
+        connect_phantom: "👻 Connetti con Phantom / Solflare",
+        quests_title: "Grandi Quest Culturali ($MEETO Tour)",
+        quests_badge: "Bonus Moltiplicatori XP",
+        quests_sub: "Completa le tappe storiche per sbloccare i titoli onorifici e ricevere bonus XP validi per la leaderboard.",
+        progress_lbl: "Progresso:", title_lbl: "Titolo:", quest_completed: "COMPLETATA 🎖️",
+        souvenirs_title: "Collezione Cartoline Polaroid",
+        souvenirs_sub: "Tocca una foto per ingrandirla e riscaricare il souvenir.",
+        postcards_count: "Cartoline",
+        no_souvenirs_msg: "Nessuna cartolina scattata. Fai un check-in per sbloccare la tua prima foto ricordo polaroid!",
+        stamps_title: "Registro Timbri Monumentali",
+        no_stamps_msg: "Nessun timbro collezionato. Fai il tuo primo Check-In sulla mappa!",
+        token_title: "ECOSISTEMA TOKEN MEETO ($MEETO)",
+        token_sub: "Utility token su rete Solana per il turismo culturale e la gamification.",
+        token_refresh: "Aggiorna", token_price_lbl: "PREZZO LIVE USD", token_mcap_lbl: "MARKET CAP",
+        token_ca_lbl: "Contract Address (Solana CA):", token_copy: "Copia",
+        tokenomics_title: "📊 Tokenomics Ufficiale",
+        tok_slice_1: "70% Mercato Pubblico", tok_slice_2: "20% Team & Sviluppo", tok_slice_3: "10% Treasury Rewards",
+        token_treasury_lbl: "Treasury & Rewards Wallet:",
+        token_links_title: "Trasparenza On-Chain & Link Ufficiali",
+        disclaimer_title: "Disclaimer Legale Ufficiale:",
+        disclaimer_text: "MEETO ($MEETO) è un progetto amatoriale e ricreativo basato sulla gamification e sulla valorizzazione culturale dei beni storici. Il token ha finalità di souvenir digitale ed utilità nella community. Non costituisce sollecitazione all'investimento o promessa di rendimento.",
+        step1_title: "🎯 Passo 1: Quiz sul monumento",
+        photo_step_correct: "✅ Risposta Esatta!",
+        step2_title: "📸 Passo 2: Foto Ricordo con Compressione",
+        step2_sub: "Scatta una foto: verrà compressa client-side per non intasare la RAM dello smartphone.",
+        snap_btn: "📷 Scatta Foto con Fotocamera",
+        proceed_gps_btn: "➡️ Prosegui alla Convalida GPS",
+        step3_title: "Passo 3: Convalida Posizione",
+        step3_sub: "Conferma le coordinate per convalidare il timbro ufficiale.",
+        confirm_gps_btn: "Conferma GPS & Salva Timbro",
+        step4_title: "Visita Convalidata!",
+        step4_sub: "Hai guadagnato +100 XP e sbloccato la tua Cartolina Polaroid Ufficiale:",
+        download_polaroid_btn: "Scarica Cartolina Souvenir (PNG)",
+        share_polaroid_btn: "Condividi Cartolina su Telegram",
+        goto_pass_btn: "📜 Vai al Passaporto",
+        souvenir_modal_title: "Cartolina Souvenir", download_png: "Scarica PNG", share_btn: "Condividi",
+        lang_modal_title: "🌐 Scegli Lingua / Language",
+        lang_modal_sub: "Traduzione istantanea dell'intera app:",
+        quiz_wrong_msg: "Risposta non corretta, riprova!",
+        polaroid_explorer: "ESPLORATORE: ", polaroid_coords: "COORDINATE: ", polaroid_cert: "CERTIFICATO UFFICIALE: +100 XP ASSEGNATI"
+      },
+      en: {
+        app_title: "$MEETO — Cultural Passport & Travel Planner (Optimized V2.5)",
+        lang_name: "English", flag: "🇬🇧",
+        nav_map: "Map", nav_travel: "Travel", nav_passport: "Passport", nav_token: "Token",
+        home_btn: "Home", nearby_monuments: "NEARBY MONUMENTS:", monuments_count: "monuments",
+        info_btn: "📖 Info", quiz_btn: "Take Quiz & Check-In",
+        travel_title: "Cultural Travel Planner",
+        travel_sub: "Instantly synchronized with destinations selected on the map.",
+        dest_label: "Selected Destination:", services_for: "Services for",
+        weekend_promo_title: "Depart for your next historic destination",
+        promo_badge: "⭐ CULTURAL WEEKEND PROMO",
+        promo_desc: "Book skip-the-line tickets, trains, and hotels with official $MEETO partners to support the ecosystem and earn XP leaderboard points!",
+        promo_tiqets: "Skip-the-Line Tiqets", promo_flights: "Trains & Flights",
+        svc_tiqets_title: "Skip-the-Line & Museum Tickets (Tiqets)",
+        svc_tiqets_desc: "Priority entrance tickets and official guided tours.",
+        svc_avia_title: "Flights & Transport (Aviasales)",
+        svc_avia_desc: "Compare and find the best travel fares.",
+        svc_radical_title: "Luggage Storage (Radical Storage)",
+        svc_radical_desc: "Secure downtown luggage storage locations.",
+        svc_klook_title: "City Passes & Guided Tours (Klook)",
+        svc_klook_desc: "All-in-one cultural tours and attractions.",
+        pass_title: "Official Explorer Passport",
+        pass_sub: "Collect historical stamps with compressed photos and verify your visits.",
+        level_lbl: "Level", xp_lbl: "Total XP", stamps_lbl: "Stamps",
+        share_pass_btn: "📢 Share Passport on Telegram",
+        wallet_label: "Solana Wallet for reward credits:",
+        wallet_placeholder: "Paste Solana address...", save_btn: "Save",
+        connect_phantom: "👻 Connect with Phantom / Solflare",
+        quests_title: "Great Cultural Quests ($MEETO Tours)",
+        quests_badge: "XP Multipliers Bonus",
+        quests_sub: "Complete historic routes to unlock honorific badges and receive XP multipliers for the leaderboard.",
+        progress_lbl: "Progress:", title_lbl: "Badge:", quest_completed: "COMPLETED 🎖️",
+        souvenirs_title: "Polaroid Postcards Collection",
+        souvenirs_sub: "Tap any photo to enlarge and re-download your official souvenir.",
+        postcards_count: "Postcards",
+        no_souvenirs_msg: "No souvenir postcards yet. Complete a check-in to unlock your first polaroid photo souvenir!",
+        stamps_title: "Monument Stamp Registry",
+        no_stamps_msg: "No stamps collected yet. Complete your first Check-In on the map!",
+        token_title: "MEETO TOKEN ECOSYSTEM ($MEETO)",
+        token_sub: "Solana utility token powering cultural tourism and gamified travel.",
+        token_refresh: "Refresh", token_price_lbl: "LIVE USD PRICE", token_mcap_lbl: "MARKET CAP",
+        token_ca_lbl: "Contract Address (Solana CA):", token_copy: "Copy",
+        tokenomics_title: "📊 Official Tokenomics",
+        tok_slice_1: "70% Public Market", tok_slice_2: "20% Team & Development", tok_slice_3: "10% Treasury Rewards",
+        token_treasury_lbl: "Treasury & Rewards Wallet:",
+        token_links_title: "On-Chain Transparency & Official Links",
+        disclaimer_title: "Official Legal Disclaimer:",
+        disclaimer_text: "MEETO ($MEETO) is a recreational and hobby project based on gamification and the cultural valorization of historical heritage. The token serves as a digital souvenir and community utility. It does not constitute investment advice or any promise of return.",
+        step1_title: "🎯 Step 1: Monument Quiz",
+        photo_step_correct: "✅ Correct Answer!",
+        step2_title: "📸 Step 2: Souvenir Photo with Compression",
+        step2_sub: "Snap a photo: it will be compressed client-side to save mobile memory.",
+        snap_btn: "📷 Snap Photo with Camera",
+        proceed_gps_btn: "➡️ Proceed to GPS Validation",
+        step3_title: "Step 3: Location Validation",
+        step3_sub: "Confirm coordinates to validate your official cultural stamp.",
+        confirm_gps_btn: "Confirm GPS & Save Stamp",
+        step4_title: "Visit Validated!",
+        step4_sub: "You earned +100 XP and unlocked your Official Polaroid Postcard:",
+        download_polaroid_btn: "Download Souvenir Postcard (PNG)",
+        share_polaroid_btn: "Share Postcard on Telegram",
+        goto_pass_btn: "📜 Go to Passport",
+        souvenir_modal_title: "Souvenir Postcard", download_png: "Download PNG", share_btn: "Share",
+        lang_modal_title: "🌐 Choose Language / Scegli Lingua",
+        lang_modal_sub: "Instant translation for the entire app:",
+        quiz_wrong_msg: "Incorrect answer, try again!",
+        polaroid_explorer: "EXPLORER: ", polaroid_coords: "COORDINATES: ", polaroid_cert: "OFFICIAL CERTIFICATE: +100 XP AWARDED"
+      },
+      es: {
+        app_title: "$MEETO — Pasaporte Cultural y Viajes (Optimizado V2.5)",
+        lang_name: "Español", flag: "🇪🇸",
+        nav_map: "Mapa", nav_travel: "Viajes", nav_passport: "Pasaporte", nav_token: "Token",
+        home_btn: "Inicio", nearby_monuments: "MONUMENTOS CERCANOS:", monuments_count: "monumentos",
+        info_btn: "📖 Info", quiz_btn: "Quiz & Check-In",
+        travel_title: "Planificador de Viajes Culturales",
+        travel_sub: "Sincronizado al instante con los destinos seleccionados en el mapa.",
+        dest_label: "Destino Seleccionado:", services_for: "Servicios para",
+        weekend_promo_title: "Viaja hacia tu próximo destino histórico",
+        promo_badge: "⭐ PROMO FIN DE SEMANA CULTURAL",
+        promo_desc: "¡Reserva entradas sin colas, trenes y hoteles con los socios oficiales $MEETO para apoyar el ecosistema y ganar puntos XP para la clasificación!",
+        promo_tiqets: "Sin Colas Tiqets", promo_flights: "Trenes y Vuelos",
+        svc_tiqets_title: "Entradas Sin Colas y Museos (Tiqets)",
+        svc_tiqets_desc: "Entradas prioritarias y visitas guiadas oficiales.",
+        svc_avia_title: "Vuelos y Transportes (Aviasales)",
+        svc_avia_desc: "Compara y encuentra las mejores tarifas.",
+        svc_radical_title: "Consigna de Equipaje (Radical Storage)",
+        svc_radical_desc: "Guarda tu equipaje de forma segura en el centro.",
+        svc_klook_title: "Tours y Pases de Ciudad (Klook)",
+        svc_klook_desc: "Experiencias culturales y tarjetas todo en uno.",
+        pass_title: "Pasaporte Oficial del Explorador",
+        pass_sub: "Colecciona sellos históricos con fotos comprimidas y certifica tus visitas.",
+        level_lbl: "Nivel", xp_lbl: "XP Totales", stamps_lbl: "Sellos",
+        share_pass_btn: "📢 Compartir Pasaporte en Telegram",
+        wallet_label: "Billetera Solana para recompensas:",
+        wallet_placeholder: "Pega tu dirección Solana...", save_btn: "Guardar",
+        connect_phantom: "👻 Conectar con Phantom / Solflare",
+        quests_title: "Grandes Rutas Culturales ($MEETO Tours)",
+        quests_badge: "Bonus Multiplicador XP",
+        quests_sub: "Completa etapas históricas para desbloquear títulos honoríficos y recibir bonus XP para la clasificación.",
+        progress_lbl: "Progreso:", title_lbl: "Título:", quest_completed: "COMPLETADA 🎖️",
+        souvenirs_title: "Colección de Postales Polaroid",
+        souvenirs_sub: "Toca una postal para ampliarla y descargar tu recuerdo.",
+        postcards_count: "Postales",
+        no_souvenirs_msg: "Aún no tienes postales. ¡Haz un check-in para desbloquear tu primera foto recuerdo!",
+        stamps_title: "Registro de Sellos Monumentales",
+        no_stamps_msg: "Ningún sello coleccionado. ¡Haz tu primer Check-In en el mapa!",
+        token_title: "ECOSISTEMA DEL TOKEN MEETO ($MEETO)",
+        token_sub: "Token de utilidad en la red Solana para el turismo cultural y la gamificación.",
+        token_refresh: "Actualizar", token_price_lbl: "PRECIO EN VIVO USD", token_mcap_lbl: "CAPITALIZACIÓN",
+        token_ca_lbl: "Dirección del Contrato (Solana CA):", token_copy: "Copiar",
+        tokenomics_title: "📊 Tokenomics Oficial",
+        tok_slice_1: "70% Mercado Público", tok_slice_2: "20% Equipo y Desarrollo", tok_slice_3: "10% Recompensas Treasury",
+        token_treasury_lbl: "Billetera de Treasury y Recompensas:",
+        token_links_title: "Transparencia On-Chain y Enlaces Oficiales",
+        disclaimer_title: "Descargo Legal Oficial:",
+        disclaimer_text: "MEETO ($MEETO) es un proyecto recreativo y aficionado basado en la gamificación y la valorización cultural del patrimonio histórico. El token tiene fines de recuerdo digital y utilidad comunitaria. No constituye solicitud de inversión ni promesa de rendimiento.",
+        step1_title: "🎯 Paso 1: Quiz del monumento",
+        photo_step_correct: "✅ ¡Respuesta Correcta!",
+        step2_title: "📸 Paso 2: Foto de Recuerdo con Compresión",
+        step2_sub: "Haz una foto: se comprimirá para optimizar la memoria del móvil.",
+        snap_btn: "📷 Hacer Foto con la Cámara",
+        proceed_gps_btn: "➡️ Continuar a la Validación GPS",
+        step3_title: "Paso 3: Validación de Ubicación",
+        step3_sub: "Confirma las coordenadas para registrar el sello oficial.",
+        confirm_gps_btn: "Confirmar GPS y Guardar Sello",
+        step4_title: "¡Visita Convalidada!",
+        step4_sub: "Has ganado +100 XP y desbloqueado tu Postal Polaroid Oficial:",
+        download_polaroid_btn: "Descargar Postal de Recuerdo (PNG)",
+        share_polaroid_btn: "Compartir Postal en Telegram",
+        goto_pass_btn: "📜 Ir al Pasaporte",
+        souvenir_modal_title: "Postal de Recuerdo", download_png: "Descargar PNG", share_btn: "Compartir",
+        lang_modal_title: "🌐 Elegir Idioma / Language",
+        lang_modal_sub: "Traducción instantánea de toda la aplicación:",
+        quiz_wrong_msg: "Respuesta incorrecta, ¡inténtalo de nuevo!",
+        polaroid_explorer: "EXPLORADOR: ", polaroid_coords: "COORDENADAS: ", polaroid_cert: "CERTIFICADO OFICIAL: +100 XP ASIGNADOS"
+      },
+      fr: {
+        app_title: "$MEETO — Passeport Culturel & Voyages (Optimisé V2.5)",
+        lang_name: "Français", flag: "🇫🇷",
+        nav_map: "Carte", nav_travel: "Voyages", nav_passport: "Passeport", nav_token: "Token",
+        home_btn: "Accueil", nearby_monuments: "MONUMENTS PROCHES :", monuments_count: "monuments",
+        info_btn: "📖 Info", quiz_btn: "Faire le Quiz & Check-In",
+        travel_title: "Planificateur de Voyages Culturels",
+        travel_sub: "Synchronisé en temps réel avec les destinations sélectionnées sur la carte.",
+        dest_label: "Destination Sélectionnée :", services_for: "Services pour",
+        weekend_promo_title: "Partez vers votre prochaine étape historique",
+        promo_badge: "⭐ PROMO WEEK-END CULTUREL",
+        promo_desc: "Réservez vos billets coupe-file, trains et hôtels via les partenaires officiels $MEETO pour soutenir l'écosystème et cumuler des points XP pour le classement !",
+        promo_tiqets: "Coupe-File Tiqets", promo_flights: "Trains & Vols",
+        svc_tiqets_title: "Billets Coupe-File & Musées (Tiqets)",
+        svc_tiqets_desc: "Entrées prioritaires et visites guidées officielles.",
+        svc_avia_title: "Vols & Transports (Aviasales)",
+        svc_avia_desc: "Comparez et trouvez les meilleurs tarifs de voyage.",
+        svc_radical_title: "Consigne à Bagages (Radical Storage)",
+        svc_radical_desc: "Déposez vos valises en sécurité au centre-ville.",
+        svc_klook_title: "Pass Ville & Visites Guidées (Klook)",
+        svc_klook_desc: "Expériences culturelles et pass visites tout-en-un.",
+        pass_title: "Passeport Officiel de l'Explorateur",
+        pass_sub: "Collectionnez les tampons historiques avec photos souvenirs certifiées.",
+        level_lbl: "Niveau", xp_lbl: "XP Totaux", stamps_lbl: "Tampons",
+        share_pass_btn: "📢 Partager le Passeport sur Telegram",
+        wallet_label: "Portefeuille Solana pour vos récompenses :",
+        wallet_placeholder: "Collez votre adresse Solana...", save_btn: "Enregistrer",
+        connect_phantom: "👻 Connecter avec Phantom / Solflare",
+        quests_title: "Grandes Quêtes Culturelles ($MEETO Tours)",
+        quests_badge: "Bonus Multiplicateurs XP",
+        quests_sub: "Complétez les étapes historiques pour débloquer des titres honorifiques et recevoir des bonus XP.",
+        progress_lbl: "Progression :", title_lbl: "Titre :", quest_completed: "TERMINÉE 🎖️",
+        souvenirs_title: "Collection de Cartes Polaroid",
+        souvenirs_sub: "Touchez une photo pour l'agrandir et retélécharger votre souvenir.",
+        postcards_count: "Cartes",
+        no_souvenirs_msg: "Aucune carte enregistrée. Faites un check-in pour débloquer votre premier souvenir !",
+        stamps_title: "Registre des Tampons Monumentaux",
+        no_stamps_msg: "Aucun tampon collecté. Faites votre premier Check-In sur la carte !",
+        token_title: "ÉCOSYSTÈME DU TOKEN MEETO ($MEETO)",
+        token_sub: "Token d'utilité sur le réseau Solana pour le tourisme culturel et la gamification.",
+        token_refresh: "Actualiser", token_price_lbl: "PRIX EN DIRECT USD", token_mcap_lbl: "CAPITALISATION",
+        token_ca_lbl: "Adresse du Contrat (Solana CA) :", token_copy: "Copier",
+        tokenomics_title: "📊 Tokenomics Officielle",
+        tok_slice_1: "70% Marché Public", tok_slice_2: "20% Équipe & Dév", tok_slice_3: "10% Récompenses Treasury",
+        token_treasury_lbl: "Portefeuille Treasury & Récompenses :",
+        token_links_title: "Transparence On-Chain & Liens Officiels",
+        disclaimer_title: "Avertissement Légal Officiel :",
+        disclaimer_text: "MEETO ($MEETO) est un projet récréatif et amateur fondé sur la gamification et la valorisation culturelle du patrimoine historique. Le token sert de souvenir numérique et d'utilité communautaire. Il ne constitue ni un conseil en investissement ni une promesse de rendement.",
+        step1_title: "🎯 Étape 1 : Quiz sur le monument",
+        photo_step_correct: "✅ Bonne Réponse !",
+        step2_title: "📸 Étape 2 : Photo Souvenir avec Compression",
+        step2_sub: "Prenez une photo : elle sera compressée pour préserver la mémoire du mobile.",
+        snap_btn: "📷 Prendre une Photo",
+        proceed_gps_btn: "➡️ Passer à la Validation GPS",
+        step3_title: "Étape 3 : Validation de la Position",
+        step3_sub: "Confirmez les coordonnées pour valider le tampon officiel.",
+        confirm_gps_btn: "Confirmer le GPS & Enregistrer le Tampon",
+        step4_title: "Visite Validée !",
+        step4_sub: "Vous avez gagné +100 XP et débloqué votre Carte Polaroid Officielle :",
+        download_polaroid_btn: "Télécharger la Carte Souvenir (PNG)",
+        share_polaroid_btn: "Partager sur Telegram",
+        goto_pass_btn: "📜 Voir le Passeport",
+        souvenir_modal_title: "Carte Souvenir", download_png: "Télécharger PNG", share_btn: "Partager",
+        lang_modal_title: "🌐 Choisir la Langue / Language",
+        lang_modal_sub: "Traduction instantanée de toute l'application :",
+        quiz_wrong_msg: "Réponse incorrecte, réessayez !",
+        polaroid_explorer: "EXPLORATEUR : ", polaroid_coords: "COORDONNÉES : ", polaroid_cert: "CERTIFICAT OFFICIEL : +100 XP ATTRIBUÉS"
+      },
+      de: {
+        app_title: "$MEETO — Kulturpass & Reiseplaner (Optimiert V2.5)",
+        lang_name: "Deutsch", flag: "🇩🇪",
+        nav_map: "Karte", nav_travel: "Reisen", nav_passport: "Reisepass", nav_token: "Token",
+        home_btn: "Start", nearby_monuments: "DENKMÄLER IN DER NÄHE:", monuments_count: "Denkmäler",
+        info_btn: "📖 Info", quiz_btn: "Quiz & Check-In",
+        travel_title: "Kultur-Reiseplaner",
+        travel_sub: "Echtzeit-Synchronisierung mit den ausgewählten Zielen auf der Karte.",
+        dest_label: "Ausgewähltes Reiseziel:", services_for: "Dienste für",
+        weekend_promo_title: "Reisen Sie zu Ihrem nächsten historischen Ziel",
+        promo_badge: "⭐ KULTUR-WOCHENENDE PROMO",
+        promo_desc: "Buchen Sie Tickets ohne Anstehen, Züge und Hotels bei den offiziellen $MEETO-Partnern, um das Ökosystem zu unterstützen und XP-Ranglistenpunkte zu sammeln!",
+        promo_tiqets: "Ohne Anstehen Tiqets", promo_flights: "Züge & Flüge",
+        svc_tiqets_title: "Tickets ohne Anstehen & Museen (Tiqets)",
+        svc_tiqets_desc: "Bevorzugter Einlass und offizielle Führungen.",
+        svc_avia_title: "Flüge & Verkehrsmittel (Aviasales)",
+        svc_avia_desc: "Vergleichen und finden Sie die besten Reisepreise.",
+        svc_radical_title: "Gepäckaufbewahrung (Radical Storage)",
+        svc_radical_desc: "Gepäck sicher in der Innenstadt deponieren.",
+        svc_klook_title: "City-Pässe & Führungen (Klook)",
+        svc_klook_desc: "All-in-one Kulturführungen und Erlebnisse.",
+        pass_title: "Offizieller Entdecker-Pass",
+        pass_sub: "Sammeln Sie historische Stempel mit komprimierten Souvenirfotos.",
+        level_lbl: "Stufe", xp_lbl: "Gesamt-XP", stamps_lbl: "Stempel",
+        share_pass_btn: "📢 Reisepass auf Telegram teilen",
+        wallet_label: "Solana Wallet für Prämien:",
+        wallet_placeholder: "Solana-Adresse einfügen...", save_btn: "Speichern",
+        connect_phantom: "👻 Mit Phantom / Solflare verbinden",
+        quests_title: "Große Kultur-Quests ($MEETO Touren)",
+        quests_badge: "XP-Multiplikator Bonus",
+        quests_sub: "Schließen Sie historische Routen ab, um Ehrentitel freizuschalten und XP-Boni für die Rangliste zu erhalten.",
+        progress_lbl: "Fortschritt:", title_lbl: "Titel:", quest_completed: "ABGESCHLOSSEN 🎖️",
+        souvenirs_title: "Polaroid-Postkartensammlung",
+        souvenirs_sub: "Tippen Sie auf ein Foto, um es zu vergrößern und erneut herunterzuladen.",
+        postcards_count: "Postkarten",
+        no_souvenirs_msg: "Noch keine Postkarten vorhanden. Machen Sie einen Check-In für Ihr erstes Souvenir!",
+        stamps_title: "Monumentales Stempelregister",
+        no_stamps_msg: "Noch keine Stempel gesammelt. Führen Sie Ihren ersten Check-In auf der Karte durch!",
+        token_title: "MEETO TOKEN ÖKOSYSTEM ($MEETO)",
+        token_sub: "Solana Utility Token für Kulturtourismus und Gamification.",
+        token_refresh: "Aktualisieren", token_price_lbl: "LIVE-PREIS USD", token_mcap_lbl: "MARKET CAP",
+        token_ca_lbl: "Contract Address (Solana CA):", token_copy: "Kopieren",
+        tokenomics_title: "📊 Offizielle Tokenomics",
+        tok_slice_1: "70% Öffentlicher Markt", tok_slice_2: "20% Team & Entwicklung", tok_slice_3: "10% Treasury Rewards",
+        token_treasury_lbl: "Treasury & Belohnungen Wallet:",
+        token_links_title: "On-Chain Transparenz & Offizielle Links",
+        disclaimer_title: "Offizieller Rechtlicher Hinweis:",
+        disclaimer_text: "MEETO ($MEETO) ist ein Freizeit- und Hobbyprojekt, das auf Gamification und der kulturellen Aufwertung historischer Stätten basiert. Der Token dient als digitales Souvenir und Community-Nutzen. Er stellt keine Anlageberatung oder Renditeversprechen dar.",
+        step1_title: "🎯 Schritt 1: Denkmal-Quiz",
+        photo_step_correct: "✅ Richtige Antwort!",
+        step2_title: "📸 Schritt 2: Souvenirfoto mit Komprimierung",
+        step2_sub: "Machen Sie ein Foto: Es wird komprimiert, um mobilen Speicher zu schonen.",
+        snap_btn: "📷 Foto aufnehmen",
+        proceed_gps_btn: "➡️ Weiter zur GPS-Validierung",
+        step3_title: "Schritt 3: Standortvalidierung",
+        step3_sub: "Bestätigen Sie die Koordinaten, um den Stempel zu registrieren.",
+        confirm_gps_btn: "GPS bestätigen & Stempel speichern",
+        step4_title: "Besuch Validiert!",
+        step4_sub: "Sie haben +100 XP verdient und Ihre offizielle Polaroid-Postkarte freigeschaltet:",
+        download_polaroid_btn: "Postkarte herunterladen (PNG)",
+        share_polaroid_btn: "Auf Telegram teilen",
+        goto_pass_btn: "📜 Zum Reisepass",
+        souvenir_modal_title: "Souvenir-Postkarte", download_png: "PNG herunterladen", share_btn: "Teilen",
+        lang_modal_title: "🌐 Sprache wählen / Language",
+        lang_modal_sub: "Sofortige Übersetzung der gesamten App:",
+        quiz_wrong_msg: "Falsche Antwort, versuchen Sie es erneut!",
+        polaroid_explorer: "ENTDECKER: ", polaroid_coords: "KOORDINATEN: ", polaroid_cert: "OFFIZIELLES ZERTIFIKAT: +100 XP VERGEBEN"
+      }
+    };
+
+    // TRADUZIONI MULTILINGUA PER I MONUMENTI
+    const I18N_MONUMENTS = {
+      colosseo: {
+        en: { name: "Colosseum & Imperial Fora", era: "70–80 AD (Flavian Dynasty)", desc: "Flavian amphitheater of ancient Rome, among the New Seven Wonders of the World.", quiz: { question: "Which capital order is located on the lowest exterior tier?", options: ["Doric / Tuscan", "Corinthian", "Ionic"], correct: 0 } },
+        es: { name: "Coliseo y Foros Imperiales", era: "70–80 d.C. (Época Flavia)", desc: "Anfiteatro Flavio de la antigua Roma, una de las Nuevas Siete Maravillas del Mundo.", quiz: { question: "¿Qué orden arquitectónico está en el nivel inferior de los arcos exteriores?", options: ["Dórico / Toscano", "Corintio", "Jónico"], correct: 0 } },
+        fr: { name: "Colisée & Forums Impériaux", era: "70–80 apr. J.-C. (Époque flavienne)", desc: "Amphithéâtre flavien de la Rome antique, l'une des Sept Merveilles du Monde moderne.", quiz: { question: "Quel ordre de chapiteaux se trouve au rez-de-chaussée des arches extérieures ?", options: ["Dorique / Toscan", "Corinthien", "Ionique"], correct: 0 } },
+        de: { name: "Kolosseum & Kaiserforen", era: "70–80 n. Chr. (Flavische Dynastie)", desc: "Flavisches Amphitheater des antiken Roms, eines der Neuen Sieben Weltwunder.", quiz: { question: "Welche Säulenordnung befindet sich im untersten Außengeschoss?", options: ["Dorisch / Toskanisch", "Korinthisch", "Ionisch"], correct: 0 } }
+      },
+      pantheon: {
+        en: { name: "Pantheon", era: "118–128 AD (Hadrian)", desc: "Roman temple celebrated for its majestic concrete dome with central oculus.", quiz: { question: "Which Renaissance master is buried inside?", options: ["Raphael Sanzio", "Michelangelo", "Leonardo da Vinci"], correct: 0 } },
+        es: { name: "Panteón de Agripa", era: "118–128 d.C. (Adriano)", desc: "Templo romano célebre por su majestuosa cúpula de hormigón con óculo central.", quiz: { question: "¿Qué maestro del Renacimiento está enterrado en su interior?", options: ["Rafael Sanzio", "Miguel Ángel", "Leonardo da Vinci"], correct: 0 } },
+        fr: { name: "Panthéon", era: "118–128 apr. J.-C. (Hadrien)", desc: "Temple romain célèbre pour sa coupole majestueuse en béton avec oculus.", quiz: { question: "Quel maître de la Renaissance y est enterré ?", options: ["Raphaël", "Michel-Ange", "Léonard de Vinci"], correct: 0 } },
+        de: { name: "Pantheon", era: "118–128 n. Chr. (Hadrian)", desc: "Römischer Tempel, berühmt für seine monumentale Kuppel mit kreisrundem Oculus.", quiz: { question: "Welcher Meister der Renaissance ist im Inneren begraben?", options: ["Raffael Sanzio", "Michelangelo", "Leonardo da Vinci"], correct: 0 } }
+      },
+      fontana_trevi: {
+        en: { name: "Trevi Fountain", era: "1732–1762 (Baroque)", desc: "The largest and most famous Baroque fountain in Rome.", quiz: { question: "Which architect designed the Trevi Fountain?", options: ["Nicola Salvi", "Bernini", "Borromini"], correct: 0 } },
+        es: { name: "Fontana de Trevi", era: "1732–1762 (Barroco)", desc: "La más monumental y famosa de las fuentes barrocas de Roma.", quiz: { question: "¿Qué arquitecto diseñó la Fontana di Trevi?", options: ["Nicola Salvi", "Bernini", "Borromini"], correct: 0 } },
+        fr: { name: "Fontaine de Trevi", era: "1732–1762 (Baroque)", desc: "La plus spectaculaire et célèbre fontaine baroque de Rome.", quiz: { question: "Quel architecte a conçu la Fontaine de Trevi ?", options: ["Nicola Salvi", "Le Bernin", "Borromini"], correct: 0 } },
+        de: { name: "Trevi-Brunnen", era: "1732–1762 (Barock)", desc: "Der berühmteste und monumentalste Barockbrunnen Roms.", quiz: { question: "Welcher Architekt entwarf den Trevi-Brunnen?", options: ["Nicola Salvi", "Bernini", "Borromini"], correct: 0 } }
+      },
+      duomo_catania: {
+        en: { name: "Catania Cathedral & Elephant Fountain", era: "Sicilian Baroque", desc: "Piazza Duomo built with lava stone featuring the famous Liotru elephant.", quiz: { question: "What material is the Liotru elephant made of?", options: ["Lava stone", "White marble", "Bronze"], correct: 0 } },
+        es: { name: "Catedral de Catania y Fuente del Elefante", era: "Barroco Siciliano", desc: "Plaza de la Catedral construida en piedra volcánica con el emblemático elefante Liotru.", quiz: { question: "¿De qué material está hecho el elefante Liotru?", options: ["Piedra de lava", "Mármol blanco", "Bronce"], correct: 0 } },
+        fr: { name: "Cathédrale de Catane & Fontaine de l'Éléphant", era: "Baroque sicilien", desc: "Piazza Duomo en pierre de lave avec le célèbre éléphant Liotru.", quiz: { question: "En quel matériau est sculpté l'éléphant Liotru ?", options: ["Pierre de lave", "Marbre blanc", "Bronze"], correct: 0 } },
+        de: { name: "Kathedrale von Catania & Elefantenbrunnen", era: "Sizilianischer Barock", desc: "Piazza Duomo aus Lavagestein mit dem berühmten Wahrzeichen Liotru.", quiz: { question: "Aus welchem Material besteht der Elefant Liotru?", options: ["Lavagestein", "Weißer Marmor", "Bronze"], correct: 0 } }
+      },
+      piazza_duomo_firenze: {
+        en: { name: "Florence Cathedral Square & Dome", era: "Tuscan Renaissance", desc: "Santa Maria del Fiore featuring Brunelleschi's revolutionary dome.", quiz: { question: "What is the famous golden bronze door of the Baptistery called?", options: ["Gates of Paradise", "Martyrs' Gate", "Golden Gate"], correct: 0 } },
+        es: { name: "Plaza del Duomo y Cúpula de Florencia", era: "Renacimiento Toscano", desc: "Catedral con la revolucionaria cúpula octogonal de Filippo Brunelleschi.", quiz: { question: "¿Cómo se llama la célebre puerta de bronce dorado del Baptisterio?", options: ["Puerta del Paraíso", "Puerta de los Mártires", "Puerta de Oro"], correct: 0 } },
+        fr: { name: "Place du Dôme & Coupole de Florence", era: "Renaissance toscane", desc: "Cathédrale Santa Maria del Fiore et la coupole de Brunelleschi.", quiz: { question: "Comment s'appelle la célèbre porte en bronze doré du Baptistère ?", options: ["Porte du Paradis", "Porte des Martyrs", "Porte d'Or"], correct: 0 } },
+        de: { name: "Domplatz & Kuppel von Florenz", era: "Toskanische Renaissance", desc: "Kathedrale von Florenz mit der meisterhaften Kuppel von Brunelleschi.", quiz: { question: "Wie heißt das berühmte vergoldete Bronzeportal des Baptisteriums?", options: ["Paradiespforte", "Märtyrerpforte", "Goldene Pforte"], correct: 0 } }
+      },
+      piazza_san_marco: {
+        en: { name: "St. Mark's Square & Basilica", era: "Italo-Byzantine & Venetian", desc: "The monumental heart of Venice with glittering golden mosaics.", quiz: { question: "Which winged creature sits atop the column in the square?", options: ["Lion of Saint Mark", "Imperial Eagle", "Griffin"], correct: 0 } },
+        es: { name: "Plaza de San Marcos y Basílica", era: "Bizantino-Veneciano", desc: "El corazón monumental de Venecia con sus magníficos mosaicos dorados.", quiz: { question: "¿Qué criatura alada se encuentra sobre la columna de la plaza?", options: ["León de San Marcos", "Águila Imperial", "Grifo"], correct: 0 } },
+        fr: { name: "Place Saint-Marc & Basilique", era: "Italo-byzantin", desc: "Le cœur monumental de Venise orné de mosaïques dorées exceptionnelles.", quiz: { question: "Quel animal ailé se dresse au sommet de la colonne ?", options: ["Le Lion de Saint-Marc", "L'Aigle impérial", "Le Griffon"], correct: 0 } },
+        de: { name: "Markusplatz & Markusdom", era: "Italo-Byzantinisch", desc: "Das monumentale Herz Venedigs mit glänzenden Goldmosaiken.", quiz: { question: "Welches geflügelte Tier thront auf der Säule am Platz?", options: ["Markuslöwe", "Reichsadler", "Greif"], correct: 0 } }
+      },
+      duomo_milano: {
+        en: { name: "Milan Cathedral (Duomo)", era: "Lombard Gothic", desc: "Colossal Gothic cathedral crafted from pink-hued Candoglia marble.", quiz: { question: "Which gilded statue crowns the highest spire?", options: ["The Madonnina", "Saint Ambrose", "Saint Michael"], correct: 0 } },
+        es: { name: "Catedral de Milán (Duomo)", era: "Gótico Lombardo", desc: "Imponente catedral gótica construida en mármol blanco y rosado de Candoglia.", quiz: { question: "¿Qué estatua dorada corona la aguja más alta?", options: ["La Madonnina", "San Ambrosio", "San Miguel"], correct: 0 } },
+        fr: { name: "Dôme de Milan", era: "Gothique lombard", desc: "Cathédrale colossale construite en marbre blanc rosé de Candoglia.", quiz: { question: "Quelle statue dorée couronne la plus haute flèche ?", options: ["La Madonnina", "Saint Ambroise", "Saint Michel"], correct: 0 } },
+        de: { name: "Mailänder Dom", era: "Lombardische Gotik", desc: "Monumentale gotische Kathedrale aus Candoglia-Marmor.", quiz: { question: "Welche vergoldete Statue krönt die höchste Domspitze?", options: ["Die Madonnina", "Hl. Ambrosius", "Erzengel Michael"], correct: 0 } }
+      }
+    };
+
+    function getLocalizedMonument(key, lang) {
+      const base = MONUMENTS[key];
+      if (!base) return null;
+      if (lang === "it" || !I18N_MONUMENTS[key] || !I18N_MONUMENTS[key][lang]) {
+        return base;
+      }
+      const trans = I18N_MONUMENTS[key][lang];
+      return {
+        ...base,
+        name: trans.name || base.name,
+        era: trans.era || base.era,
+        desc: trans.desc || base.desc,
+        quiz: trans.quiz || base.quiz
+      };
+    }
+
+    const CITY_NAMES_I18N = {
+      en: { roma: "Rome", firenze: "Florence", venezia: "Venice", napoli: "Naples", milano: "Milan", torino: "Turin", genova: "Genoa", siracusa: "Syracuse" },
+      es: { roma: "Roma", firenze: "Florencia", venezia: "Venecia", napoli: "Nápoles", milano: "Milán", torino: "Turín", genova: "Génova", siracusa: "Siracusa" },
+      fr: { roma: "Rome", firenze: "Florence", venezia: "Venise", napoli: "Naples", milano: "Milan", torino: "Turin", genova: "Gênes", siracusa: "Syracuse" },
+      de: { roma: "Rom", firenze: "Florenz", venezia: "Venedig", napoli: "Neapel", milano: "Mailand", torino: "Turin", genova: "Genua", siracusa: "Syrakus" }
+    };
+
+    function getLocalizedCityName(slug, lang) {
+      if (CITY_NAMES_I18N[lang] && CITY_NAMES_I18N[lang][slug]) {
+        return CITY_NAMES_I18N[lang][slug];
+      }
+      const c = CITIES_DATA.find(x => x.slug === slug);
+      return c ? c.name : slug;
+    }
+
+    let currentLang = localStorage.getItem("meeto_lang") || "it";
+
+    function openLanguageModal() {
+      const m = document.getElementById("lang-modal");
+      if (!m) return;
+      m.style.display = "flex";
+      // Evidenzia visivamente la lingua attiva
+      ["it", "en", "es", "fr", "de"].forEach(l => {
+        const btn = document.getElementById(`lang-opt-${l}`);
+        if (btn) {
+          if (l === currentLang) {
+            btn.style.borderColor = "#F59E0B";
+            btn.style.background = "rgba(245, 158, 11, 0.22)";
+            btn.style.boxShadow = "0 0 10px rgba(245, 158, 11, 0.35)";
+          } else {
+            btn.style.borderColor = "var(--border-gold)";
+            btn.style.background = "rgba(18, 21, 31, 0.85)";
+            btn.style.boxShadow = "none";
+          }
+        }
+      });
+    }
+
+    function closeLanguageModal() {
+      const m = document.getElementById("lang-modal");
+      if (m) m.style.display = "none";
+    }
+
+    function selectLanguage(lang) {
+      if (!I18N[lang]) return;
+      currentLang = lang;
+      try { localStorage.setItem("meeto_lang", lang); } catch (e) {}
+      closeLanguageModal();
+      applyLanguage();
+      showToast(`${I18N[lang].lang_name} ${I18N[lang].flag}`, "🌐");
+    }
+
+    function toggleLanguage() {
+      openLanguageModal();
+    }
+
+    function applyLanguage() {
+      const dict = I18N[currentLang] || I18N.it;
+      document.documentElement.lang = currentLang;
+      if (dict.app_title) document.title = dict.app_title;
+
+      const flagText = document.getElementById("lang-text");
+      if (flagText) flagText.innerText = currentLang.toUpperCase();
+
+      // Navigation tab labels
+      const navMap = document.querySelector("#nav-map span:last-child");
+      if (navMap) navMap.innerText = dict.nav_map;
+      const navTravel = document.querySelector("#nav-travel span:last-child");
+      if (navTravel) navTravel.innerText = dict.nav_travel;
+      const navPassport = document.querySelector("#nav-passport span:last-child");
+      if (navPassport) navPassport.innerText = dict.nav_passport;
+      const navToken = document.querySelector("#nav-token span:last-child");
+      if (navToken) navToken.innerText = dict.nav_token;
+
+      // Header home button
+      const homeBtn = document.querySelector("header a span:last-child");
+      if (homeBtn) homeBtn.innerText = dict.home_btn;
+
+      // Bottom sheet buttons
+      const wikiBtn = document.getElementById("sheet-wiki");
+      if (wikiBtn) wikiBtn.innerText = dict.info_btn;
+      const quizBtn = document.querySelector("#monument-sheet button.btn-gold");
+      if (quizBtn) quizBtn.innerHTML = `<span>🎯</span> ${dict.quiz_btn}`;
+
+      // Refresh currently selected monument sheet with localized strings
+      if (activeSiteKey) {
+        selectMonument(activeSiteKey);
+      }
+
+      // Travel Tab
+      const travelTitle = document.getElementById("travel-main-title");
+      if (travelTitle) travelTitle.innerText = dict.travel_title;
+      const travelSub = document.getElementById("travel-sub-title");
+      if (travelSub) travelSub.innerText = dict.travel_sub;
+      const destLabel = document.getElementById("travel-dest-label");
+      if (destLabel) destLabel.innerText = dict.dest_label;
+
+      // Weekend Promo
+      const promoTitle = document.getElementById("promo-title-text");
+      if (promoTitle) promoTitle.innerText = dict.weekend_promo_title;
+      const promoBadge = document.getElementById("promo-badge-text");
+      if (promoBadge) promoBadge.innerText = dict.promo_badge;
+      const promoDesc = document.getElementById("promo-desc-text");
+      if (promoDesc) promoDesc.innerText = dict.promo_desc;
+      const promoTiqets = document.getElementById("promo-tiqets-btn");
+      if (promoTiqets) promoTiqets.innerHTML = `🎟️ ${dict.promo_tiqets}`;
+      const promoFlights = document.getElementById("promo-flights-btn");
+      if (promoFlights) promoFlights.innerHTML = `✈️ ${dict.promo_flights}`;
+
+      // Services Cards
+      const servicesHead = document.getElementById("travel-services-heading");
+      if (servicesHead) {
+        const cityName = getLocalizedCityName(activeCityGlobal, currentLang);
+        servicesHead.innerHTML = `${dict.services_for} <span id="travel-target-city-name" style="color: #F59E0B;">${cityName}</span>`;
+      }
+      const svcT1 = document.getElementById("svc-tiqets-title");
+      if (svcT1) svcT1.innerText = dict.svc_tiqets_title;
+      const svcD1 = document.getElementById("svc-tiqets-desc");
+      if (svcD1) svcD1.innerText = dict.svc_tiqets_desc;
+
+      const svcT2 = document.getElementById("svc-avia-title");
+      if (svcT2) svcT2.innerText = dict.svc_avia_title;
+      const svcD2 = document.getElementById("svc-avia-desc");
+      if (svcD2) svcD2.innerText = dict.svc_avia_desc;
+
+      const svcT3 = document.getElementById("svc-radical-title");
+      if (svcT3) svcT3.innerText = dict.svc_radical_title;
+      const svcD3 = document.getElementById("svc-radical-desc");
+      if (svcD3) svcD3.innerText = dict.svc_radical_desc;
+
+      const svcT4 = document.getElementById("svc-klook-title");
+      if (svcT4) svcT4.innerText = dict.svc_klook_title;
+      const svcD4 = document.getElementById("svc-klook-desc");
+      if (svcD4) svcD4.innerText = dict.svc_klook_desc;
+
+      // Passport Tab
+      const passTitle = document.getElementById("pass-main-title");
+      if (passTitle) passTitle.innerText = dict.pass_title;
+      const passSub = document.getElementById("pass-sub-title");
+      if (passSub) passSub.innerText = dict.pass_sub;
+
+      const lblLvl = document.getElementById("pass-lbl-level");
+      if (lblLvl) lblLvl.innerText = dict.level_lbl;
+      const lblXp = document.getElementById("pass-lbl-xp");
+      if (lblXp) lblXp.innerText = dict.xp_lbl;
+      const lblStamps = document.getElementById("pass-lbl-stamps");
+      if (lblStamps) lblStamps.innerText = dict.stamps_lbl;
+
+      const sharePassBtn = document.getElementById("btn-share-pass");
+      if (sharePassBtn) sharePassBtn.innerText = dict.share_pass_btn;
+
+      const walletLbl = document.getElementById("wallet-label-text");
+      if (walletLbl) walletLbl.innerText = dict.wallet_label;
+      const walletInput = document.getElementById("wallet-input");
+      if (walletInput) walletInput.placeholder = dict.wallet_placeholder;
+      const walletSave = document.getElementById("btn-save-wallet");
+      if (walletSave) walletSave.innerText = dict.save_btn;
+      const connectPhantom = document.getElementById("btn-connect-phantom");
+      if (connectPhantom) connectPhantom.innerText = dict.connect_phantom;
+
+      // Quests & Souvenirs section headers
+      const questsHead = document.getElementById("quests-heading-title");
+      if (questsHead) questsHead.innerHTML = `<span>🗺️</span> ${dict.quests_title}`;
+      const questsBadge = document.getElementById("quests-multiplier-badge");
+      if (questsBadge) questsBadge.innerText = dict.quests_badge;
+      const questsSub = document.getElementById("quests-sub-text");
+      if (questsSub) questsSub.innerText = dict.quests_sub;
+
+      const souvHead = document.getElementById("souvenirs-heading-title");
+      if (souvHead) souvHead.innerHTML = `<span>📸</span> ${dict.souvenirs_title}`;
+      const souvSub = document.getElementById("souvenirs-sub-text");
+      if (souvSub) souvSub.innerText = dict.souvenirs_sub;
+
+      const stampsHead = document.getElementById("stamps-heading-title");
+      if (stampsHead) stampsHead.innerHTML = `<span>🏛️</span> ${dict.stamps_title}`;
+
+      // Token Tab
+      const tokTitle = document.getElementById("token-main-title");
+      if (tokTitle) tokTitle.innerText = dict.token_title;
+      const tokSub = document.getElementById("token-sub-title");
+      if (tokSub) tokSub.innerText = dict.token_sub;
+      const tokRefBtn = document.getElementById("token-refresh-btn");
+      if (tokRefBtn) tokRefBtn.innerHTML = `🔄 ${dict.token_refresh}`;
+      const tokPriceLbl = document.getElementById("token-lbl-price");
+      if (tokPriceLbl) tokPriceLbl.innerText = dict.token_price_lbl;
+      const tokMcapLbl = document.getElementById("token-lbl-mcap");
+      if (tokMcapLbl) tokMcapLbl.innerText = dict.token_mcap_lbl;
+      const tokCaLbl = document.getElementById("token-lbl-ca");
+      if (tokCaLbl) tokCaLbl.innerText = dict.token_ca_lbl;
+      const tokCopyBtn = document.getElementById("token-copy-btn");
+      if (tokCopyBtn) tokCopyBtn.innerHTML = `📋 ${dict.token_copy}`;
+      const toknHeading = document.getElementById("tokenomics-heading");
+      if (toknHeading) toknHeading.innerText = dict.tokenomics_title;
+      const tokS1 = document.getElementById("tok-slice-1");
+      if (tokS1) tokS1.innerText = dict.tok_slice_1;
+      const tokS2 = document.getElementById("tok-slice-2");
+      if (tokS2) tokS2.innerText = dict.tok_slice_2;
+      const tokS3 = document.getElementById("tok-slice-3");
+      if (tokS3) tokS3.innerText = dict.tok_slice_3;
+
+      const tokTreasuryLbl = document.getElementById("token-lbl-treasury");
+      if (tokTreasuryLbl) tokTreasuryLbl.innerText = dict.token_treasury_lbl;
+      const tokLinksHead = document.getElementById("token-links-heading");
+      if (tokLinksHead) tokLinksHead.innerHTML = `<span>🔗</span> ${dict.token_links_title}`;
+      const discHead = document.getElementById("disclaimer-heading-title");
+      if (discHead) discHead.innerText = dict.disclaimer_title;
+      const discBody = document.getElementById("disclaimer-body-text");
+      if (discBody) discBody.innerText = dict.disclaimer_text;
+
+      // Check-In Modal texts
+      const step1Title = document.getElementById("quiz-step-title");
+      if (step1Title) step1Title.innerText = dict.step1_title;
+      const step2Correct = document.getElementById("photo-step-correct-tag");
+      if (step2Correct) step2Correct.innerText = dict.photo_step_correct;
+      const step2Title = document.getElementById("photo-step-title");
+      if (step2Title) step2Title.innerText = dict.step2_title;
+      const step2Sub = document.getElementById("photo-step-desc");
+      if (step2Sub) step2Sub.innerText = dict.step2_sub;
+      const snapBtn = document.getElementById("photo-step-btn-label");
+      if (snapBtn) snapBtn.innerHTML = `${dict.snap_btn} <input type="file" accept="image/*" capture="environment" style="display: none;" onchange="handleOptimizedLivePhoto(event)" />`;
+      const proceedGpsBtn = document.getElementById("photo-step-proceed-btn");
+      if (proceedGpsBtn) proceedGpsBtn.innerText = dict.proceed_gps_btn;
+
+      const step3Title = document.getElementById("gps-step-title");
+      if (step3Title) step3Title.innerText = dict.step3_title;
+      const step3Sub = document.getElementById("gps-step-desc");
+      if (step3Sub) step3Sub.innerText = dict.step3_sub;
+      const confirmGpsBtn = document.getElementById("gps-step-confirm-btn");
+      if (confirmGpsBtn) confirmGpsBtn.innerText = dict.confirm_gps_btn;
+
+      const step4Title = document.getElementById("success-step-title");
+      if (step4Title) step4Title.innerText = dict.step4_title;
+      const dlSouvenirBtn = document.getElementById("btn-download-souvenir");
+      if (dlSouvenirBtn) dlSouvenirBtn.innerHTML = `<span>📥</span> ${dict.download_polaroid_btn}`;
+      const shareSouvenirBtn = document.getElementById("btn-share-souvenir-tg");
+      if (shareSouvenirBtn) shareSouvenirBtn.innerHTML = `<span>📢</span> ${dict.share_polaroid_btn}`;
+      const gotoPassBtn = document.getElementById("btn-finish-checkin");
+      if (gotoPassBtn) gotoPassBtn.innerText = dict.goto_pass_btn;
+
+      // Modal Souvenir
+      const souvModalTitle = document.getElementById("souvenir-modal-title");
+      if (souvModalTitle) souvModalTitle.innerText = dict.souvenir_modal_title;
+      const btnDlSouvModal = document.getElementById("btn-dl-souvenir-modal");
+      if (btnDlSouvModal) btnDlSouvModal.innerHTML = `📥 ${dict.download_png}`;
+      const btnShareSouvModal = document.getElementById("btn-share-souvenir-modal");
+      if (btnShareSouvModal) btnShareSouvModal.innerHTML = `📢 ${dict.share_btn}`;
+
+      // Modal Language
+      const langModalTitle = document.getElementById("lang-modal-title");
+      if (langModalTitle) langModalTitle.innerText = dict.lang_modal_title;
+      const langModalSub = document.getElementById("lang-modal-sub");
+      if (langModalSub) langModalSub.innerText = dict.lang_modal_sub;
+
+      // Re-render components with localized text
+      renderQuests();
+      renderStampsGrid();
+      renderSouvenirsGallery();
+    }
+
+    let userState = { xp: 0, level: 1, stamps: [], wallet_address: "", souvenirs: {} };
+    let activeCityGlobal = "roma";
+    let activeSiteKey = "colosseo";
+    let map = null;
+    let markers = {};
+    let tempCompressedPhoto = null;
+    let currentSouvenirDataUrl = null;
+
+    // GRANDI QUEST CULTURALI ($MEETO TOURS NAZIONALI) CON TRADUZIONI
+    const CULTURAL_QUESTS = [
+      {
+        id: "quest_imperiale",
+        icon: "🏛️",
+        monuments: ["colosseo", "pantheon", "arco_augusto_aosta"],
+        bonusXp: 500,
+        it: { title: "Rotta Imperiale Romana", desc: "Visita i simboli dell'Impero da Roma fino alle Alpi.", badgeName: "Imperatore dell'Arte" },
+        en: { title: "Roman Imperial Route", desc: "Visit the symbols of the Empire from Rome to the Alps.", badgeName: "Emperor of Art" },
+        es: { title: "Ruta Imperial Romana", desc: "Visita los símbolos del Imperio desde Roma hasta los Alpes.", badgeName: "Emperador del Arte" },
+        fr: { title: "Route Impériale Romaine", desc: "Visitez les symboles de l'Empire de Rome aux Alpes.", badgeName: "Empereur de l'Art" },
+        de: { title: "Römische Kaiserroute", desc: "Besuchen Sie die Symbole des Kaiserreichs von Rom bis zu den Alpen.", badgeName: "Kaiser der Kunst" }
+      },
+      {
+        id: "quest_rinascimento",
+        icon: "🎨",
+        monuments: ["piazza_duomo_firenze", "piazza_campo", "piazza_miracoli"],
+        bonusXp: 400,
+        it: { title: "Tris del Rinascimento Toscano", desc: "Firenze, Siena e Pisa: i cuori dell'Umanesimo.", badgeName: "Maestro Rinascimentale" },
+        en: { title: "Tuscan Renaissance Trio", desc: "Florence, Siena and Pisa: the heart of Humanism.", badgeName: "Renaissance Master" },
+        es: { title: "Trío del Renacimiento Toscano", desc: "Florencia, Siena y Pisa: el corazón del Humanismo.", badgeName: "Maestro Renacentista" },
+        fr: { title: "Trio de la Renaissance Toscane", desc: "Florence, Sienne et Pise : le cœur de l'Humanisme.", badgeName: "Maître de la Renaissance" },
+        de: { title: "Toskanisches Renaissance-Trio", desc: "Florenz, Siena und Pisa: die Herzen des Humanismus.", badgeName: "Renaissance-Meister" }
+      },
+      {
+        id: "quest_sicilia",
+        icon: "🌋",
+        monuments: ["valle_templi", "teatro_greco_siracusa", "duomo_catania", "cattedrale_palermo"],
+        bonusXp: 600,
+        it: { title: "Magna Grecia & Sicilia Antica", desc: "Dalla Valle dei Templi di Agrigento a Ortigia e Catania.", badgeName: "Eroe della Magna Grecia" },
+        en: { title: "Magna Graecia & Ancient Sicily", desc: "From the Valley of the Temples to Ortigia and Catania.", badgeName: "Hero of Magna Graecia" },
+        es: { title: "Magna Grecia y Sicilia Antigua", desc: "Del Valle de los Templos a Ortigia y Catania.", badgeName: "Héroe de la Magna Grecia" },
+        fr: { title: "Grande-Grèce & Sicile Antique", desc: "De la Vallée des Temples à Ortigia et Catane.", badgeName: "Héros de la Grande-Grèce" },
+        de: { title: "Magna Graecia & Antikes Sizilien", desc: "Vom Tal der Tempel bis Ortigia und Catania.", badgeName: "Held von Magna Graecia" }
+      },
+      {
+        id: "quest_sud",
+        icon: "🏰",
+        monuments: ["sassi_matera", "castel_del_monte", "piazza_duomo_lecce"],
+        bonusXp: 450,
+        it: { title: "Pietra & Castelli del Sud", desc: "I Sassi rupestri di Matera, Castel del Monte e Lecce.", badgeName: "Custode del Sud" },
+        en: { title: "Stone & Castles of the South", desc: "Matera cave dwellings, Castel del Monte and Baroque Lecce.", badgeName: "Guardian of the South" },
+        es: { title: "Piedra y Castillos del Sur", desc: "Los Sassi de Matera, Castel del Monte y Lecce.", badgeName: "Guardián del Sur" },
+        fr: { title: "Pierre & Châteaux du Sud", desc: "Les Sassi de Matera, Castel del Monte et Lecce.", badgeName: "Gardien du Sud" },
+        de: { title: "Stein & Schlösser des Südens", desc: "Die Höhlen von Matera, Castel del Monte und Lecce.", badgeName: "Wächter des Südens" }
+      }
+    ];
+
+    // Toast non bloccante
+    function showToast(msg, icon = "✨") {
+      const c = document.getElementById("toast-container");
+      if (!c) return;
+      const b = document.createElement("div");
+      b.className = "toast-box";
+      b.innerHTML = `<span>${icon}</span><span style="flex:1;">${msg}</span>`;
+      c.appendChild(b);
+      setTimeout(() => { b.remove(); }, 3200);
+    }
+
+    // Inizializzazione con applicazione istantanea della lingua salvata
+    window.addEventListener("DOMContentLoaded", () => {
+      loadState();
+      buildCitySelector();
+      initMap();
+      fetchLiveMarketData();
+      applyLanguage();
+    });
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem("meeto_user_state");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          userState = {
+            xp: parsed.xp || 0,
+            level: parsed.level || 1,
+            stamps: parsed.stamps || [],
+            wallet_address: parsed.wallet_address || "",
+            souvenirs: parsed.souvenirs || {}
+          };
+        }
+      } catch (e) {}
+      updateUI();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem("meeto_user_state", JSON.stringify(userState));
+      } catch (e) {}
+      updateUI();
+    }
+
+    function updateUI() {
+      document.getElementById("top-xp-val").innerText = `${userState.xp} XP`;
+      document.getElementById("pass-xp").innerText = userState.xp;
+      document.getElementById("pass-level").innerText = userState.level || 1;
+      document.getElementById("pass-stamps").innerText = userState.stamps.length;
+
+      const wInput = document.getElementById("wallet-input");
+      if (wInput && userState.wallet_address) wInput.value = userState.wallet_address;
+
+      renderStampsGrid();
+      renderQuests();
+      renderSouvenirsGallery();
+    }
+
+    function renderQuests() {
+      const qc = document.getElementById("quests-container");
+      if (!qc) return;
+      qc.innerHTML = "";
+      const dict = I18N[currentLang] || I18N.it;
+
+      CULTURAL_QUESTS.forEach(q => {
+        const qLoc = q[currentLang] || q.it;
+        const doneCount = q.monuments.filter(mId => userState.stamps.includes(mId)).length;
+        const total = q.monuments.length;
+        const pct = Math.round((doneCount / total) * 100);
+        const isComplete = doneCount === total;
+
+        const card = document.createElement("div");
+        card.style = `padding: 10px; border-radius: 12px; background: rgba(0,0,0,0.5); border: 1px solid ${isComplete ? '#10B981' : '#3F3F46'}; display: flex; flex-direction: column; gap: 6px;`;
+        
+        let tagsHtml = "";
+        q.monuments.forEach(mId => {
+          const m = getLocalizedMonument(mId, currentLang);
+          const has = userState.stamps.includes(mId);
+          tagsHtml += `<span style="font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; background: ${has ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.06)'}; color: ${has ? '#34D399' : '#A1A1AA'}; border: 1px solid ${has ? '#10B981' : '#27272A'};">${has ? '✅ ' : '⏳ '}${m ? m.name.split('&')[0].trim() : mId}</span> `;
+        });
+
+        card.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="font-size: 11px; color: #FFF; display: flex; align-items: center; gap: 4px;">
+              <span>${q.icon}</span> ${qLoc.title}
+            </strong>
+            <span style="font-size: 9px; font-family: monospace; font-weight: bold; color: ${isComplete ? '#34D399' : '#F59E0B'};">
+              ${isComplete ? dict.quest_completed : `+${q.bonusXp} XP`}
+            </span>
+          </div>
+          <div style="width: 100%; height: 5px; border-radius: 3px; background: #27272A; overflow: hidden;">
+            <div style="width: ${pct}%; height: 100%; background: ${isComplete ? '#10B981' : 'linear-gradient(90deg, #F59E0B, #EAB308)'}; transition: width 0.3s;"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 9px; color: #94A3B8; font-family: monospace;">
+            <span>${dict.progress_lbl} ${doneCount}/${total} ${dict.monuments_count} (${pct}%)</span>
+            <span>${dict.title_lbl} ${qLoc.badgeName}</span>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px;">
+            ${tagsHtml}
+          </div>
+        `;
+        qc.appendChild(card);
+      });
+    }
+
+    function renderSouvenirsGallery() {
+      const g = document.getElementById("passport-souvenirs-grid");
+      const badge = document.getElementById("souvenirs-count-badge");
+      if (!g) return;
+      const dict = I18N[currentLang] || I18N.it;
+
+      const keys = Object.keys(userState.souvenirs || {});
+      if (badge) badge.innerText = `${keys.length} ${dict.postcards_count}`;
+
+      if (keys.length === 0) {
+        g.innerHTML = `<div style="grid-column: span 3; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 10px; text-align: center; font-size: 10px; color: #71717A;">${dict.no_souvenirs_msg}</div>`;
+        return;
+      }
+
+      g.innerHTML = "";
+      keys.forEach(k => {
+        const mon = getLocalizedMonument(k, currentLang);
+        const dataUrl = userState.souvenirs[k];
+        const item = document.createElement("div");
+        item.style = "position: relative; border-radius: 8px; overflow: hidden; border: 1px solid rgba(212,175,55,0.4); cursor: pointer; background: #000;";
+        item.innerHTML = `
+          <img src="${dataUrl}" alt="${mon ? mon.name : 'Souvenir'}" style="width: 100%; height: 90px; object-fit: cover; display: block;" />
+          <span style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.85); color: #FDE68A; font-size: 8px; padding: 2px 4px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; text-align: center; font-weight: bold;">
+            ${mon ? mon.name : k}
+          </span>
+        `;
+        item.onclick = () => openSouvenirModal(dataUrl, mon ? mon.name : 'Souvenir');
+        g.appendChild(item);
+      });
+    }
+
+    function renderStampsGrid() {
+      const g = document.getElementById("passport-stamps-grid");
+      if (!g) return;
+      const dict = I18N[currentLang] || I18N.it;
+      if (!userState.stamps || userState.stamps.length === 0) {
+        g.innerHTML = `<div style="grid-column: span 2; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 10px; text-align: center; font-size: 11px; color: #71717A;">${dict.no_stamps_msg}</div>`;
+        return;
+      }
+      g.innerHTML = "";
+      userState.stamps.forEach(key => {
+        const s = getLocalizedMonument(key, currentLang);
+        if (!s) return;
+        const hasSouvenir = userState.souvenirs && userState.souvenirs[key];
+        const div = document.createElement("div");
+        div.style = "padding: 8px 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(212,175,55,0.3); border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 6px;";
+        div.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
+            <span style="font-size: 18px;">✅</span>
+            <div style="overflow: hidden;">
+              <strong style="font-size: 11px; color: #FFF; display: block; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">${s.name}</strong>
+              <span style="font-size: 9px; color: #F59E0B; font-family: monospace;">${s.city}</span>
+            </div>
+          </div>
+          ${hasSouvenir ? `<button onclick="openSouvenirModal(userState.souvenirs['${key}'], '${s.name}')" style="background: rgba(245,158,11,0.15); border: 1px solid #F59E0B; color: #FDE68A; padding: 3px 6px; border-radius: 6px; font-size: 9px; cursor: pointer;">📸</button>` : ''}
+        `;
+        g.appendChild(div);
+      });
+    }
+
+    function buildCitySelector() {
+      const bar = document.getElementById("city-buttons-bar");
+      const sel = document.getElementById("travel-city-select");
+      if (bar) bar.innerHTML = "";
+      if (sel) sel.innerHTML = "";
+
+      CITIES_DATA.forEach(c => {
+        if (bar) {
+          const btn = document.createElement("button");
+          btn.id = `btn-city-${c.slug}`;
+          btn.className = "hdr-btn";
+          btn.style.borderRadius = "20px";
+          btn.style.fontSize = "11px";
+          btn.innerHTML = `<span>${c.icon}</span><span>${c.name}</span>`;
+          btn.onclick = () => setGlobalCity(c.slug);
+          bar.appendChild(btn);
+        }
+        if (sel) {
+          const opt = document.createElement("option");
+          opt.value = c.slug;
+          opt.innerText = `${c.icon} ${c.name} (${c.region})`;
+          sel.appendChild(opt);
+        }
+      });
+
+      if (bar) {
+        // Selettore Stile Mappa (Scuro / Standard OSM / Satellite - ZERO API KEY)
+        const styleBtn = document.createElement("button");
+        styleBtn.id = "map-style-toggle-btn";
+        styleBtn.className = "hdr-btn";
+        styleBtn.style.borderRadius = "20px";
+        styleBtn.style.fontSize = "11px";
+        styleBtn.style.background = "rgba(0,0,0,0.85)";
+        styleBtn.style.whiteSpace = "nowrap";
+        styleBtn.innerText = "🗺️ Classica";
+        styleBtn.onclick = toggleMapStyle;
+        bar.appendChild(styleBtn);
+
+        // GPS Button
+        const gpsBtn = document.createElement("button");
+        gpsBtn.className = "btn-gold";
+        gpsBtn.style.borderRadius = "20px";
+        gpsBtn.style.padding = "0 12px";
+        gpsBtn.style.height = "32px";
+        gpsBtn.style.fontSize = "11px";
+        gpsBtn.style.whiteSpace = "nowrap";
+        gpsBtn.innerHTML = "🎯 GPS";
+        gpsBtn.onclick = getUserLocation;
+        bar.appendChild(gpsBtn);
+      }
+    }
+
+    function getUserLocation() {
+      if (navigator.geolocation) {
+        showToast("Rilevamento GPS in corso...", "📍");
+        navigator.geolocation.getCurrentPosition(pos => {
+          if (map) {
+            map.flyTo([pos.coords.latitude, pos.coords.longitude], 15);
+            showToast("Posizione GPS rilevata!", "🎯");
+          }
+        }, () => {
+          showToast("Impossibile accedere al GPS", "❌");
+        });
+      }
+    }
+
+    // Inizializzazione Mappa (ZERO API KEY RICHIESTA - Funziona al 100% su GitHub Pages)
+    let currentTileLayer = null;
+    let currentRefLayer = null;
+    let currentMapStyle = 'osm'; // Default: 'osm' (Cartina Classica coi nomi di città, vie e regioni)
+
+    const MAP_LAYERS = {
+      osm: {
+        url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        options: { maxZoom: 19, attribution: "© OpenStreetMap contributors" },
+        hasRef: false
+      },
+      dark: {
+        url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+        refUrl: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}",
+        options: { maxZoom: 18, attribution: "© Esri, OpenStreetMap" },
+        hasRef: true
+      },
+      sat: {
+        url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        refUrl: "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",
+        options: { maxZoom: 18, attribution: "© Esri, Maxar" },
+        hasRef: true
+      }
+    };
+
+    function setMapStyle(style) {
+      if (!map) return;
+      currentMapStyle = style;
+      if (currentTileLayer) {
+        map.removeLayer(currentTileLayer);
+        currentTileLayer = null;
+      }
+      if (currentRefLayer) {
+        map.removeLayer(currentRefLayer);
+        currentRefLayer = null;
+      }
+
+      const cfg = MAP_LAYERS[style] || MAP_LAYERS.osm;
+      currentTileLayer = L.tileLayer(cfg.url, cfg.options).addTo(map);
+
+      if (cfg.hasRef && cfg.refUrl) {
+        currentRefLayer = L.tileLayer(cfg.refUrl, { maxZoom: cfg.options.maxZoom, zIndex: 500 }).addTo(map);
+      }
+
+      // Aggiorna pulsante stile
+      const styleBtn = document.getElementById("map-style-toggle-btn");
+      if (styleBtn) {
+        styleBtn.innerText = style === 'osm' ? '🗺️ Classica' : (style === 'dark' ? '🌙 Dark Gold' : '🛰️ Satellite');
+      }
+    }
+
+    function toggleMapStyle() {
+      const next = currentMapStyle === 'osm' ? 'dark' : (currentMapStyle === 'dark' ? 'sat' : 'osm');
+      setMapStyle(next);
+      showToast("Stile Mappa: " + (next === 'osm' ? 'Cartina Classica (Nomi e Strade)' : (next === 'dark' ? 'Dark Gold' : 'Satellite')), "🗺️");
+    }
+
+    function initMap() {
+      if (!window.L) {
+        setTimeout(initMap, 100);
+        return;
+      }
+      const initial = MONUMENTS[activeSiteKey];
+      map = L.map("map", { zoomControl: false, attributionControl: false }).setView([initial.lat, initial.lng], 14);
+      L.control.zoom({ position: "topright" }).addTo(map);
+
+      // Carica la cartina classica con tutti i nomi delle città e regioni (OpenStreetMap)
+      setMapStyle('osm');
+
+      Object.keys(MONUMENTS).forEach(key => {
+        const m = MONUMENTS[key];
+        const icon = L.divIcon({
+          className: "custom-marker-icon",
+          html: `<div style="width: 28px; height: 28px; background: radial-gradient(circle, #fde047 0%, #b45309 100%); border: 2px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(245,158,11,0.6); transform: translate(-50%,-50%); cursor: pointer; font-size: 13px;">🏛️</div>`,
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        });
+
+        const marker = L.marker([m.lat, m.lng], { icon }).addTo(map);
+        marker.on("click", () => {
+          selectMonument(key);
+        });
+        markers[key] = marker;
+      });
+
+      setGlobalCity("roma");
+    }
+
+    function setGlobalCity(slug) {
+      activeCityGlobal = slug;
+      CITIES_DATA.forEach(c => {
+        const b = document.getElementById(`btn-city-${c.slug}`);
+        if (b) {
+          if (c.slug === slug) {
+            b.style.background = "#F59E0B";
+            b.style.color = "#000";
+            b.style.borderColor = "#FDE68A";
+          } else {
+            b.style.background = "rgba(18, 21, 31, 0.85)";
+            b.style.color = "#FDE68A";
+            b.style.borderColor = "rgba(212, 175, 55, 0.35)";
+          }
+        }
+      });
+
+      const sel = document.getElementById("travel-city-select");
+      if (sel) sel.value = slug;
+
+      const cityNameEl = document.getElementById("travel-target-city-name");
+      const currentMeta = CITIES_DATA.find(c => c.slug === slug);
+      if (cityNameEl && currentMeta) cityNameEl.innerText = currentMeta.name;
+
+      const firstSite = Object.keys(MONUMENTS).find(k => MONUMENTS[k].city_slug === slug);
+      if (firstSite) {
+        selectMonument(firstSite);
+      }
+    }
+
+    function selectMonument(key) {
+      activeSiteKey = key;
+      const s = getLocalizedMonument(key, currentLang) || MONUMENTS[key];
+      if (!s) return;
+
+      if (map) map.flyTo([s.lat, s.lng], 15, { duration: 0.8 });
+
+      document.getElementById("sheet-title").innerText = s.name.toUpperCase();
+      document.getElementById("sheet-city").innerText = s.city.toUpperCase();
+      document.getElementById("sheet-era").innerText = s.era || "";
+      document.getElementById("sheet-desc").innerText = s.desc;
+      document.getElementById("sheet-wiki").href = s.wiki;
+
+      // Carosello monumenti
+      const dict = I18N[currentLang] || I18N.it;
+      const citySites = Object.keys(MONUMENTS).filter(k => MONUMENTS[k].city_slug === s.city_slug);
+      const car = document.getElementById("city-monuments-carousel");
+      document.getElementById("carousel-count").innerText = `${citySites.length} ${dict.monuments_count}`;
+      car.innerHTML = "";
+
+      citySites.forEach(k => {
+        const mon = getLocalizedMonument(k, currentLang) || MONUMENTS[k];
+        const btn = document.createElement("button");
+        const isActive = k === key;
+        btn.style = `padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; white-space: nowrap; cursor: pointer; border: 1px solid ${isActive ? '#F59E0B' : '#3F3F46'}; background: ${isActive ? '#F59E0B' : '#18181B'}; color: ${isActive ? '#000' : '#E4E4E7'};`;
+        btn.innerText = mon.name;
+        btn.onclick = () => selectMonument(k);
+        car.appendChild(btn);
+      });
+    }
+
+    // MOTORE DI COMPRESSIONE CLIENT-SIDE IMMAGINI (Evita OOM e limite 5MB localStorage)
+    function handleOptimizedLivePhoto(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const startTime = performance.now();
+      const originalSize = file.size;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          const maxDim = 900;
+          if (width > maxDim || height > maxDim) {
+            const ratio = Math.min(maxDim / width, maxDim / height);
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+          }
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Compressione JPEG 0.75
+          tempCompressedPhoto = canvas.toDataURL("image/jpeg", 0.75);
+          const compressedSize = Math.round((tempCompressedPhoto.length * 3) / 4);
+          const duration = Math.round(performance.now() - startTime);
+          const saving = Math.round((1 - (compressedSize / originalSize)) * 100);
+
+          document.getElementById("photo-preview-img").src = tempCompressedPhoto;
+          document.getElementById("photo-stats-badge").innerText = `⚡ Ottimizzato: ${(compressedSize/1024).toFixed(1)} KB (-${saving}% RAM in ${duration}ms)`;
+          document.getElementById("photo-preview-container").style.display = "block";
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function openCheckInModal() {
+      const s = getLocalizedMonument(activeSiteKey, currentLang) || MONUMENTS[activeSiteKey];
+      if (!s) return;
+
+      document.getElementById("modal-monument-name").innerText = s.name;
+      document.getElementById("step-quiz").style.display = "block";
+      document.getElementById("step-photo").style.display = "none";
+      document.getElementById("step-gps").style.display = "none";
+      document.getElementById("step-success").style.display = "none";
+
+      const q = s.quiz;
+      document.getElementById("quiz-question-text").innerText = q.question;
+
+      const c = document.getElementById("quiz-options-container");
+      c.innerHTML = "";
+      const dict = I18N[currentLang] || I18N.it;
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.style = "width: 100%; text-align: left; padding: 10px; border-radius: 10px; background: rgba(0,0,0,0.6); border: 1px solid #3F3F46; color: #FFF; font-size: 11px; font-weight: bold; cursor: pointer;";
+        btn.innerText = opt;
+        btn.onclick = () => {
+          if (idx === q.correct) {
+            document.getElementById("step-quiz").style.display = "none";
+            document.getElementById("step-photo").style.display = "block";
+          } else {
+            showToast(dict.quiz_wrong_msg || "Risposta non corretta, riprova!", "❌");
+          }
+        };
+        c.appendChild(btn);
+      });
+
+      document.getElementById("checkin-modal").style.display = "flex";
+    }
+
+    function closeCheckInModal() {
+      document.getElementById("checkin-modal").style.display = "none";
+    }
+
+    function proceedToGPS() {
+      document.getElementById("step-photo").style.display = "none";
+      document.getElementById("step-gps").style.display = "block";
+    }
+
+    function verifyGPSAndSave() {
+      document.getElementById("gps-status-msg").innerText = "📍 Convalida coordinate satellitari...";
+      setTimeout(() => {
+        userState.xp += 100;
+        if (!userState.stamps.includes(activeSiteKey)) {
+          userState.stamps.push(activeSiteKey);
+        }
+        userState.level = Math.floor(userState.xp / 300) + 1;
+
+        // Genera la Cartolina Polaroid Souvenir ad alta risoluzione
+        const souvenirPng = generatePolaroidSouvenir(activeSiteKey, tempCompressedPhoto);
+        currentSouvenirDataUrl = souvenirPng;
+        if (!userState.souvenirs) userState.souvenirs = {};
+        userState.souvenirs[activeSiteKey] = souvenirPng;
+
+        saveState();
+
+        const previewImg = document.getElementById("souvenir-preview-img");
+        if (previewImg) previewImg.src = souvenirPng;
+
+        document.getElementById("step-gps").style.display = "none";
+        document.getElementById("step-success").style.display = "block";
+        showToast("Timbro & Cartolina Polaroid Sbloccati!", "🎉");
+      }, 900);
+    }
+
+    // GENERATORE CANVAS POLAROID SOUVENIR (Zero librerie, 100% nativo)
+    function generatePolaroidSouvenir(siteKey, photoDataUrl) {
+      const dict = I18N[currentLang] || I18N.it;
+      const site = getLocalizedMonument(siteKey, currentLang) || MONUMENTS[siteKey] || { name: "Monumento Storico", city: "Italia", era: "Patrimonio", lat: 41.9, lng: 12.5 };
+      const canvas = document.createElement("canvas");
+      canvas.width = 640;
+      canvas.height = 780;
+      const ctx = canvas.getContext("2d");
+
+      // Sfondo Avorio Vintage Polaroid
+      ctx.fillStyle = "#FDFBF7";
+      ctx.fillRect(0, 0, 640, 780);
+
+      // Cornice dorata
+      ctx.strokeStyle = "#D4AF37";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(10, 10, 620, 760);
+      ctx.strokeStyle = "rgba(212, 175, 55, 0.35)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(16, 16, 608, 748);
+
+      // Area Foto
+      ctx.fillStyle = "#0A0D14";
+      ctx.fillRect(30, 30, 580, 480);
+
+      if (photoDataUrl) {
+        const img = new Image();
+        img.src = photoDataUrl;
+        ctx.drawImage(img, 30, 30, 580, 480);
+      } else {
+        ctx.fillStyle = "#18181B";
+        ctx.fillRect(30, 30, 580, 480);
+        ctx.fillStyle = "#F59E0B";
+        ctx.font = "bold 70px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("🏛️", 320, 280);
+      }
+
+      // Timbro Postale Vintage Circolare Rosso (in alto a destra)
+      ctx.save();
+      ctx.translate(530, 95);
+      ctx.rotate(-0.14);
+      ctx.strokeStyle = "#DC2626";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(0, 0, 42, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0, 0, 37, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = "#DC2626";
+      ctx.font = "bold 8px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("★ $MEETO PASSPORT ★", 0, -18);
+      ctx.font = "bold 11px monospace";
+      ctx.fillText("VERIFIED", 0, 3);
+      const now = new Date();
+      ctx.font = "bold 8px monospace";
+      ctx.fillText(now.toLocaleDateString(currentLang === 'en' ? 'en-US' : (currentLang === 'es' ? 'es-ES' : (currentLang === 'fr' ? 'fr-FR' : (currentLang === 'de' ? 'de-DE' : 'it-IT')))), 0, 20);
+      ctx.restore();
+
+      // Testi Cartolina
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#18181B";
+      ctx.font = "bold 22px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText(site.name.toUpperCase(), 36, 555);
+
+      ctx.fillStyle = "#B45309";
+      ctx.font = "bold 12px monospace";
+      ctx.fillText(site.city.toUpperCase() + " • " + (site.era || "PATRIMONIO CULTURALE"), 36, 582);
+
+      // Separatore
+      ctx.strokeStyle = "#E4E4E7";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(36, 604);
+      ctx.lineTo(604, 604);
+      ctx.stroke();
+
+      // Dettagli Esploratore & Geodati
+      ctx.fillStyle = "#52525B";
+      ctx.font = "12px sans-serif";
+      const userDisplayName = (window.currentUser && window.currentUser.first_name) ? window.currentUser.first_name : "Explorer";
+      ctx.fillText((dict.polaroid_explorer || "ESPLORATORE: ") + userDisplayName, 36, 635);
+      ctx.fillText((dict.polaroid_coords || "COORDINATE: ") + site.lat.toFixed(4) + "°N, " + site.lng.toFixed(4) + "°E", 36, 660);
+      ctx.fillText((dict.polaroid_cert || "CERTIFICATO UFFICIALE: +100 XP ASSEGNATI"), 36, 685);
+
+      // Logo $MEETO in basso a destra
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#D97706";
+      ctx.font = "bold 20px 'Plus Jakarta Sans', sans-serif";
+      ctx.fillText("$MEETO", 604, 735);
+      ctx.fillStyle = "#71717A";
+      ctx.font = "bold 9px monospace";
+      ctx.fillText("CULTURAL TRAVEL PASSPORT", 604, 752);
+
+      return canvas.toDataURL("image/png");
+    }
+
+    function downloadCurrentSouvenir() {
+      if (!currentSouvenirDataUrl) return;
+      const a = document.createElement("a");
+      a.href = currentSouvenirDataUrl;
+      a.download = `meeto-souvenir-${activeSiteKey}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast("Download cartolina avviato!", "📥");
+    }
+
+    function shareSouvenirTelegram() {
+      const site = MONUMENTS[activeSiteKey];
+      const monName = site ? site.name : "un monumento";
+      const text = encodeURIComponent(`🏛️ Ho appena visitato ${monName} e sbloccato la Cartolina Souvenir Polaroid su $MEETO Passaporto Culturale!`);
+      const url = `https://t.me/share/url?url=https://t.me/MeetoOfficialBot&text=${text}`;
+      const tg = window.Telegram?.WebApp;
+      if (tg && typeof tg.openTelegramLink === 'function') {
+        tg.openTelegramLink(url);
+      } else {
+        window.open(url, '_blank');
+      }
+    }
+
+    let modalActiveImg = null;
+    let modalActiveName = "";
+
+    function openSouvenirModal(imgSrc, title) {
+      modalActiveImg = imgSrc;
+      modalActiveName = title;
+      const modal = document.getElementById("souvenir-modal");
+      const img = document.getElementById("souvenir-modal-img");
+      const t = document.getElementById("souvenir-modal-title");
+      if (modal && img) {
+        img.src = imgSrc;
+        if (t) t.innerText = `Cartolina: ${title}`;
+        modal.style.display = "flex";
+      }
+    }
+
+    function closeSouvenirModal() {
+      const modal = document.getElementById("souvenir-modal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function downloadSouvenirFromModal() {
+      if (!modalActiveImg) return;
+      const a = document.createElement("a");
+      a.href = modalActiveImg;
+      a.download = `meeto-cartolina-${modalActiveName.replace(/\\s+/g, '_')}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast("Cartolina scaricata con successo!", "📥");
+    }
+
+    function shareModalSouvenirTelegram() {
+      const text = encodeURIComponent(`📜 Guarda la mia Cartolina Souvenir ufficiale di ${modalActiveName} sul Passaporto Culturale $MEETO!`);
+      const url = `https://t.me/share/url?url=https://t.me/MeetoOfficialBot&text=${text}`;
+      window.open(url, '_blank');
+    }
+
+    function finishCheckIn() {
+      closeCheckInModal();
+      switchTab("passport");
+    }
+
+    function switchTab(tabId) {
+      ["map", "travel", "passport", "token"].forEach(t => {
+        const el = document.getElementById(`tab-${t}`);
+        if (el) el.style.display = t === tabId ? (t === "map" ? "block" : "block") : "none";
+        const btn = document.getElementById(`nav-${t}`);
+        if (btn) btn.style.color = t === tabId ? "#F59E0B" : "#71717A";
+      });
+
+      if (tabId === "map" && map) {
+        setTimeout(() => map.invalidateSize(), 100);
+      }
+      window.scrollTo(0, 0);
+    }
+
+    // Utility di Copia Asincrona Robusta
+    async function copyToClipboard(text, msg) {
+      try {
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const t = document.createElement("textarea");
+          t.value = text;
+          document.body.appendChild(t);
+          t.select();
+          document.execCommand("copy");
+          t.remove();
+        }
+        showToast(msg, "📋");
+      } catch (e) {
+        showToast("Copiato: " + text.slice(0, 10) + "...", "📋");
+      }
+    }
+
+    function copyContractAddress() {
+      copyToClipboard(TOKEN_CA, "Contract Address (CA) Copiato!");
+    }
+
+    function copyTreasuryAddress() {
+      copyToClipboard(TREASURY_WALLET, "Treasury Wallet Copiato!");
+    }
+
+    function shareOnTelegram() {
+      const botUser = "MeetoOfficialBot";
+      const text = encodeURIComponent(`🏛️ Ho sbloccato ${userState.stamps.length} timbri e ${userState.xp} XP sul mio Passaporto Culturale $MEETO!`);
+      const url = `https://t.me/share/url?url=https://t.me/${botUser}&text=${text}`;
+      const tg = window.Telegram?.WebApp;
+      if (tg && typeof tg.openTelegramLink === 'function') {
+        tg.openTelegramLink(url);
+      } else {
+        window.open(url, '_blank');
+      }
+    }
+
+    function saveUserWallet() {
+      const v = document.getElementById("wallet-input").value.trim();
+      if (v.length < 32 || v.length > 44) {
+        showToast("Indirizzo Solana non valido (32-44 car)", "❌");
+        return;
+      }
+      userState.wallet_address = v;
+      saveState();
+      showToast("Wallet salvato con successo!", "✅");
+    }
+
+    async function connectPhantomWallet() {
+      try {
+        const solana = window.solana || window.phantom?.solana;
+        if (solana && solana.isPhantom) {
+          const res = await solana.connect();
+          const addr = res.publicKey.toString();
+          document.getElementById("wallet-input").value = addr;
+          userState.wallet_address = addr;
+          saveState();
+          showToast("Phantom Connesso: " + addr.slice(0, 6) + "...", "👻");
+        } else {
+          const targetUrl = encodeURIComponent("https://meetotoken.github.io/meeto-app-dev");
+          window.open(`https://phantom.app/ul/browse/${targetUrl}?ref=${targetUrl}`, "_blank");
+          showToast("Apertura su Phantom Browser...", "👻");
+        }
+      } catch (err) {
+        showToast("Connessione annullata", "❌");
+      }
+    }
+
+    async function fetchLiveMarketData() {
+      try {
+        const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${TOKEN_CA}`);
+        const data = await res.json();
+        if (data.pairs && data.pairs.length > 0) {
+          const pair = data.pairs[0];
+          const price = parseFloat(pair.priceUsd);
+          const fdv = pair.fdv || pair.marketCap || (price * 1000000000);
+          if (price > 0) {
+            document.getElementById("token-price-usd").innerText = "$" + price.toFixed(8);
+            document.getElementById("token-mcap-usd").innerText = "$" + (fdv >= 1000 ? (fdv / 1000).toFixed(2) + "K" : Math.round(fdv));
+          }
+        }
+      } catch (e) {}
+    }
+  </script>
+</body>
+</html>
