@@ -1069,13 +1069,14 @@
       msg.innerText = "✅ Wallet salvato con successo!";
     }
 
-    // Funzione aggiornata per la connessione diretta su Desktop e via Deep Link su Mobile / Telegram Mini App
+    // Funzione aggiornata per la gestione del Wallet (Desktop, Mobile e Telegram Mini App)
     async function connectPhantomWallet() {
       const msg = document.getElementById("wallet-status-msg");
       try {
         const provider = window.solana || window.phantom?.solana;
+        
+        // 1. Se siamo su PC (estensione browser) o già dentro il browser interno di Phantom
         if (provider && provider.isPhantom) {
-          // Connessione per PC / Browser con estensione Phantom installata
           const response = await provider.connect();
           const address = response.publicKey.toString();
           document.getElementById("wallet-input").value = address;
@@ -1085,16 +1086,21 @@
             msg.innerText = "✅ Wallet connesso: " + address.substring(0, 6) + "..." + address.substring(address.length - 4);
           }
         } else {
-          // Connessione per Mobile e Telegram Mini App via Deep Link ufficiale
-          const currentUrl = encodeURIComponent(window.location.href);
-          const refUrl = encodeURIComponent("https://meetotoken.github.io/Meeto/");
-          const phantomDeepLink = `https://phantom.app/ul/v1/connect?app_url=${refUrl}&redirect_link=${currentUrl}`;
+          // 2. Se siamo dentro Telegram o su un browser mobile standard, apriamo l'app Phantom direttamente
+          const targetUrl = encodeURIComponent("https://meetotoken.github.io/Meeto/");
+          const phantomBrowseLink = `https://phantom.app/ul/browse/${targetUrl}?ref=${targetUrl}`;
           
           if (msg) {
             msg.className = "text-[10px] text-amber-300 font-bold";
-            msg.innerText = "🔄 Apertura dell'app Phantom...";
+            msg.innerText = "🔄 Apertura su Phantom Wallet in corso...";
           }
-          window.location.href = phantomDeepLink;
+
+          // Sfrutta l'API nativa di Telegram per aprire il link evitando l'errore ERR_UNKNOWN_URL_SCHEME
+          if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.openLink === 'function') {
+            window.Telegram.WebApp.openLink(phantomBrowseLink);
+          } else {
+            window.location.href = phantomBrowseLink;
+          }
         }
       } catch (err) {
         console.error("Connessione Phantom annullata:", err);
