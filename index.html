@@ -45,7 +45,7 @@
     .sheet-hidden { transform: translateY(120%); opacity: 0; pointer-events: none; }
     #monument-sheet { transition: transform 0.3s ease-out, opacity 0.3s ease-out; }
     
-    /* Header Action Button Styles - Rectangular with subtle rounded corners & identical height */
+    /* Header Action Button Styles */
     .hdr-btn {
       height: 32px;
       padding: 0 10px;
@@ -56,7 +56,7 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       display: inline-flex;
-      items-center;
+      align-items: center;
       justify-content: center;
       gap: 6px;
       font-size: 11px;
@@ -341,72 +341,126 @@
           </div>
         </div>
       </div>
+
+      <!-- Timbri Collezionati -->
+      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
+        <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+          <span>🏛️</span> Timbri Sbloccati nel Passaporto
+        </h3>
+        <div id="passport-stamps-grid" class="grid grid-cols-2 gap-2 text-xs">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
     </section>
 
-    <!-- ==================== TAB 4: TOKEN & TOKENOMICS ==================== -->
+    <!-- ==================== TAB 4: TOKEN $MEETO ==================== -->
     <section id="tab-token" class="w-full px-4 py-5 space-y-4 hidden">
-      <div class="glass-card rounded-2xl p-5 border border-amber-500/30 space-y-3">
-        <div class="flex justify-between items-start">
-          <div>
-            <span class="text-[10px] text-amber-400 uppercase font-mono font-bold" data-i18n="token_ecosystem">ECOSISTEMA TOKEN SOLANA</span>
-            <h2 class="text-lg font-black text-white gold-gradient-text uppercase leading-tight">$MEETO TOKENOMICS & DATI LIVE</h2>
-          </div>
-          <button onclick="fetchDexScreenerPrice()" class="px-3 py-1 rounded-xl bg-zinc-800 border border-zinc-700 text-xs text-amber-300 font-bold hover:bg-zinc-700 transition" data-i18n="refresh_btn">🔄 Aggiorna</button>
-        </div>
+      <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center">
+        <div class="text-4xl mb-1">🪙</div>
+        <h2 class="text-lg font-black text-white gold-gradient-text" data-i18n="token_ecosystem">ECOSISTEMA TOKEN SOLANA</h2>
+        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1">Utility token nativo per l'ecosistema del turismo culturale e della gamification su Solana.</p>
+      </div>
 
-        <!-- CONTRATTO (CA) COPY BAR -->
-        <div class="p-3 bg-black/60 rounded-xl border border-amber-500/30 flex justify-between items-center text-xs">
-          <div class="truncate mr-2">
-            <span class="text-[9px] text-zinc-400 font-mono uppercase font-bold block">Contract Address (CA)</span>
-            <span id="token-ca-text" class="font-mono font-extrabold text-amber-300 truncate text-xs select-all">4MPMa87vpump</span>
-          </div>
-          <button onclick="copyContractAddress()" class="px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-[11px] shrink-0 active:scale-95 transition shadow">
-            📋 Copia CA
+      <!-- Live Token Metrics -->
+      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
+        <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
+          <span class="text-xs font-bold text-white uppercase font-mono tracking-wider">$MEETO / SOL</span>
+          <button onclick="fetchDexScreenerPrice()" class="text-[10px] text-amber-300 hover:text-amber-200 font-bold px-2 py-1 bg-amber-500/10 border border-amber-500/30 rounded-lg active:scale-95 transition" data-i18n="refresh_btn">
+            🔄 Aggiorna
           </button>
         </div>
-
-        <!-- STATISTICHE LIVE PREZZO & MARKET CAP -->
-        <div class="grid grid-cols-2 gap-2.5 pt-1">
-          <div class="p-3 bg-black/50 rounded-xl border border-zinc-800">
-            <span class="text-[9px] text-zinc-400 uppercase font-mono font-bold block" data-i18n="price_lbl">PREZZO LIVE USD</span>
-            <div id="token-price-usd" class="text-base font-black text-emerald-400 mt-0.5">$0.000104</div>
+        <div class="grid grid-cols-2 gap-3 text-center">
+          <div class="bg-black/50 p-3 rounded-xl border border-zinc-800">
+            <div class="text-[9px] text-zinc-400 font-bold uppercase" data-i18n="price_lbl">PREZZO LIVE USD</div>
+            <div id="token-price-usd" class="text-base font-extrabold text-amber-400 font-mono mt-0.5">$0.000000</div>
           </div>
-          <div class="p-3 bg-black/50 rounded-xl border border-zinc-800">
-            <span class="text-[9px] text-zinc-400 uppercase font-mono font-bold block" data-i18n="mcap_lbl">MARKET CAP</span>
-            <div id="token-mcap-usd" class="text-base font-black text-white mt-0.5">$104,380</div>
+          <div class="bg-black/50 p-3 rounded-xl border border-zinc-800">
+            <div class="text-[9px] text-zinc-400 font-bold uppercase" data-i18n="mcap_lbl">MARKET CAP</div>
+            <div id="token-mcap-usd" class="text-base font-extrabold text-emerald-400 font-mono mt-0.5">$0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contract Address (CA) & Treasury -->
+      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
+        <div>
+          <label class="block text-[10px] font-bold uppercase tracking-wider text-amber-400 mb-1">Contract Address (Solana Mainnet CA):</label>
+          <div class="flex items-center gap-2 bg-black/60 p-2.5 rounded-xl border border-zinc-700">
+            <span id="token-ca-val" class="font-mono text-[11px] text-zinc-300 truncate flex-1 select-all">4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump</span>
+            <button onclick="copyContractAddress()" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-400 hover:bg-amber-300 text-black shrink-0 active:scale-95 transition">
+              📋 Copia CA
+            </button>
           </div>
         </div>
 
-        <!-- INFORMAZIONI GENERALI TOKEN -->
-        <div class="p-3.5 bg-black/40 rounded-xl border border-zinc-800 space-y-2 text-xs">
-          <div class="flex justify-between items-center border-b border-zinc-800/80 pb-1.5">
-            <span class="text-zinc-400 font-mono">Nome Token</span>
-            <span class="font-bold text-white">Meeto (MEETO)</span>
-          </div>
-          <div class="flex justify-between items-center border-b border-zinc-800/80 pb-1.5">
-            <span class="text-zinc-400 font-mono">Total Supply</span>
-            <span class="font-bold text-amber-300 font-mono">1,000,000,000</span>
-          </div>
-          <div class="flex justify-between items-center border-b border-zinc-800/80 pb-1.5">
-            <span class="text-zinc-400 font-mono">Decimali</span>
-            <span class="font-bold text-white font-mono">6</span>
+        <div>
+          <label class="block text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-1">Treasury & Rewards Wallet:</label>
+          <div class="flex items-center gap-2 bg-black/60 p-2.5 rounded-xl border border-zinc-800">
+            <span class="font-mono text-[11px] text-zinc-400 truncate flex-1 select-all">V8PKJ8vAPncNKYgGnSX7u4TgfdJuyA8bLUbLwKjFuyV</span>
+            <button onclick="copyTreasuryAddress()" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 text-zinc-200 shrink-0 active:scale-95 transition">
+              📋 Copia
+            </button>
           </div>
         </div>
+      </div>
 
-        <!-- LINK ESTERNI -->
-        <div class="grid grid-cols-2 gap-2.5 pt-1">
-          <a href="https://pump.fun/coin/4MPMa87vpump" target="_blank" 
-             class="py-2.5 px-3 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-yellow-500 text-black flex items-center justify-center gap-1.5 shadow-lg active:scale-95 transition">
-            <span>🚀</span> Grafico Pump.fun ↗
+      <!-- Tokenomics Ufficiale -->
+      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-3">
+        <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center justify-between">
+          <span>📊 Tokenomics Ufficiale</span>
+          <span class="text-[10px] text-amber-300 font-mono">1.000.000.000 $MEETO</span>
+        </h3>
+
+        <div class="space-y-2 text-xs">
+          <div class="p-2.5 bg-black/40 rounded-xl border border-zinc-800/80 flex justify-between items-center">
+            <div>
+              <span class="font-bold text-emerald-400 block">70% — Mercato Pubblico</span>
+              <span class="text-[10px] text-zinc-400">700M $MEETO per liquidità e circolante decentralizzato.</span>
+            </div>
+            <span class="font-mono font-bold text-white text-sm shrink-0 pl-2">700M</span>
+          </div>
+
+          <div class="p-2.5 bg-black/40 rounded-xl border border-zinc-800/80 flex justify-between items-center">
+            <div>
+              <span class="font-bold text-blue-400 block">20% — Organizzatori & Team</span>
+              <span class="text-[10px] text-zinc-400">200M $MEETO allocati per mantenimento e sviluppo.</span>
+            </div>
+            <span class="font-mono font-bold text-white text-sm shrink-0 pl-2">200M</span>
+          </div>
+
+          <div class="p-2.5 bg-black/40 rounded-xl border border-zinc-800/80 flex justify-between items-center">
+            <div>
+              <span class="font-bold text-amber-400 block">10% — Treasury & Rewards</span>
+              <span class="text-[10px] text-zinc-400">100M $MEETO riservati a incentivi ed esploratori.</span>
+            </div>
+            <span class="font-mono font-bold text-white text-sm shrink-0 pl-2">100M</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trading & Explorer Links -->
+      <div class="glass-card rounded-2xl p-4 border border-zinc-800 space-y-2">
+        <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-2">Trasparenza On-Chain & Link Ufficiali</h3>
+        <div class="grid grid-cols-2 gap-2">
+          <a href="https://pump.fun/coin/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" class="p-2.5 rounded-xl text-xs font-bold bg-amber-400 hover:bg-amber-300 text-black text-center transition shadow">
+            🚀 Pump.fun
           </a>
-          <a href="https://dexscreener.com/solana/4MPMa87vpump" target="_blank" 
-             class="py-2.5 px-3 rounded-xl text-xs font-black bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 flex items-center justify-center gap-1.5 active:scale-95 transition">
-            <span>📊</span> DexScreener ↗
+          <a href="https://dexscreener.com/solana/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" class="p-2.5 rounded-xl text-xs font-bold bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-emerald-400 text-center transition">
+            📊 DexScreener
+          </a>
+          <a href="https://solscan.io/token/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump" target="_blank" class="p-2.5 rounded-xl text-xs font-bold bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-blue-300 text-center transition">
+            🔍 Solscan
+          </a>
+          <a href="https://birdeye.so/token/4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump?chain=solana" target="_blank" class="p-2.5 rounded-xl text-xs font-bold bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-cyan-300 text-center transition">
+            🦅 Birdeye
           </a>
         </div>
-        <p class="text-[10px] text-zinc-400 text-center font-mono pt-1">
-          💡 <i>Nota: Durante la fase di bonding curve, consulta il grafico principale direttamente su Pump.fun.</i>
-        </p>
+      </div>
+
+      <!-- Legal Disclaimer -->
+      <div class="p-3.5 bg-black/40 rounded-2xl border border-zinc-800 text-[10px] text-zinc-400 space-y-1 leading-relaxed">
+        <strong class="text-zinc-300 block uppercase font-mono">⚖️ Disclaimer Legale Ufficiale:</strong>
+        MEETO ($MEETO) è un esperimento amatoriale, ricreativo e no-profit basato sulla gamification e sulla valorizzazione culturale. Il token ha finalità puramente di utilità e di souvenir digitale all'interno dell'ecosistema. Non costituisce un'attività finanziaria, uno strumento di investimento o una promessa di profitto.
       </div>
     </section>
 
@@ -500,6 +554,8 @@
   <script>
     const SUPABASE_URL = "https://vhezlswrjifsqhmensmb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_4N818y2Y7UgFeeHJx_u8HQ_oI675Qpg";
+    const TOKEN_CA = "4MPMa8mdsrjaCJGN1CrNG1dQDh357SEzoAu9QR7vpump";
+    const TREASURY_WALLET = "V8PKJ8vAPncNKYgGnSX7u4TgfdJuyA8bLUbLwKjFuyV";
     
     let sbClient = null;
     try {
@@ -788,6 +844,38 @@
       if (passStamps) passStamps.innerText = userState.stamps ? userState.stamps.length : 0;
       const passLevel = document.getElementById("pass-level");
       if (passLevel) passLevel.innerText = userState.level || 1;
+
+      renderStamps();
+    }
+
+    function renderStamps() {
+      const grid = document.getElementById("passport-stamps-grid");
+      if (!grid) return;
+
+      if (!userState.stamps || userState.stamps.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-2 p-3 bg-black/40 rounded-xl text-center text-[11px] text-zinc-500">
+            Nessun timbro ancora collezionato. Fai il tuo primo Check-In sulla Mappa!
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = "";
+      userState.stamps.forEach(key => {
+        const site = MONUMENTS[key];
+        if (!site) return;
+        const stampEl = document.createElement("div");
+        stampEl.className = "p-2.5 bg-black/50 border border-amber-500/30 rounded-xl flex items-center gap-2";
+        stampEl.innerHTML = `
+          <span class="text-xl">✅</span>
+          <div class="truncate">
+            <span class="text-white font-bold text-[11px] block truncate">${site.name}</span>
+            <span class="text-[9px] text-amber-300 font-mono">${site.city}</span>
+          </div>
+        `;
+        grid.appendChild(stampEl);
+      });
     }
 
     async function syncUserWithCloud() {
@@ -809,8 +897,8 @@
             wallet_address: userState.wallet_address || ""
           });
         } else {
-          userState.xp = dbUser.total_xp || 0;
-          userState.level = dbUser.level || 1;
+          userState.xp = dbUser.total_xp || userState.xp || 0;
+          userState.level = dbUser.level || userState.level || 1;
           if (dbUser.wallet_address) userState.wallet_address = dbUser.wallet_address;
         }
 
@@ -924,15 +1012,35 @@
 
     function verifyGPSAndSave() {
       document.getElementById("gps-status-msg").innerText = "📍 Verifica posizione in corso...";
-      setTimeout(() => {
-        userState.xp += 100;
+      setTimeout(async () => {
+        // Incrementa XP e timbri locali
+        userState.xp = (userState.xp || 0) + 100;
         if (!userState.stamps.includes(activeSiteKey)) {
           userState.stamps.push(activeSiteKey);
         }
         userState.level = Math.floor(userState.xp / 300) + 1;
 
+        // Salva in localStorage
         localStorage.setItem("meeto_user_state", JSON.stringify(userState));
         updateUIBadges();
+
+        // Synchronize in Cloud (Supabase)
+        if (sbClient) {
+          try {
+            await sbClient.from("users").upsert({
+              telegram_id: currentUser.telegram_id,
+              username: currentUser.username,
+              first_name: currentUser.first_name,
+              total_xp: userState.xp,
+              level: userState.level,
+              wallet_address: userState.wallet_address || ""
+            });
+            // Aggiorna la classifica in tempo reale
+            loadLeaderboard();
+          } catch (e) {
+            console.error("Errore sincro XP cloud:", e);
+          }
+        }
 
         document.getElementById("step-gps").classList.add("hidden");
         document.getElementById("step-success").classList.remove("hidden");
@@ -1016,25 +1124,31 @@
     }
 
     function copyContractAddress() {
-      const ca = "4MPMa87vpump";
+      copyToClipboard(TOKEN_CA, "Contract Address (CA) copiato!");
+    }
+
+    function copyTreasuryAddress() {
+      copyToClipboard(TREASURY_WALLET, "Indirizzo Treasury copiato!");
+    }
+
+    function copyToClipboard(text, alertMsg) {
       const dummy = document.createElement("textarea");
       document.body.appendChild(dummy);
-      dummy.value = ca;
+      dummy.value = text;
       dummy.select();
       document.execCommand("copy");
       document.body.removeChild(dummy);
 
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.showAlert) {
-        window.Telegram.WebApp.showAlert("Contract Address copiato negli appunti!");
+        window.Telegram.WebApp.showAlert(alertMsg);
       } else {
-        alert("Contract Address copiato: " + ca);
+        alert(alertMsg + "\n" + text);
       }
     }
 
     async function fetchDexScreenerPrice() {
-      const tokenAddress = "4MPMa87vpump";
       try {
-        const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${tokenAddress}`);
+        const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${TOKEN_CA}`);
         const data = await res.json();
         if (data.pairs && data.pairs.length > 0) {
           const pair = data.pairs[0];
