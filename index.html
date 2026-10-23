@@ -1069,7 +1069,7 @@
       msg.innerText = "✅ Wallet salvato con successo!";
     }
 
-    // Funzione aggiornata per la gestione del Wallet (Desktop, Mobile e Telegram Mini App)
+    // Funzione aggiornata per la gestione del Wallet con reindirizzamento alla Mini App corretta
     async function connectPhantomWallet() {
       const msg = document.getElementById("wallet-status-msg");
       try {
@@ -1086,16 +1086,16 @@
             msg.innerText = "✅ Wallet connesso: " + address.substring(0, 6) + "..." + address.substring(address.length - 4);
           }
         } else {
-          // 2. Se siamo dentro Telegram o su un browser mobile standard, apriamo l'app Phantom direttamente
-          const targetUrl = encodeURIComponent("https://meetotoken.github.io/Meeto/");
+          // 2. Puntiamo direttamente all'indirizzo corretto della Mini App su GitHub Pages
+          const targetUrl = encodeURIComponent("https://meetotoken.github.io/meeto-app-dev");
           const phantomBrowseLink = `https://phantom.app/ul/browse/${targetUrl}?ref=${targetUrl}`;
           
           if (msg) {
             msg.className = "text-[10px] text-amber-300 font-bold";
-            msg.innerText = "🔄 Apertura su Phantom Wallet in corso...";
+            msg.innerText = "🔄 Apertura Mini App su Phantom...";
           }
 
-          // Sfrutta l'API nativa di Telegram per aprire il link evitando l'errore ERR_UNKNOWN_URL_SCHEME
+          // Apre il link tramite l'API di Telegram o del browser mobile
           if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.openLink === 'function') {
             window.Telegram.WebApp.openLink(phantomBrowseLink);
           } else {
