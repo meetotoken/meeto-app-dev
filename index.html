@@ -345,8 +345,8 @@
     <section id="tab-token" class="w-full px-4 py-5 space-y-4 hidden">
       <div class="glass-card rounded-2xl p-5 border border-amber-500/30 text-center">
         <div class="text-4xl mb-1">🪙</div>
-        <h2 class="text-lg font-black text-white gold-gradient-text" data-i18n="token_ecosystem">ECOSISTEMA TOKEN SOLANA (Meeto)</h2>
-        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1">Utility token nativo per l'ecosistema del turismo culturale e della gamification su Solana.</p>
+        <h2 class="text-lg font-black text-white gold-gradient-text" data-i18n="token_ecosystem">ECOSISTEMA TOKEN MEETO ($MEETO)</h2>
+        <p class="text-xs text-zinc-400 max-w-xs mx-auto mt-1">Utility token nativo su rete Solana per il turismo culturale e la gamification.</p>
       </div>
 
       <!-- Live Token Metrics -->
@@ -360,11 +360,11 @@
         <div class="grid grid-cols-2 gap-3 text-center">
           <div class="bg-black/50 p-3 rounded-xl border border-zinc-800">
             <div class="text-[9px] text-zinc-400 font-bold uppercase" data-i18n="price_lbl">PREZZO LIVE USD</div>
-            <div id="token-price-usd" class="text-base font-extrabold text-amber-400 font-mono mt-0.5">$0.000104</div>
+            <div id="token-price-usd" class="text-base font-extrabold text-amber-400 font-mono mt-0.5">$0.00000299</div>
           </div>
           <div class="bg-black/50 p-3 rounded-xl border border-zinc-800">
             <div class="text-[9px] text-zinc-400 font-bold uppercase" data-i18n="mcap_lbl">MARKET CAP</div>
-            <div id="token-mcap-usd" class="text-base font-extrabold text-emerald-400 font-mono mt-0.5">$104,380</div>
+            <div id="token-mcap-usd" class="text-base font-extrabold text-emerald-400 font-mono mt-0.5">$2.99K</div>
           </div>
         </div>
       </div>
@@ -382,7 +382,7 @@
         </div>
 
         <div>
-          <label class="block text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-1">Treasury & Rewards Wallet:</label>
+          <label class="block text-[10px] font-bold uppercase tracking-wider text-amber-400 mb-1">Treasury & Rewards Wallet:</label>
           <div class="flex items-center gap-2 bg-black/60 p-2.5 rounded-xl border border-zinc-800">
             <span class="font-mono text-[11px] text-zinc-400 truncate flex-1 select-all">V8PKJ8vAPncNKYgGnSX7u4TgfdJuyA8bLUbLwKjFuyV</span>
             <button onclick="copyTreasuryAddress()" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 text-zinc-200 shrink-0 active:scale-95 transition">
@@ -583,7 +583,7 @@
         pass_desc: "Colleziona visite storiche, scatta foto ricordo e salva i timbri nel cloud.",
         stamps_lbl: "Timbri",
         xp_lbl: "XP Totali",
-        token_ecosystem: "ECOSISTEMA TOKEN SOLANA (Meeto)",
+        token_ecosystem: "ECOSISTEMA TOKEN MEETO ($MEETO)",
         refresh_btn: "🔄 Aggiorna",
         price_lbl: "PREZZO LIVE USD",
         mcap_lbl: "MARKET CAP",
@@ -610,7 +610,7 @@
         pass_desc: "Collect historical visits, take souvenir photos, and save stamps to the cloud.",
         stamps_lbl: "Stamps",
         xp_lbl: "Total XP",
-        token_ecosystem: "SOLANA TOKEN ECOSYSTEM (Meeto)",
+        token_ecosystem: "MEETO TOKEN ECOSYSTEM ($MEETO)",
         refresh_btn: "🔄 Refresh",
         price_lbl: "LIVE PRICE USD",
         mcap_lbl: "MARKET CAP",
@@ -1155,8 +1155,8 @@
           const price = parseFloat(pair.priceUsd);
           const fdv = pair.fdv || pair.marketCap || (price * 1000000000);
           if (price > 0) {
-            document.getElementById("token-price-usd").innerText = "$" + price.toFixed(6);
-            document.getElementById("token-mcap-usd").innerText = "$" + Math.round(fdv).toLocaleString("en-US");
+            document.getElementById("token-price-usd").innerText = "$" + price.toFixed(8);
+            document.getElementById("token-mcap-usd").innerText = "$" + (fdv >= 1000 ? (fdv / 1000).toFixed(2) + "K" : Math.round(fdv));
             fetched = true;
           }
         }
@@ -1164,8 +1164,8 @@
 
       if (!fetched) {
         // Valori di default stabili durante la bonding curve
-        document.getElementById("token-price-usd").innerText = "$0.000104";
-        document.getElementById("token-mcap-usd").innerText = "$104,380";
+        document.getElementById("token-price-usd").innerText = "$0.00000299";
+        document.getElementById("token-mcap-usd").innerText = "$2.99K";
       }
     }
   </script>
