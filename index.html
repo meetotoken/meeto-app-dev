@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>$MEETO Passaporto & Travel App - Performance Suite</title>
+    <meta name="description" content="Analisi avanzata delle prestazioni e versione ottimizzata ad alta efficienza per l'applicazione $MEETO (Mappa Leaflet fluida, zero layout thrashing, compressione immagini e caricamento istantaneo)." />
+    <meta property="og:title" content="$MEETO Passaporto & Travel App - Performance Suite" />
+    <meta property="og:description" content="Analisi avanzata delle prestazioni e versione ottimizzata ad alta efficienza per l'applicazione $MEETO." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://meetotoken.github.io/Meeto/meeto-x-post.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://meetotoken.github.io/Meeto/meeto-x-post.jpg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZV4166JDS7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      // Modalità di Consenso Google v2 (Consent Mode v2)
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'analytics_storage': 'granted'
+      });
+      gtag('js', new Date());
+      gtag('config', 'G-ZV4166JDS7');
+    </script>
+    <!-- Travelpayouts Tracking Script -->
+    <script nowprocket data-noptimize="1" data-cfasync="false" data-wpfc-render="false" seraph-accel-crit="1" data-no-defer="1" data-cmp-ab="2">
+      (function () {
+          var script = document.createElement("script");
+          script.async = 1;
+          script.setAttribute("data-cmp-ab","2");
+          script.src = 'https://tp-em.com/NTg5MDMw.js?t=589030';
+          document.head.appendChild(script);
+      })();
+    </script>
+    <script type="module" crossorigin src="./index.js"></script>
+    <link rel="stylesheet" crossorigin href="./index.css">
+  </head>
+  <body class="bg-[#07090E] text-[#E2E8F0] antialiased selection:bg-amber-500/30 selection:text-amber-200">
+    <div id="root">
+      <div id="meeto-loader" style="min-height: 100vh; background: #07090E; color: #E2E8F0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; text-align: center; padding: 24px;">
+        <div style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, #F59E0B, #D97706); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.35); font-weight: 900; color: #000; font-size: 26px;">
+          M
+        </div>
+        <h1 style="font-size: 22px; font-weight: 800; margin: 0 0 8px 0; background: linear-gradient(135deg, #F59E0B, #FDE68A); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$MEETO Passaporto Culturale</h1>
+        <p id="loader-subtext" style="color: #94A3B8; font-size: 13px; max-width: 320px; margin: 0 0 20px 0; line-height: 1.5;">Inizializzazione applicazione e mappe in corso...</p>
+        <div style="width: 48px; height: 4px; border-radius: 999px; background: #1E293B; overflow: hidden; position: relative;">
+          <div style="width: 50%; height: 100%; background: #F59E0B; border-radius: 999px; animation: meeto-slide 1.2s infinite ease-in-out;"></div>
+        </div>
+        <style>@keyframes meeto-slide{0%{transform:translate(-100%)}50%{transform:translate(100%)}to{transform:translate(250%)}}</style>
+        <div id="static-fallback-box" style="display: none; margin-top: 28px; padding: 18px; border-radius: 14px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); max-width: 420px; text-align: left;">
+          <div style="font-weight: 700; color: #F87171; font-size: 14px; margin-bottom: 6px;">💡 Sei su GitHub Pages con i file sorgente?</div>
+          <p style="color: #CBD5E1; font-size: 12px; margin: 0 0 12px 0; line-height: 1.4;">
+            GitHub Pages non compila automaticamente il codice TypeScript. Per visualizzare l'app senza pagina bianca:
+          </p>
+          <a href="./meeto-optimized-single-file.html" style="display: block; text-align: center; background: #F59E0B; color: #000; font-weight: 800; font-size: 12px; padding: 10px 14px; border-radius: 10px; text-decoration: none; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+            👉 Clicca qui per aprire la Versione Single-File
+          </a>
+        </div>
+      </div>
+    </div>
+    <script>
+      setTimeout(function() {
+        if (!window.__meeto_mounted) {
+          var fb = document.getElementById('static-fallback-box');
+          var st = document.getElementById('loader-subtext');
+          if (fb) fb.style.display = 'block';
+          if (st) st.textContent = 'Rilevato ambiente statico GitHub Pages.';
+        }
+      }, 3000);
+    </script>
+  </body>
+</html>
+<!-- sync-tag: all-files-refreshed -->
