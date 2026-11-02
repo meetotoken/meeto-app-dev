@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Default / Italian Root -->
   <url>
     <loc>https://meetotoken.github.io/Meeto/</loc>
     <lastmod>2026-11-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="it" href="https://meetotoken.github.io/Meeto/?lang=it" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://meetotoken.github.io/Meeto/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://meetotoken.github.io/Meeto/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://meetotoken.github.io/Meeto/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://meetotoken.github.io/Meeto/?lang=es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://meetotoken.github.io/Meeto/?lang=fr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://meetotoken.github.io/Meeto/?lang=de" />
+  </url>
+  <!-- English International Indexing -->
+  <url>
+    <loc>https://meetotoken.github.io/Meeto/?lang=en</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://meetotoken.github.io/Meeto/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://meetotoken.github.io/Meeto/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://meetotoken.github.io/Meeto/" />
     <xhtml:link rel="alternate" hreflang="es" href="https://meetotoken.github.io/Meeto/?lang=es" />
     <xhtml:link rel="alternate" hreflang="fr" href="https://meetotoken.github.io/Meeto/?lang=fr" />
     <xhtml:link rel="alternate" hreflang="de" href="https://meetotoken.github.io/Meeto/?lang=de" />
