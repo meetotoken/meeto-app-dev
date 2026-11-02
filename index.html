@@ -14,7 +14,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <title>$MEETO — Passaporto Culturale, Audioguide & Travel Planner</title>
   <meta name="description" content="$MEETO — Passaporto Culturale Italiano. Audioguide vocali gratuite per 25 città, quiz storici, percorsi UNESCO e Polaroid Souvenir su Solana." />
-  <meta name="keywords" content="$MEETO, meeto token, passaporto culturale, audioguide italia, travel planner italia, monumenti italiani, quiz storici, souvenir polaroid, solana web3 travel, turismo culturale, roma, firenze, venezia" />
+  <meta name="keywords" content="$MEETO, meeto token, passaporto culturale, audioguide italia, travel planner italia, polaroid souvenir, solana web3 travel, Italy cultural passport, Italy travel planner, free audio guides Italy, Rome Colosseum audio guide, Florence walking tour, pasaporte cultural italia, audioguias italia, passeport culturel italie, audioguide italie gratuit, italien kulturpass, audioguide rom kostenlos" />
   <meta name="author" content="MEETO Project" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
   <meta name="theme-color" content="#07090E" />
@@ -2244,20 +2244,32 @@
       document.documentElement.lang = currentLang;
       if (dict.app_title) document.title = dict.app_title;
 
-      // Aggiornamento dinamico Meta Description per Google Search & Social Bot
+            // Aggiornamento dinamico Meta Description per Google Search & Social Bot (5 Lingue)
+      const DESCRIPTIONS_I18N = {
+        it: "$MEETO — Passaporto Culturale Italiano. Audioguide vocali gratuite per 25 città, quiz storici, percorsi UNESCO e Polaroid Souvenir su Solana.",
+        en: "$MEETO — Official Italian Cultural Passport. Free voice audio guides for 25 cities, history quizzes, UNESCO routes and Polaroid souvenirs on Solana.",
+        es: "$MEETO — Pasaporte Cultural de Italia. Audioguías de voz gratuitas para 25 ciudades, cuestionarios históricos, rutas UNESCO y fotos Polaroid en Solana.",
+        fr: "$MEETO — Passeport Culturel Italien. Audioguides vocaux gratuits pour 25 villes, quiz historiques, itinéraires UNESCO et souvenirs Polaroid sur Solana.",
+        de: "$MEETO — Offizieller Italienischer Kulturpass. Kostenlose Audio-Guides für 25 Städte, Geschichtsquizze, UNESCO-Routen und Polaroid-Souvenirs auf Solana."
+      };
+
+      const H1_TITLES_I18N = {
+        it: "$MEETO — Passaporto Culturale, Audioguide & Travel Planner Italiano",
+        en: "$MEETO — Cultural Travel Passport, Audio Guides & Italy Travel Planner",
+        es: "$MEETO — Pasaporte Cultural, Audioguías y Planificador de Viajes en Italia",
+        fr: "$MEETO — Passeport Culturel, Audioguides & Planificateur de Voyages en Italie",
+        de: "$MEETO — Kulturpass, Audioguides & Italien-Reiseplaner"
+      };
+
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc) {
-        metaDesc.setAttribute("content", currentLang === 'it'
-          ? "$MEETO — Passaporto Culturale Italiano. Audioguide vocali gratuite per 25 città, quiz storici, percorsi UNESCO e Polaroid Souvenir su Solana."
-          : "$MEETO — Official Italian Cultural Passport. Free voice audio guides for 25 cities, history quizzes, UNESCO routes and Polaroid souvenirs on Solana.");
+        metaDesc.setAttribute("content", DESCRIPTIONS_I18N[currentLang] || DESCRIPTIONS_I18N.it);
       }
 
       // Aggiornamento dinamico H1 semantico
       const h1El = document.getElementById("seo-main-h1");
       if (h1El) {
-        h1El.innerText = currentLang === 'it'
-          ? "$MEETO — Passaporto Culturale, Audioguide & Travel Planner Italiano"
-          : "$MEETO — Cultural Travel Passport, Audio Guides & Italy Travel Planner";
+        h1El.innerText = H1_TITLES_I18N[currentLang] || H1_TITLES_I18N.it;
       }
 
       const flagText = document.getElementById("lang-text");
